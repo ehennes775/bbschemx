@@ -1,0 +1,3 @@
+interface SelectionListener {
+    fun selectionChanged()
+}

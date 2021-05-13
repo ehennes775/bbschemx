@@ -1,0 +1,4 @@
+package schematic
+
+class Schematic {
+}

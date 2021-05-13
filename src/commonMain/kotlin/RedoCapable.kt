@@ -1,0 +1,3 @@
+interface RedoCapable {
+    fun redo()
+}

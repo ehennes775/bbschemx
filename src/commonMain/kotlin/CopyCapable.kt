@@ -1,0 +1,3 @@
+interface CopyCapable {
+    fun copy()
+}

@@ -1,0 +1,3 @@
+interface CutCapable {
+    fun cut()
+}

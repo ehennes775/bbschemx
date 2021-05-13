@@ -1,0 +1,3 @@
+interface UndoCapable {
+    fun undo()
+}

@@ -1,0 +1,3 @@
+interface PasteCapable {
+    fun paste()
+}

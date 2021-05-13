@@ -1,0 +1,3 @@
+interface SaveCapable {
+    fun save()
+}
