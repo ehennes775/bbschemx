@@ -1,30 +1,32 @@
 package schematic
 
-import LineStyleItem
+import schematic.types.FillItem
+import schematic.types.FillType
 import java.awt.Dimension
 import javax.swing.JComboBox
 
 class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val fillTypes = mapOf(
-        "None" to 0,
-        "Square" to 1,
-        "Round" to 2
+        "Hollow" to FillType.HOLLOW,
+        "Fill" to FillType.FILL,
+        "Mesh" to FillType.MESH,
+        "Hatch" to FillType.HATCH
     )
 
     private val fillTypeCombo = JComboBox(fillTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
+        addActionListener(object : ApplyToSelection<FillType>(schematicView) {
             override fun getContent(): String? {
                 return selectedItem?.toString()
             }
 
-            override fun parseValue(content: String): Int {
+            override fun parseValue(content: String): FillType {
                 return fillTypes.getOrElse(content) { throw Exception("Unknown cap type '$content'") }
             }
 
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withCapType(value) else item
+            override fun applyValue(item: Item, value: FillType): Item {
+                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillType(value)) else item
             }
         })
     }
@@ -48,7 +50,7 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
             }
 
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withLineWidth(value) else item
+                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillWidth(value)) else item
             }
         })
     }
@@ -71,7 +73,7 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
             }
 
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withCapType(value) else item
+                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillAngle1(value)) else item
             }
         })
     }
@@ -88,7 +90,7 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
             }
 
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withCapType(value) else item
+                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillPitch1(value)) else item
             }
         })
     }
@@ -111,7 +113,7 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
             }
 
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withCapType(value) else item
+                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillAngle2(value)) else item
             }
         })
     }
@@ -128,7 +130,7 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
             }
 
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withCapType(value) else item
+                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillPitch2(value)) else item
             }
         })
     }

@@ -1,6 +1,8 @@
 package schematic
 
-import LineStyleItem
+import schematic.types.CapType
+import schematic.types.DashType
+import schematic.types.LineItem
 import java.awt.Dimension
 import javax.swing.JComboBox
 
@@ -23,7 +25,7 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
                     return content.toIntOrNull() ?: throw Exception("Invalid line width '$content'")
                 }
                 override fun applyValue(item: Item, value: Int): Item {
-                    return if (item is LineStyleItem) item.withLineWidth(value) else item
+                    return if (item is LineItem) item.withLineStyle(item.lineStyle.withLineWidth(value)) else item
                 }
             })
         }
@@ -37,24 +39,24 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
     }
 
     private val dashTypes = mapOf(
-        "Solid" to 0,
-        "Dotted" to 1,
-        "Dashed" to 2,
-        "Center" to 3,
-        "Phantom" to 4
+        "Solid" to DashType.SOLID,
+        "Dotted" to DashType.DOTTED,
+        "Dashed" to DashType.DASHED,
+        "Center" to DashType.CENTER,
+        "Phantom" to DashType.PHANTOM
     )
 
     private val dashTypeCombo = JComboBox(dashTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
+        addActionListener(object : ApplyToSelection<DashType>(schematicView) {
             override fun getContent(): String? {
                 return selectedItem?.toString()
             }
-            override fun parseValue(content: String): Int {
+            override fun parseValue(content: String): DashType {
                 return dashTypes.getOrElse(content) { throw Exception("Unknown cap type '$content'") }
             }
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withDashType(value) else item
+            override fun applyValue(item: Item, value: DashType): Item {
+                return if (item is LineItem) item.withLineStyle(item.lineStyle.withDashType(value)) else item
             }
         })
     }
@@ -76,7 +78,7 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
                 return content.toIntOrNull() ?: throw Exception("Invalid dash length '$content'")
             }
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withDashLength(value) else item
+                return if (item is LineItem) item.withLineStyle(item.lineStyle.withDashLength(value)) else item
             }
         })
     }
@@ -106,7 +108,7 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
                 return content.toIntOrNull() ?: throw Exception("Invalid dash space '$content'")
             }
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withDashSpace(value) else item
+                return if (item is LineItem) item.withLineStyle(item.lineStyle.withDashSpace(value)) else item
             }
         })
     }
@@ -120,22 +122,22 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
     }
 
     private val capTypes = mapOf(
-        "None" to 0,
-        "Square" to 1,
-        "Round" to 2
+        "None" to CapType.NONE,
+        "Square" to CapType.SQUARE,
+        "Round" to CapType.ROUND
     )
 
     private val capTypeCombo = JComboBox(capTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
+        addActionListener(object : ApplyToSelection<CapType>(schematicView) {
             override fun getContent(): String? {
                 return selectedItem?.toString()
             }
-            override fun parseValue(content: String): Int {
+            override fun parseValue(content: String): CapType {
                 return capTypes.getOrElse(content) { throw Exception("Unknown cap type '$content'") }
             }
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withCapType(value) else item
+            override fun applyValue(item: Item, value: CapType): Item {
+                return if (item is LineItem) item.withLineStyle(item.lineStyle.withCapType(value)) else item
             }
         })
     }

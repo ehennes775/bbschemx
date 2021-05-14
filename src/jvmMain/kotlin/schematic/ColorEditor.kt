@@ -1,15 +1,13 @@
 package schematic
 
-import LineStyleItem
+import schematic.types.ColorItem
 import java.awt.Dimension
 import javax.swing.JComboBox
 
 class ColorEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val fillTypes = mapOf(
-        "None" to 0,
-        "Square" to 1,
-        "Round" to 2
+        "Background" to 0,
     )
 
     private val colorCombo = JComboBox(fillTypes.keys.toTypedArray()).apply {
@@ -24,7 +22,7 @@ class ColorEditor(schematicView: SchematicView) : PropertyEditorPanel() {
             }
 
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineStyleItem) item.withCapType(value) else item
+                return if (item is ColorItem) item.withColor(value) else item
             }
         })
     }
