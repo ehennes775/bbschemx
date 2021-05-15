@@ -2,7 +2,7 @@ package schematic.types
 
 import schematic.Item
 
-interface FillItem {
+interface FillItem : Item {
     val fillStyle: FillStyle
 
     fun withFillStyle(newFillStyle: FillStyle): Item

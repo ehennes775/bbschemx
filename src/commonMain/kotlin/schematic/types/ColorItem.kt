@@ -2,7 +2,7 @@ package schematic.types
 
 import schematic.Item
 
-interface ColorItem {
+interface ColorItem : Item {
     val color: Int
 
     fun withColor(newColor: Int): Item

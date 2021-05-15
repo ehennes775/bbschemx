@@ -1,6 +1,7 @@
 package schematic.shapes.circle
 
 import schematic.Item
+import schematic.Writer
 import schematic.types.*
 
 class Circle(
@@ -63,5 +64,28 @@ class Circle(
         color,
         lineStyle,
         newFillStyle
+    )
+
+    companion object {
+        const val TOKEN = "V"
+    }
+
+    override fun write(writer: Writer) = writer.writeParams(
+        TOKEN,
+        centerX.toString(),
+        centerY.toString(),
+        radius.toString(),
+        color.toString(),
+        lineStyle.lineWidthFileValue.toString(),
+        lineStyle.dashTypeFileValue.toString(),
+        lineStyle.dashLengthFileValue.toString(),
+        lineStyle.dashSpaceFileValue.toString(),
+        lineStyle.capTypeFileValue.toString(),
+        fillStyle.fillTypeFileValue.toString(),
+        fillStyle.fillWidthFileValue.toString(),
+        fillStyle.fillAngle1FileValue.toString(),
+        fillStyle.fillPitch1FileValue.toString(),
+        fillStyle.fillAngle2FileValue.toString(),
+        fillStyle.fillPitch2FileValue.toString()
     )
 }
