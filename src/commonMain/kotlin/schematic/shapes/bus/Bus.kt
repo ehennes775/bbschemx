@@ -2,6 +2,8 @@ package schematic.shapes.bus
 
 import schematic.Item
 import schematic.Writer
+import schematic.types.AttributeItem
+import schematic.types.Attributes
 import schematic.types.ColorItem
 
 class Bus(
@@ -10,8 +12,9 @@ class Bus(
     val x1: Int,
     val y1: Int,
     override val color: Int,
-    val ripperDirection: Int
-) : Item, ColorItem {
+    val ripperDirection: Int,
+    override val attributes: Attributes
+) : Item, ColorItem, AttributeItem {
 
     fun withX0(newX0: Int) = Bus(
         newX0,
@@ -19,7 +22,8 @@ class Bus(
         x1,
         y1,
         color,
-        ripperDirection
+        ripperDirection,
+        attributes
     )
 
     fun withY0(newY0: Int) = Bus(
@@ -28,7 +32,8 @@ class Bus(
         x1,
         y1,
         color,
-        ripperDirection
+        ripperDirection,
+        attributes
     )
 
     fun withX1(newX1: Int) = Bus(
@@ -37,7 +42,8 @@ class Bus(
         newX1,
         y1,
         color,
-        ripperDirection
+        ripperDirection,
+        attributes
     )
 
     fun withY1(newY1: Int) = Bus(
@@ -46,7 +52,8 @@ class Bus(
         x1,
         newY1,
         color,
-        ripperDirection
+        ripperDirection,
+        attributes
     )
 
     override fun withColor(newColor: Int) = Bus(
@@ -55,7 +62,8 @@ class Bus(
         x1,
         y1,
         newColor,
-        ripperDirection
+        ripperDirection,
+        attributes
     )
 
     fun withRipperDirection(newRipperDirection: Int) = Bus(
@@ -64,7 +72,18 @@ class Bus(
         x1,
         y1,
         color,
-        newRipperDirection
+        newRipperDirection,
+        attributes
+    )
+
+    override fun withAttributes(newAttributes: Attributes) = Bus(
+        x0,
+        y0,
+        x1,
+        y1,
+        color,
+        ripperDirection,
+        newAttributes
     )
 
     companion object {

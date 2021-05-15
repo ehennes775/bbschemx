@@ -2,6 +2,7 @@ package schematic.shapes.text
 
 import schematic.Item
 import schematic.Writer
+import schematic.types.Attribute
 import schematic.types.ColorItem
 
 class Text(
@@ -14,7 +15,7 @@ class Text(
     val rotation: Int = 0,
     val alignment: Alignment = Alignment.LOWER_LEFT,
     val lines: Array<String>
-) : Item, ColorItem {
+) : Item, ColorItem, Attribute {
 
     fun withInsertX(newInsertX: Int) = Text(
         newInsertX,
