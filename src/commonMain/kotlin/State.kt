@@ -1,5 +1,5 @@
-import schematic.Item
-import schematic.Schematic
+import views.schematic.Item
+import views.schematic.Schematic
 
 internal data class State(val schematic: Schematic, val selection: Set<Item>) {
     fun isSelected(item: Item): Boolean {

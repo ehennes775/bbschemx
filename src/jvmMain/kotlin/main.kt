@@ -1,7 +1,7 @@
-import schematic.ColorEditor
-import schematic.FillEditor
-import schematic.LineEditor
-import schematic.SchematicView
+import views.schematic.ColorEditor
+import views.schematic.FillEditor
+import views.schematic.LineEditor
+import views.schematic.SchematicView
 import java.awt.*
 import java.awt.event.ActionEvent
 import javax.swing.*
@@ -39,7 +39,7 @@ class Application : JFrame() {
         return JMenuBar().apply {
             add(JMenu("File").apply {
                 add(JMenuItem(NewAction))
-                add(JMenuItem(OpenAction))
+                add(JMenuItem(OpenAction()))
                 addSeparator()
                 add(JMenuItem(SaveAction))
                 add(JMenuItem(SaveAllAction))
@@ -79,13 +79,24 @@ class Application : JFrame() {
 
     private object NewAction : AbstractAction("New") {
         override fun actionPerformed(e: ActionEvent?) {
-            TabbedPane.addTab("File", SchematicView())
+            TabbedPane.addTab("Untitled", SchematicView())
         }
     }
 
-    private object OpenAction : AbstractAction("Open...") {
+    private inner class OpenAction : AbstractAction("Open...") {
+        var dialog = FileDialog(
+            this@Application,
+            "Open...",
+            FileDialog.LOAD
+        ).apply {
+            isMultipleMode = true
+        }
+
         override fun actionPerformed(e: ActionEvent?) {
-            TabbedPane.addTab("File", SchematicView())
+            dialog.isVisible = true
+            dialog.files.forEach {
+                TabbedPane.addTab(it.name, SchematicView.load(it))
+            }
         }
     }
 
