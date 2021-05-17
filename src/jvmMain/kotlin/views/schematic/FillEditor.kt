@@ -1,7 +1,8 @@
 package views.schematic
 
-import views.schematic.types.FillItem
-import views.schematic.types.FillType
+import models.schematic.Item
+import models.schematic.types.FillItem
+import models.schematic.types.FillType
 import java.awt.Dimension
 import javax.swing.JComboBox
 

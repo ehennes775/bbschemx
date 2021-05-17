@@ -1,6 +1,7 @@
 package views.schematic
 
-import views.schematic.types.ColorItem
+import models.schematic.Item
+import models.schematic.types.ColorItem
 import java.awt.Dimension
 import javax.swing.JComboBox
 

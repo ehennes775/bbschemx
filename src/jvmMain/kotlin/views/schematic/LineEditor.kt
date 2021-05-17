@@ -1,8 +1,9 @@
 package views.schematic
 
-import views.schematic.types.CapType
-import views.schematic.types.DashType
-import views.schematic.types.LineItem
+import models.schematic.Item
+import models.schematic.types.CapType
+import models.schematic.types.DashType
+import models.schematic.types.LineItem
 import java.awt.Dimension
 import javax.swing.JComboBox
 
