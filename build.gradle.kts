@@ -30,8 +30,13 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit5"))
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+            }
+            tasks.withType<Test>().configureEach {
+                useJUnitPlatform()
             }
         }
     }
 }
+
 
