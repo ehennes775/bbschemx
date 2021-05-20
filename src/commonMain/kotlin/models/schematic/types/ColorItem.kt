@@ -5,5 +5,5 @@ import models.schematic.Item
 interface ColorItem : Item {
     val color: Int
 
-    fun withColor(newColor: Int): Item
+    fun withItemColor(newColor: Int): Item
 }

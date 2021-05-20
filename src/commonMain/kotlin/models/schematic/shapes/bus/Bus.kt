@@ -1,12 +1,9 @@
 package models.schematic.shapes.bus
 
 import models.schematic.Item
-import models.schematic.types.ColorItem
 import models.schematic.io.Reader
 import models.schematic.io.Writer
-import models.schematic.types.AttributeItem
-import models.schematic.types.Attributes
-import models.schematic.types.Creator
+import models.schematic.types.*
 
 class Bus(
     val x0: Int,
@@ -58,7 +55,7 @@ class Bus(
         attributes
     )
 
-    override fun withColor(newColor: Int) = Bus(
+    override fun withItemColor(newColor: Int) = Bus(
         x0,
         y0,
         x1,
@@ -86,6 +83,13 @@ class Bus(
         color,
         ripperDirection,
         newAttributes
+    )
+
+    override fun calculateBounds() = Bounds.fromCorners(
+        x0,
+        y0,
+        x1,
+        y1
     )
 
     companion object : Creator {

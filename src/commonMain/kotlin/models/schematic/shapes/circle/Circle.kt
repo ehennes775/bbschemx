@@ -40,7 +40,7 @@ class Circle(
         fillStyle
     )
 
-    override fun withColor(newColor: Int) = Circle(
+    override fun withItemColor(newColor: Int) = Circle(
         centerX,
         centerY,
         radius,
@@ -65,6 +65,14 @@ class Circle(
         color,
         lineStyle,
         newFillStyle
+    )
+
+    override fun calculateBounds() = Bounds.fromCorners(
+        centerX - radius,
+        centerY - radius,
+        centerX + radius,
+        centerY + radius,
+        lineStyle.lineWidth
     )
 
     companion object : Creator {

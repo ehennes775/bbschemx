@@ -152,19 +152,19 @@ class Application : JFrame() {
 
     private inner class SelectAllAction : DocumentAction("Select All", tabbedPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is SelectCapable && it.canSelect }
+            currentDocument.let { it is SelectCapable && it.canSelectAll }
 
         override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is SelectCapable) it.selectAllItems() }
+            currentDocument.also { if (it is SelectCapable) it.selectAll() }
         }
     }
 
     private inner class SelectNoneAction : DocumentAction("Select None", tabbedPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is SelectCapable && it.canSelect }
+            currentDocument.let { it is SelectCapable && it.canSelectNone }
 
         override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is SelectCapable) it.unselectAllItems() }
+            currentDocument.also { if (it is SelectCapable) it.selectNone() }
         }
     }
 }

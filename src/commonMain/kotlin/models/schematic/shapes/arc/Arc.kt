@@ -65,7 +65,7 @@ class Arc(
         lineStyle
     )
 
-    override fun withColor(newColor: Int) = Arc(
+    override fun withItemColor(newColor: Int) = Arc(
         centerX,
         centerY,
         radius,
@@ -84,6 +84,8 @@ class Arc(
         color,
         newLineStyle
     )
+
+    override fun calculateBounds() = Bounds.EMPTY
 
     companion object : Creator {
         const val TOKEN = "A"

@@ -50,7 +50,7 @@ class Line(
         lineStyle
     )
 
-    override fun withColor(newColor: Int) = Line(
+    override fun withItemColor(newColor: Int) = Line(
         x0,
         y0,
         x1,
@@ -66,6 +66,14 @@ class Line(
         y1,
         color,
         newLineStyle
+    )
+
+    override fun calculateBounds() = Bounds.fromCorners(
+        x0,
+        y0,
+        x1,
+        y1,
+        lineStyle.lineWidth
     )
 
     companion object : Creator {

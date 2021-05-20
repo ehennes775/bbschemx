@@ -1,9 +1,11 @@
 package views.schematic
 
 import models.schematic.Item
+import models.schematic.SchematicModel
 import models.schematic.types.CapType
 import models.schematic.types.DashType
 import models.schematic.types.LineItem
+import models.schematic.types.SelectedValue
 import java.awt.Dimension
 import javax.swing.JComboBox
 
@@ -33,8 +35,23 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     init {
         schematicView.addSelectionListener(object : UpdateFromSelection<Int>() {
-            override fun updateValue(value: Int) {
-                lineWidthCombo.selectedItem = value.toString()
+            override fun updateValue(model: SchematicModel) {
+                model.getLineWidth().also {
+                    when (it) {
+                        is SelectedValue.None -> {
+                            lineWidthCombo.isEnabled = false
+                            lineWidthCombo.selectedItem = ""
+                        }
+                        is SelectedValue.Single -> {
+                            lineWidthCombo.isEnabled = true
+                            lineWidthCombo.selectedItem = it.value.toString()
+                        }
+                        is SelectedValue.Multiple -> {
+                            lineWidthCombo.isEditable = true
+                            lineWidthCombo.selectedItem = ""
+                        }
+                    }
+                }
             }
         })
     }
@@ -86,8 +103,23 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     init {
         schematicView.addSelectionListener(object : UpdateFromSelection<Int>() {
-            override fun updateValue(value: Int) {
-                dashLengthCombo.selectedItem = value.toString()
+            override fun updateValue(model: SchematicModel) {
+                model.getDashLength().also {
+                    when (it) {
+                        is SelectedValue.None -> {
+                            dashLengthCombo.isEnabled = false
+                            dashLengthCombo.selectedItem = ""
+                        }
+                        is SelectedValue.Single -> {
+                            dashLengthCombo.isEnabled = true
+                            dashLengthCombo.selectedItem = it.value.toString()
+                        }
+                        is SelectedValue.Multiple -> {
+                            dashLengthCombo.isEditable = true
+                            dashLengthCombo.selectedItem = ""
+                        }
+                    }
+                }
             }
         })
     }
@@ -116,8 +148,23 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     init {
         schematicView.addSelectionListener(object : UpdateFromSelection<Int>() {
-            override fun updateValue(value: Int) {
-                dashSpaceCombo.selectedItem = value.toString()
+            override fun updateValue(model: SchematicModel) {
+                model.getDashSpace().also {
+                    when (it) {
+                        is SelectedValue.None -> {
+                            dashSpaceCombo.isEnabled = false
+                            dashSpaceCombo.selectedItem = ""
+                        }
+                        is SelectedValue.Single -> {
+                            dashSpaceCombo.isEnabled = true
+                            dashSpaceCombo.selectedItem = it.value.toString()
+                        }
+                        is SelectedValue.Multiple -> {
+                            dashSpaceCombo.isEditable = true
+                            dashSpaceCombo.selectedItem = ""
+                        }
+                    }
+                }
             }
         })
     }

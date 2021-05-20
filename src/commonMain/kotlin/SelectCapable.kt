@@ -1,5 +1,6 @@
 interface SelectCapable {
-    val canSelect: Boolean
-    fun selectAllItems()
-    fun unselectAllItems()
+    val canSelectAll: Boolean
+    val canSelectNone: Boolean
+    fun selectAll()
+    fun selectNone()
 }

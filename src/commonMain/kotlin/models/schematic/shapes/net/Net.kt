@@ -3,10 +3,7 @@ package models.schematic.shapes.net
 import models.schematic.Item
 import models.schematic.io.Reader
 import models.schematic.io.Writer
-import models.schematic.types.AttributeItem
-import models.schematic.types.Attributes
-import models.schematic.types.ColorItem
-import models.schematic.types.Creator
+import models.schematic.types.*
 
 class Net(
     val x0: Int,
@@ -53,7 +50,7 @@ class Net(
         attributes
     )
 
-    override fun withColor(newColor: Int) = Net(
+    override fun withItemColor(newColor: Int) = Net(
        x0,
        y0,
        x1,
@@ -69,6 +66,13 @@ class Net(
         y1,
         color,
         newAttributes
+    )
+
+    override fun calculateBounds() = Bounds.fromCorners(
+        x0,
+        y0,
+        x1,
+        y1
     )
 
     companion object : Creator {

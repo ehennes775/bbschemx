@@ -4,6 +4,7 @@ import models.schematic.Item
 import models.schematic.io.Reader
 import models.schematic.io.Writer
 import models.schematic.types.Attribute
+import models.schematic.types.Bounds
 import models.schematic.types.ColorItem
 import models.schematic.types.Creator
 
@@ -43,7 +44,7 @@ class Text(
         lines
     )
 
-    override fun withColor(newColor: Int) = Text(
+    override fun withItemColor(newColor: Int) = Text(
         insertX,
         insertY,
         newColor,
@@ -126,6 +127,8 @@ class Text(
         alignment,
         newLines
     )
+
+    override fun calculateBounds() = Bounds.EMPTY
 
     companion object : Creator {
         const val TOKEN = "T"

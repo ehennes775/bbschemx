@@ -56,7 +56,7 @@ class Box(
         fillStyle
     )
 
-    override fun withColor(newColor: Int) = Box(
+    override fun withItemColor(newColor: Int) = Box(
         lowerX,
         lowerY,
         upperX,
@@ -84,6 +84,14 @@ class Box(
         color,
         lineStyle,
         newFillStyle
+    )
+
+    override fun calculateBounds() = Bounds.fromCorners(
+        lowerX,
+        lowerY,
+        upperX,
+        upperY,
+        lineStyle.lineWidth
     )
 
     companion object : Creator {

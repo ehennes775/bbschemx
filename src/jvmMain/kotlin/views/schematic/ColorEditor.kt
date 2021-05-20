@@ -23,7 +23,7 @@ class ColorEditor(schematicView: SchematicView) : PropertyEditorPanel() {
             }
 
             override fun applyValue(item: Item, value: Int): Item {
-                return if (item is ColorItem) item.withColor(value) else item
+                return if (item is ColorItem) item.withItemColor(value) else item
             }
         })
     }

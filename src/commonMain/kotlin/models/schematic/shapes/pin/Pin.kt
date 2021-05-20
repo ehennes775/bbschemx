@@ -3,10 +3,7 @@ package models.schematic.shapes.pin
 import models.schematic.Item
 import models.schematic.io.Reader
 import models.schematic.io.Writer
-import models.schematic.types.AttributeItem
-import models.schematic.types.Attributes
-import models.schematic.types.ColorItem
-import models.schematic.types.Creator
+import models.schematic.types.*
 
 class Pin(
     val x0: Int,
@@ -63,7 +60,7 @@ class Pin(
         attributes
     )
 
-    override fun withColor(newColor: Int) = Pin(
+    override fun withItemColor(newColor: Int) = Pin(
         x0,
         y0,
         x1,
@@ -105,6 +102,13 @@ class Pin(
         pinType,
         activeEnd,
         newAttributes
+    )
+
+    override fun calculateBounds() = Bounds.fromCorners(
+        x0,
+        y0,
+        x1,
+        y1
     )
 
     companion object : Creator {

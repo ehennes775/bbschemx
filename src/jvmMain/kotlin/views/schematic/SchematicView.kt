@@ -7,8 +7,10 @@ import SelectionListener
 import State
 import UndoCapable
 import actions.DocumentListener
+import models.schematic.listeners.InvalidateListener
 import models.schematic.Item
 import models.schematic.Schematic
+import models.schematic.SchematicModel
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
 import javax.swing.JPanel
@@ -20,6 +22,30 @@ class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), Document
     private val undoStack = mutableListOf<State>()
 
     private val selectionListeners = mutableListOf<SelectionListener>()
+
+
+    private lateinit var _schematicModel: SchematicModel
+
+    private var schematicModel: SchematicModel
+        get () = _schematicModel
+        set (value) {
+            _schematicModel?.removeInvalidateListener(invalidateListener)
+            _schematicModel = value
+            _schematicModel.addInvalidateListener(invalidateListener)
+        }
+
+    init { schematicModel = SchematicModel() }
+
+
+
+    private val invalidateListener = object : InvalidateListener {
+        override fun invalidateItem(item: Item) {
+            repaint()
+        }
+    }
+
+
+
 
     fun addSelectionListener(listener: SelectionListener) {
         selectionListeners.add(listener)
@@ -78,14 +104,17 @@ class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), Document
         deleteItems { currentState.isSelected(it) }
     }
 
-    override val canSelect: Boolean
+    override val canSelectAll: Boolean
         get() = true
 
-    override fun selectAllItems() {
+    override val canSelectNone: Boolean
+        get() = true
+
+    override fun selectAll() {
         selectItems { true }
     }
 
-    override fun unselectAllItems() {
+    override fun selectNone() {
         selectItems { false }
     }
 
