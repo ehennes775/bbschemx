@@ -175,9 +175,8 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
     }
 
-
-    override fun paint(graphics: Graphics) {
-        background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
+    override fun paintComponent(graphics: Graphics?) {
+        super.paintComponent(graphics)
         (graphics as Graphics2D).also { g ->
             g.transform(currentTransform)
             JavaDrawer(g).also { d ->
@@ -188,20 +187,14 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
     private var currentTransform = AffineTransform()
 
-
     private fun zoomExtents() {
-        if ((width > 0) && (height > 0))
-        {
+        if ((width > 0) && (height > 0)) {
             AffineTransform().apply {
-                translate(
-                    (width / 2.0).roundToInt().toDouble(),
-                    (height / 2.0).roundToInt().toDouble()
-                )
+                translate(round(width / 2.0), round(height / 2.0))
 
                 var bounds = schematicModel.calculateBounds()
 
-                if (bounds.empty)
-                {
+                if (bounds.empty) {
                     bounds = Bounds.fromCorners(-500, -500, 1500, 1500)
                 }
 
