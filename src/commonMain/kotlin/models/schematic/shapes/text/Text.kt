@@ -17,18 +17,28 @@ class Text(
     val lines: Array<String>
 ) : Item, ColorItem, Attribute {
 
-    val shownLines: Array<String> = when (presentation) {
-        Presentation.NAME_VALUE -> lines
-        Presentation.VALUE -> lines.mapIndexed { index, line ->
+    override val attributeNameOrNull = lines.firstOrNull()?.let {
+        ATTRIBUTE_REGEX.find(it)?.groups?.get(NAME_GROUP)?.value
+    }
+
+    override val isAttribute = attributeNameOrNull != null
+    
+    override val attributeValueOrNull = if (isAttribute) {
+        lines.mapIndexed { index, line ->
             if (index == 0) {
-                regex.find(lines[0])?.groups?.get(3)?.value ?: line
+                ATTRIBUTE_REGEX.find(line)?.groups?.get(VALUE_GROUP)?.value ?: line
             } else {
                 line
             }
         }.toTypedArray()
-        Presentation.NAME -> arrayOf(
-            regex.find(lines.first())?.groups?.get(2)?.value ?: "Error"
-        )
+    } else {
+        null
+    }
+
+    val shownLines: Array<String> = when (presentation) {
+        Presentation.NAME_VALUE -> lines
+        Presentation.VALUE -> attributeValueOrNull ?: lines
+        Presentation.NAME -> attributeNameOrNull?.let { arrayOf(it) } ?: lines
     }
 
     fun withInsertX(newInsertX: Int) = Text(
@@ -144,7 +154,10 @@ class Text(
     companion object : Creator {
         const val TOKEN = "T"
 
-        private val regex = Regex("""(?<both>(?<name>.+?)=(?<value>.*))|(?<text>.+)""")
+        private const val NAME_GROUP = 2
+        private const val VALUE_GROUP = 3
+
+        private val ATTRIBUTE_REGEX = Regex("""(?<both>(?<name>.+?)=(?<value>.*))|(?<text>.+)""")
 
         override fun read(params: Array<String>, reader: Reader) = Text(
             insertX = params[1].toInt(),
