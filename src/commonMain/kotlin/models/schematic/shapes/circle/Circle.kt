@@ -102,6 +102,11 @@ class Circle(
     }
 
     override fun paint(drawer: Drawer) {
+        drawer.apply {
+            beginDraw()
+            drawCircle(centerX, centerY, radius)
+            endDraw(color, lineStyle, fillStyle)
+        }
     }
 
     override fun write(writer: Writer) = writer.writeParams(

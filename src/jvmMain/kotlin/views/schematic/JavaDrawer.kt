@@ -6,6 +6,7 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
+import java.awt.geom.Arc2D
 import java.awt.geom.Path2D
 import kotlin.math.PI
 
@@ -44,6 +45,21 @@ class JavaDrawer(private val graphics: Graphics2D): Drawer {
                 FillType.VOID -> draw(currentPath)
             }
         }
+    }
+
+    override fun drawCircle(centerX: Int, centerY: Int, radius: Int) {
+        currentPath.append(
+            Arc2D.Double(
+                (centerX - radius).toDouble(),
+                (centerY - radius).toDouble(),
+                2.0 * radius,
+                2.0 * radius,
+                0.0,
+                360.0,
+                Arc2D.CHORD
+            ),
+            false
+        )
     }
 
     override fun moveTo(x: Int, y: Int) {
