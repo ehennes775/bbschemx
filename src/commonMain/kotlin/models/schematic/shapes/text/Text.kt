@@ -22,7 +22,7 @@ class Text(
     }
 
     override val isAttribute = attributeNameOrNull != null
-    
+
     override val attributeValueOrNull = if (isAttribute) {
         lines.mapIndexed { index, line ->
             if (index == 0) {

@@ -6,9 +6,11 @@ import models.schematic.shapes.arc.Arc
 import models.schematic.shapes.box.Box
 import models.schematic.shapes.bus.Bus
 import models.schematic.shapes.circle.Circle
+import models.schematic.shapes.complex.Complex
 import models.schematic.types.*
 import models.schematic.shapes.line.Line
 import models.schematic.shapes.net.Net
+import models.schematic.shapes.path.Path
 import models.schematic.shapes.pin.Pin
 import models.schematic.shapes.text.Text
 
@@ -71,8 +73,10 @@ class Schematic(
             Box.TOKEN to Box,
             Bus.TOKEN to Bus,
             Circle.TOKEN to Circle,
+            Complex.TOKEN to Complex,
             Line.TOKEN to Line,
             Net.TOKEN to Net,
+            Path.TOKEN to Path,
             Pin.TOKEN to Pin,
             Text.TOKEN to Text
         )
@@ -86,6 +90,11 @@ class Schematic(
                 }
                 .read(params, reader)
         }
+    }
+
+
+    fun calculateBounds() = items.fold(Bounds.EMPTY) { current, item ->
+        current.union(item.calculateBounds())
     }
 
 

@@ -13,8 +13,8 @@ class JavaDrawer(private val graphics: Graphics2D): Drawer {
 
     init {
         graphics.apply {
-            translate(100.0, 700.0)
-            scale(1.0, -1.0)
+            //translate(100.0, 700.0)
+            //scale(1.0, -1.0)
         }
     }
 
@@ -59,12 +59,12 @@ class JavaDrawer(private val graphics: Graphics2D): Drawer {
     }
 
     companion object {
-        private val BACKGROUND = Color.WHITE
+        private val BACKGROUND = Color.BLACK
         private val GRAPHIC = Color.GREEN.darker()
 
         val COLORS = mapOf(
             ColorIndex.BACKGROUND to BACKGROUND,
-            ColorIndex.PIN to Color.BLACK,
+            ColorIndex.PIN to Color.WHITE,
             ColorIndex.NET_ENDPOINT to Color.RED,
             ColorIndex.GRAPHIC to GRAPHIC,
             ColorIndex.NET to Color.BLUE,
@@ -107,7 +107,7 @@ class JavaDrawer(private val graphics: Graphics2D): Drawer {
         )
 
         private const val FONT_NAME = "Courier"
-        private const val FONT_STYLE = Font.PLAIN
+        private const val FONT_STYLE = Font.ITALIC
 
         private fun createFont(size: Int) = Font(FONT_NAME, FONT_STYLE, size)
     }
@@ -143,6 +143,12 @@ class JavaDrawer(private val graphics: Graphics2D): Drawer {
 
     private fun thing3(font: Font, text: Text): Double {
         val metrics = graphics.getFontMetrics(font)
-        return text.alignment.vertical * metrics.ascent
+
+        val bounds = metrics.getStringBounds("O", graphics)
+        val capHeight = -bounds.y
+        val ascent = metrics.ascent
+
+
+        return text.alignment.vertical * 5.0
     }
 }

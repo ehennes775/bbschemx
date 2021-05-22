@@ -1,5 +1,7 @@
 import actions.DocumentAction
 import views.document.DocumentView
+import views.library.LibraryModel
+import views.library.LibraryPanel
 import views.schematic.ColorEditor
 import views.schematic.FillEditor
 import views.schematic.LineEditor
@@ -7,16 +9,41 @@ import views.schematic.SchematicView
 import java.awt.*
 import java.awt.event.ActionEvent
 import javax.swing.*
+import javax.swing.plaf.FontUIResource
 
 class Application : JFrame() {
 
     init {
         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())
+
+        val font = FontUIResource("Sans", Font.PLAIN, 16)
+
+        UIManager.getDefaults().keys.forEach {
+            if (UIManager.get(it) is FontUIResource ) {
+                UIManager.put(it, font)
+            }
+        }
     }
 
-    private val tabbedPane = JTabbedPane().apply {
-        addTab("Thing 1", SchematicView())
-        addTab("Thing 2", SchematicView())
+    private val tabbedDocumentPane = JTabbedPane().apply {
+        //addTab("Thing 1", SchematicView())
+        //addTab("Thing 2", SchematicView())
+    }
+
+    private val libraryTree = LibraryPanel()
+
+    private val propertyPanel = JPanel().apply {
+        layout = BoxLayout(this, BoxLayout.Y_AXIS)
+        add(ColorEditor(SchematicView()))
+        Box.createVerticalGlue()
+        add(LineEditor(SchematicView()))
+        Box.createVerticalGlue()
+        add(FillEditor(SchematicView()))
+    }
+
+    private val tabbedToolPane = JTabbedPane().apply {
+        addTab("Library", libraryTree)
+        addTab("Properties", propertyPanel)
     }
 
     init {
@@ -28,17 +55,10 @@ class Application : JFrame() {
     }
 
 
-    private fun createContent() = JPanel().apply {
-        layout = BorderLayout()
-        add(JPanel().apply {
-            layout = BoxLayout(this, BoxLayout.Y_AXIS)
-            add(ColorEditor(SchematicView()))
-            Box.createVerticalGlue()
-            add(LineEditor(SchematicView()))
-            Box.createVerticalGlue()
-            add(FillEditor(SchematicView()))
-        }, BorderLayout.WEST)
-        add(tabbedPane, BorderLayout.CENTER)
+    private fun createContent() = JSplitPane().apply {
+        orientation = JSplitPane.HORIZONTAL_SPLIT
+        leftComponent = tabbedToolPane
+        rightComponent = tabbedDocumentPane
     }
 
     private fun createMenu() = JMenuBar().apply {
@@ -62,7 +82,8 @@ class Application : JFrame() {
         })
     }
 
-    private inner class CopyAction : DocumentAction("Copy", tabbedPane) {
+
+    private inner class CopyAction : DocumentAction("Copy", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is CopyCapable && it.canCopy }
 
@@ -71,7 +92,7 @@ class Application : JFrame() {
         }
     }
 
-    private inner class CutAction : DocumentAction("Cut", tabbedPane) {
+    private inner class CutAction : DocumentAction("Cut", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is CutCapable && it.canCut }
 
@@ -80,15 +101,15 @@ class Application : JFrame() {
         }
     }
 
-    private inner class NewAction : DocumentAction("New", tabbedPane) {
+    private inner class NewAction : DocumentAction("New", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) = true
 
         override fun actionPerformed(e: ActionEvent?) {
-            tabbedPane.addTab("Untitled", SchematicView())
+            tabbedDocumentPane.addTab("Untitled", SchematicView())
         }
     }
 
-    private inner class OpenAction : DocumentAction("Open...", tabbedPane) {
+    private inner class OpenAction : DocumentAction("Open...", tabbedDocumentPane) {
         var dialog = FileDialog(this@Application, "Open...", FileDialog.LOAD).apply {
             isMultipleMode = true
         }
@@ -98,12 +119,12 @@ class Application : JFrame() {
         override fun actionPerformed(e: ActionEvent?) {
             dialog.isVisible = true
             dialog.files.forEach {
-                tabbedPane.addTab(it.name, SchematicView.load(it))
+                tabbedDocumentPane.addTab(it.name, SchematicView.load(it))
             }
         }
     }
 
-    private inner class PasteAction : DocumentAction("Paste", tabbedPane) {
+    private inner class PasteAction : DocumentAction("Paste", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is PasteCapable && it.canPaste }
 
@@ -112,7 +133,7 @@ class Application : JFrame() {
         }
     }
 
-    private inner class RedoAction : DocumentAction("Redo", tabbedPane) {
+    private inner class RedoAction : DocumentAction("Redo", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is RedoCapable && it.canRedo }
 
@@ -121,7 +142,7 @@ class Application : JFrame() {
         }
     }
 
-    private inner class SaveAction : DocumentAction("Save", tabbedPane) {
+    private inner class SaveAction : DocumentAction("Save", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is SaveCapable && it.canSave }
 
@@ -130,18 +151,18 @@ class Application : JFrame() {
         }
     }
 
-    private inner class SaveAllAction : DocumentAction("Save All", tabbedPane) {
+    private inner class SaveAllAction : DocumentAction("Save All", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
-            tabbedPane.components.any { it is SaveCapable && it.canSave }
+            tabbedDocumentPane.components.any { it is SaveCapable && it.canSave }
 
         override fun actionPerformed(e: ActionEvent?) {
-            tabbedPane.components.forEach { document ->
+            tabbedDocumentPane.components.forEach { document ->
                 document.also { if (it is SaveCapable) it.save() }
             }
         }
     }
 
-    private inner class UndoAction : DocumentAction("Undo", tabbedPane) {
+    private inner class UndoAction : DocumentAction("Undo", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is CopyCapable && it.canCopy }
 
@@ -150,7 +171,7 @@ class Application : JFrame() {
         }
     }
 
-    private inner class SelectAllAction : DocumentAction("Select All", tabbedPane) {
+    private inner class SelectAllAction : DocumentAction("Select All", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is SelectCapable && it.canSelectAll }
 
@@ -159,7 +180,7 @@ class Application : JFrame() {
         }
     }
 
-    private inner class SelectNoneAction : DocumentAction("Select None", tabbedPane) {
+    private inner class SelectNoneAction : DocumentAction("Select None", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) =
             currentDocument.let { it is SelectCapable && it.canSelectNone }
 

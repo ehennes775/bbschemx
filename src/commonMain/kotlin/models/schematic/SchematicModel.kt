@@ -171,6 +171,7 @@ class SchematicModel(private var schematic: Schematic) {
     }
 
 
+    fun calculateBounds() = schematic.calculateBounds()
 
     fun paint(drawer: Drawer) {
         schematic.paint(drawer)

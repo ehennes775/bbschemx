@@ -11,13 +11,33 @@ import models.schematic.listeners.InvalidateListener
 import models.schematic.Item
 import models.schematic.Schematic
 import models.schematic.SchematicModel
+import models.schematic.types.Bounds
+import models.schematic.types.ColorIndex
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
 import java.awt.Graphics
 import java.awt.Graphics2D
+import java.awt.Rectangle
+import java.awt.geom.AffineTransform
 import javax.swing.JPanel
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.round
+import kotlin.math.roundToInt
 
-class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable, SelectCapable, UndoCapable {
+class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable, SelectCapable, UndoCapable {
+
+    init {
+        background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
+    }
+
+    var schematic = _schematic
+        set(value) {
+            field = value
+            schematicModel = SchematicModel(field)
+            zoomExtents()
+        }
+
 
     private var currentState: State = State(Schematic(), setOf())
     private val redoStack = mutableListOf<State>()
@@ -55,6 +75,7 @@ class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), Document
             _schematicModel.removeInvalidateListener(invalidateListener)
             _schematicModel = value
             _schematicModel.addInvalidateListener(invalidateListener)
+            zoomExtents()
         }
 
     init {
@@ -155,12 +176,60 @@ class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), Document
     }
 
 
-    override fun paint(g: Graphics?) {
-        super.paint(g)
-        var drawer = JavaDrawer(g as Graphics2D)
-        g.scale(0.25, 0.25)
-        drawer.let {
-            schematicModel.paint(it)
+    override fun paint(graphics: Graphics) {
+        background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
+        (graphics as Graphics2D).also { g ->
+            g.transform(currentTransform)
+            JavaDrawer(g).also { d ->
+                schematicModel.paint(d)
+            }
+        }
+    }
+
+    private var currentTransform = AffineTransform()
+
+
+    private fun zoomExtents() {
+        if ((width > 0) && (height > 0))
+        {
+            AffineTransform().apply {
+                translate(
+                    (width / 2.0).roundToInt().toDouble(),
+                    (height / 2.0).roundToInt().toDouble()
+                )
+
+                var bounds = schematicModel.calculateBounds()
+
+                if (bounds.empty)
+                {
+                    bounds = Bounds.fromCorners(-500, -500, 1500, 1500)
+                }
+
+                var initialScale: Double = minOf(
+                    (0.9 * width / abs(bounds.width)),
+                    (0.9 * height / abs(bounds.height))
+                )
+
+                var finalScale = floor(100.0 * initialScale) / 100.0;
+
+                scale(finalScale, -finalScale);
+
+                translate(
+                    (bounds.maxX + bounds.minX + 1) / -2.0,
+                    (bounds.maxY + bounds.minY + 1) / -2.0
+                )
+
+                currentTransform = AffineTransform(
+                    scaleX,
+                    shearY,
+                    shearX,
+                    scaleY,
+                    round(translateX),
+                    round(translateY)
+                )
+            }
+
+            repaint()
         }
     }
 }
