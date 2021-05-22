@@ -1,8 +1,7 @@
 package views.schematic
 
-import SelectionListener
+import models.schematic.listeners.SelectionListener
 import models.schematic.SchematicModel
-import models.schematic.types.SelectedValue
 
 internal abstract class UpdateFromSelection<T> : SelectionListener {
     override fun selectionChanged() {

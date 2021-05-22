@@ -1,6 +1,7 @@
 package views.schematic
 
-import models.schematic.Item
+import models.schematic.SchematicModel
+import models.schematic.types.ColorIndex
 import models.schematic.types.ColorItem
 import java.awt.Dimension
 import javax.swing.JComboBox
@@ -13,17 +14,9 @@ class ColorEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val colorCombo = JComboBox(fillTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-
-            override fun parseValue(content: String): Int {
-                return fillTypes.getOrElse(content) { throw Exception("Unknown cap type '$content'") }
-            }
-
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is ColorItem) item.withItemColor(value) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setItemColor(ColorIndex.GRAPHIC) }
             }
         })
     }

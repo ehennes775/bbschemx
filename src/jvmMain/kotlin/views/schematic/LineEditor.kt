@@ -1,6 +1,5 @@
 package views.schematic
 
-import models.schematic.Item
 import models.schematic.SchematicModel
 import models.schematic.types.CapType
 import models.schematic.types.DashType
@@ -20,18 +19,12 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
     private val lineWidthCombo = JComboBox(lineWidths).apply {
             isEditable = true
             maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-            addActionListener(object : ApplyToSelection<Int>(schematicView) {
-                override fun getContent(): String? {
-                    return selectedItem?.toString()
-                }
-                override fun parseValue(content: String): Int {
-                    return content.toIntOrNull() ?: throw Exception("Invalid line width '$content'")
-                }
-                override fun applyValue(item: Item, value: Int): Item {
-                    return if (item is LineItem) item.withLineStyle(item.lineStyle.withLineWidth(value)) else item
-                }
-            })
-        }
+            addActionListener(object : ApplyToSelection(schematicView) {
+                override fun applyValue(model: SchematicModel) {
+                    selectedItem?.let { model.setLineWidth(10) }
+            }
+        })
+    }
 
     init {
         schematicView.addSelectionListener(object : UpdateFromSelection<Int>() {
@@ -66,15 +59,13 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val dashTypeCombo = JComboBox(dashTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<DashType>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-            override fun parseValue(content: String): DashType {
-                return dashTypes.getOrElse(content) { throw Exception("Unknown cap type '$content'") }
-            }
-            override fun applyValue(item: Item, value: DashType): Item {
-                return if (item is LineItem) item.withLineStyle(item.lineStyle.withDashType(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let {
+                    model.setDashType(dashTypes.getOrElse(it.toString()) {
+                        throw Exception("Unknown cap type '$it'")
+                    })
+                }
             }
         })
     }
@@ -88,15 +79,9 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
     private val dashLengthCombo = JComboBox(dashLengths).apply {
         isEditable = true
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-            override fun parseValue(content: String): Int {
-                return content.toIntOrNull() ?: throw Exception("Invalid dash length '$content'")
-            }
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineItem) item.withLineStyle(item.lineStyle.withDashLength(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setDashLength(it.toString()) }
             }
         })
     }
@@ -133,15 +118,9 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
     private val dashSpaceCombo = JComboBox(dashSpaces).apply {
         isEditable = true
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-            override fun parseValue(content: String): Int {
-                return content.toIntOrNull() ?: throw Exception("Invalid dash space '$content'")
-            }
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is LineItem) item.withLineStyle(item.lineStyle.withDashSpace(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setDashSpace(it.toString()) }
             }
         })
     }
@@ -177,15 +156,11 @@ class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val capTypeCombo = JComboBox(capTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<CapType>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-            override fun parseValue(content: String): CapType {
-                return capTypes.getOrElse(content) { throw Exception("Unknown cap type '$content'") }
-            }
-            override fun applyValue(item: Item, value: CapType): Item {
-                return if (item is LineItem) item.withLineStyle(item.lineStyle.withCapType(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setCapType(
+                    CapType.NONE
+                )}
             }
         })
     }

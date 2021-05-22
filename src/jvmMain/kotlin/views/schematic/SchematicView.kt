@@ -3,7 +3,7 @@ package views.schematic
 import RedoCapable
 import SaveCapable
 import SelectCapable
-import SelectionListener
+import models.schematic.listeners.SelectionListener
 import State
 import UndoCapable
 import actions.DocumentListener
@@ -13,6 +13,8 @@ import models.schematic.Schematic
 import models.schematic.SchematicModel
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
+import java.awt.Graphics
+import java.awt.Graphics2D
 import javax.swing.JPanel
 
 class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable, SelectCapable, UndoCapable {
@@ -22,20 +24,6 @@ class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), Document
     private val undoStack = mutableListOf<State>()
 
     private val selectionListeners = mutableListOf<SelectionListener>()
-
-
-    private lateinit var _schematicModel: SchematicModel
-
-    private var schematicModel: SchematicModel
-        get () = _schematicModel
-        set (value) {
-            _schematicModel?.removeInvalidateListener(invalidateListener)
-            _schematicModel = value
-            _schematicModel.addInvalidateListener(invalidateListener)
-        }
-
-    init { schematicModel = SchematicModel() }
-
 
 
     private val invalidateListener = object : InvalidateListener {
@@ -57,6 +45,23 @@ class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), Document
 
     fun applyToSelection(transform: (Item) -> Unit) {
     }
+
+
+    private var _schematicModel: SchematicModel = SchematicModel(schematic)
+
+    private var schematicModel: SchematicModel
+        get() = _schematicModel
+        set (value) {
+            _schematicModel.removeInvalidateListener(invalidateListener)
+            _schematicModel = value
+            _schematicModel.addInvalidateListener(invalidateListener)
+        }
+
+    init {
+        schematicModel = SchematicModel(schematic)
+    }
+
+
 
     override val canSave: Boolean
         get() = false
@@ -147,5 +152,15 @@ class SchematicView(val schematic: Schematic = Schematic()) : JPanel(), Document
 
     override fun removeDocumentListener(documentListener: DocumentListener) {
 
+    }
+
+
+    override fun paint(g: Graphics?) {
+        super.paint(g)
+        var drawer = JavaDrawer(g as Graphics2D)
+        g.scale(0.25, 0.25)
+        drawer.let {
+            schematicModel.paint(it)
+        }
     }
 }

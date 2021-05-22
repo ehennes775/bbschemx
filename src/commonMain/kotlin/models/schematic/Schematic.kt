@@ -88,6 +88,33 @@ class Schematic(
         }
     }
 
+
+    fun forEach(action: (Item) -> Unit) {
+        items.forEach {
+            action(it)
+            if (it is AttributeItem) {
+                it.attributes.items.forEach(action)
+            }
+        }
+    }
+
+
+    fun map(action: (Item) -> Item) = Schematic(
+        version,
+        items.map(action)
+    )
+
+
+    fun paint(drawer: Drawer) {
+        items.forEach {
+            it.paint(drawer)
+            if (it is AttributeItem) {
+                it.attributes.paint(drawer)
+            }
+        }
+    }
+
+
     fun write(writer: Writer) {
         version.write(writer)
         items.forEach {

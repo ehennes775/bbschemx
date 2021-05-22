@@ -1,7 +1,6 @@
 package views.schematic
 
-import models.schematic.Item
-import models.schematic.types.FillItem
+import models.schematic.SchematicModel
 import models.schematic.types.FillType
 import java.awt.Dimension
 import javax.swing.JComboBox
@@ -17,17 +16,9 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val fillTypeCombo = JComboBox(fillTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<FillType>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-
-            override fun parseValue(content: String): FillType {
-                return fillTypes.getOrElse(content) { throw Exception("Unknown cap type '$content'") }
-            }
-
-            override fun applyValue(item: Item, value: FillType): Item {
-                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillType(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                TODO("Not yet implemented")
             }
         })
     }
@@ -41,17 +32,9 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
     private val fillWidthCombo = JComboBox(fillWidths).apply {
         isEditable = true
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-
-            override fun parseValue(content: String): Int {
-                return content.toIntOrNull() ?: throw Exception("Invalid fill width '$content'")
-            }
-
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillWidth(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                TODO("Not yet implemented")
             }
         })
     }
@@ -64,34 +47,18 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val fillAngle1Combo = JComboBox(fillAngles).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-
-            override fun parseValue(content: String): Int {
-                return content.toIntOrNull() ?: throw Exception("Invalid fill pitch '$content'")
-            }
-
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillAngle1(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setFillAngle1(it.toString()) }
             }
         })
     }
 
     private val fillAngle2Combo = JComboBox(fillAngles).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-
-            override fun parseValue(content: String): Int {
-                return content.toIntOrNull() ?: throw Exception("Invalid fill pitch '$content'")
-            }
-
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillPitch1(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setFillAngle2(it.toString()) }
             }
         })
     }
@@ -104,34 +71,18 @@ class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
 
     private val fillPitch1Combo = JComboBox(fillPitches).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-
-            override fun parseValue(content: String): Int {
-                return content.toIntOrNull() ?: throw Exception("Invalid fill pitch '$content'")
-            }
-
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillAngle2(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setFillPitch1(it.toString()) }
             }
         })
     }
 
     private val fillPitch2Combo = JComboBox(fillTypes.keys.toTypedArray()).apply {
         maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
-        addActionListener(object : ApplyToSelection<Int>(schematicView) {
-            override fun getContent(): String? {
-                return selectedItem?.toString()
-            }
-
-            override fun parseValue(content: String): Int {
-                return content.toIntOrNull() ?: throw Exception("Invalid fill pitch '$content'")
-            }
-
-            override fun applyValue(item: Item, value: Int): Item {
-                return if (item is FillItem) item.withFillStyle(item.fillStyle.withFillPitch2(value)) else item
+        addActionListener(object : ApplyToSelection(schematicView) {
+            override fun applyValue(model: SchematicModel) {
+                selectedItem?.let { model.setFillPitch2(it.toString()) }
             }
         })
     }

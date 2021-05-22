@@ -10,7 +10,7 @@ class Net(
     val y0: Int,
     val x1: Int,
     val y1: Int,
-    override val color: Int,
+    override val color: ColorIndex,
     override val attributes: Attributes = Attributes()
 ) : Item, ColorItem, AttributeItem {
 
@@ -50,7 +50,7 @@ class Net(
         attributes
     )
 
-    override fun withItemColor(newColor: Int) = Net(
+    override fun withItemColor(newColor: ColorIndex) = Net(
        x0,
        y0,
        x1,
@@ -78,13 +78,27 @@ class Net(
     companion object : Creator {
         const val TOKEN = "N"
 
+        val lineStyle = LineStyle()
+
         override fun read(params: Array<String>, reader: Reader) = Net(
             x0 = params[1].toInt(),
             y0 = params[2].toInt(),
             x1 = params[3].toInt(),
             y1 = params[4].toInt(),
-            color = params[5].toInt()
+            color = ColorIndex(params[5].toInt())
         )
+    }
+
+
+    override fun paint(drawer: Drawer) {
+        drawer.apply {
+            beginDraw()
+
+            moveTo(x0, y0)
+            lineTo(x1, y1)
+
+            endDraw(ColorIndex.NET, lineStyle)
+        }
     }
 
     override fun write(writer: Writer) = writer.writeParams(

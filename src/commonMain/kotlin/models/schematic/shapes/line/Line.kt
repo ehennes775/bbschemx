@@ -10,7 +10,7 @@ class Line(
     val y0: Int,
     val x1: Int,
     val y1: Int,
-    override val color: Int,
+    override val color: ColorIndex,
     override val lineStyle: LineStyle
 ) : Item, ColorItem, LineItem {
 
@@ -50,7 +50,7 @@ class Line(
         lineStyle
     )
 
-    override fun withItemColor(newColor: Int) = Line(
+    override fun withItemColor(newColor: ColorIndex) = Line(
         x0,
         y0,
         x1,
@@ -84,7 +84,7 @@ class Line(
             y0 = params[2].toInt(),
             x1 = params[3].toInt(),
             y1 = params[4].toInt(),
-            color = params[5].toInt(),
+            color = ColorIndex(params[5].toInt()),
             lineStyle = LineStyle(
                 lineWidth = params[6].toInt(),
                 capType = CapType.fromFileValue(params[7].toInt()),
@@ -93,6 +93,17 @@ class Line(
                 dashSpace = params[10].toInt()
             )
         )
+    }
+
+    override fun paint(drawer: Drawer) {
+        drawer.apply {
+            beginDraw()
+
+            moveTo(x0, y0)
+            lineTo(x1, y1)
+
+            endDraw(color, lineStyle)
+        }
     }
 
     override fun write(writer: Writer) = writer.writeParams(

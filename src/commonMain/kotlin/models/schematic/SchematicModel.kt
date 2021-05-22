@@ -2,12 +2,13 @@ package models.schematic
 
 import models.schematic.listeners.InvalidateListener
 import models.schematic.listeners.PropertyListener
+import models.schematic.listeners.SelectionListener
 import models.schematic.shapes.pin.Pin
 import models.schematic.shapes.pin.PinType
 import models.schematic.shapes.text.Text
 import models.schematic.types.*
 
-class SchematicModel {
+class SchematicModel(private var schematic: Schematic) {
 
     private val invalidateListeners = mutableListOf<InvalidateListener>()
 
@@ -37,6 +38,23 @@ class SchematicModel {
     fun firePropertyListener() {
         propertyListeners.forEach { it.propertyChange() }
     }
+
+
+    private val selectionListeners = mutableListOf<SelectionListener>()
+
+    fun addSelectionListener(listener: SelectionListener) {
+        selectionListeners.add(listener)
+    }
+
+    fun removeSelectionListener(listener: SelectionListener) {
+        selectionListeners.remove(listener)
+    }
+
+    fun fireSelectionChanged() {
+        selectionListeners.forEach { it.selectionChanged() }
+    }
+
+
 
 
     private fun <T,U> queryProperty(query: (T) -> U): SelectedValue<U> {
@@ -69,17 +87,19 @@ class SchematicModel {
 
     fun getFillWidth() = queryProperty<FillItem, Int> { it.fillStyle.fillWidth }
 
-    fun getItemColor() = queryProperty<ColorItem, Int> { it.color }
+    fun getItemColor() = queryProperty<ColorItem, ColorIndex> { it.color }
 
     fun getLineWidth() = queryProperty<LineItem, Int> { it.lineStyle.lineWidth }
 
     fun getPinType() = queryProperty<Pin, PinType> { it.pinType }
 
-    fun getTextColor() = queryProperty<Text, Int> { it.color }
+    fun getTextColor() = queryProperty<Text, ColorIndex> { it.color }
 
 
-    private fun <T> applyProperty(apply: (T) -> Item) {
+    private inline fun <reified T> applyProperty(crossinline apply: (T) -> Item) {
+        schematic = schematic.map { if (it is T) apply(it) else it }
         firePropertyListener()
+        fireSelectionChanged()
     }
 
     fun setCapType(newCapType: CapType) = applyProperty<LineItem> { item ->
@@ -90,9 +110,13 @@ class SchematicModel {
         item.applyLineStyle { it.withDashLength(newDashLength) }
     }
 
+    fun setDashLength(newDashLength: String) = setDashLength(newDashLength.toInt())
+
     fun setDashSpace(newDashSpace: Int) = applyProperty<LineItem> { item ->
         item.applyLineStyle { it.withDashSpace(newDashSpace) }
     }
+
+    fun setDashSpace(newDashSpace: String) = setDashSpace(newDashSpace.toInt())
 
     fun setDashType(newDashType: DashType) = applyProperty<LineItem> { item ->
         item.applyLineStyle { it.withDashType(newDashType) }
@@ -102,17 +126,25 @@ class SchematicModel {
         item.applyFillStyle { it.withFillAngle1(newFillAngle) }
     }
 
+    fun setFillAngle1(newFillAngle: String) = setFillAngle1(newFillAngle.toInt())
+
     fun setFillAngle2(newFillAngle: Int) = applyProperty<FillItem> { item ->
         item.applyFillStyle { it.withFillAngle2(newFillAngle) }
     }
+
+    fun setFillAngle2(newFillAngle: String) = setFillAngle2(newFillAngle.toInt())
 
     fun setFillPitch1(newFillPitch: Int) = applyProperty<FillItem> { item ->
         item.applyFillStyle { it.withFillPitch1(newFillPitch) }
     }
 
+    fun setFillPitch1(newFillPitch: String) = setFillPitch1(newFillPitch.toInt())
+
     fun setFillPitch2(newFillPitch: Int) = applyProperty<FillItem> { item ->
         item.applyFillStyle { it.withFillPitch2(newFillPitch) }
     }
+
+    fun setFillPitch2(newFillPitch: String) = setFillPitch2(newFillPitch.toInt())
 
     fun setFillType(newFillType: FillType) = applyProperty<FillItem> { item ->
         item.applyFillStyle { it.withFillType(newFillType) }
@@ -122,7 +154,7 @@ class SchematicModel {
         item.applyFillStyle { it.withFillWidth(newFillWidth) }
     }
 
-    fun setItemColor(newItemColor: Int) = applyProperty<ColorItem> {
+    fun setItemColor(newItemColor: ColorIndex) = applyProperty<ColorItem> {
         it.withItemColor(newItemColor)
     }
 
@@ -134,7 +166,13 @@ class SchematicModel {
         it.withPinType(newPinType)
     }
 
-    fun setTextColor(newTextColor: Int) = applyProperty<Text> {
+    fun setTextColor(newTextColor: ColorIndex) = applyProperty<Text> {
         it.withItemColor(newTextColor)
+    }
+
+
+
+    fun paint(drawer: Drawer) {
+        schematic.paint(drawer)
     }
 }

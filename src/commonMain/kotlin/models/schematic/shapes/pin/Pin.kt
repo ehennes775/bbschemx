@@ -3,6 +3,8 @@ package models.schematic.shapes.pin
 import models.schematic.Item
 import models.schematic.io.Reader
 import models.schematic.io.Writer
+import models.schematic.shapes.bus.Bus
+import models.schematic.shapes.net.Net
 import models.schematic.types.*
 
 class Pin(
@@ -10,7 +12,7 @@ class Pin(
     val y0: Int,
     val x1: Int,
     val y1: Int,
-    override val color: Int,
+    override val color: ColorIndex,
     val pinType: PinType,
     val activeEnd: Int,
     override val attributes: Attributes = Attributes()
@@ -60,7 +62,7 @@ class Pin(
         attributes
     )
 
-    override fun withItemColor(newColor: Int) = Pin(
+    override fun withItemColor(newColor: ColorIndex) = Pin(
         x0,
         y0,
         x1,
@@ -119,10 +121,26 @@ class Pin(
             y0 = params[2].toInt(),
             x1 = params[3].toInt(),
             y1 = params[4].toInt(),
-            color = params[5].toInt(),
+            color = ColorIndex(params[5].toInt()),
             pinType = PinType.fromFileValue(params[6].toInt()),
             activeEnd = params[7].toInt()
         )
+    }
+
+    override fun paint(drawer: Drawer) {
+        drawer.apply {
+            beginDraw()
+
+            moveTo(x0, y0)
+            lineTo(x1, y1)
+
+            var lineStyle = when(pinType) {
+                PinType.BUS -> Bus.lineStyle
+                PinType.NET -> Net.lineStyle
+            }
+
+            endDraw(ColorIndex.PIN, lineStyle)
+        }
     }
 
     override fun write(writer: Writer) = writer.writeParams(

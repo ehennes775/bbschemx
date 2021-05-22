@@ -3,7 +3,7 @@ package models.schematic.types
 import models.schematic.Item
 
 interface ColorItem : Item {
-    val color: Int
+    val color: ColorIndex
 
-    fun withItemColor(newColor: Int): Item
+    fun withItemColor(newColor: ColorIndex): Item
 }

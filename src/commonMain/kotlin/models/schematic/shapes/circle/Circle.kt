@@ -9,7 +9,7 @@ class Circle(
     val centerX: Int = 0,
     val centerY: Int = 0,
     val radius: Int = 100,
-    override val color: Int,
+    override val color: ColorIndex,
     override val lineStyle: LineStyle = LineStyle(),
     override val fillStyle: FillStyle = FillStyle()
 ) : Item, ColorItem, LineItem, FillItem {
@@ -40,7 +40,7 @@ class Circle(
         fillStyle
     )
 
-    override fun withItemColor(newColor: Int) = Circle(
+    override fun withItemColor(newColor: ColorIndex) = Circle(
         centerX,
         centerY,
         radius,
@@ -82,7 +82,7 @@ class Circle(
             centerX = params[1].toInt(),
             centerY = params[2].toInt(),
             radius = params[3].toInt(),
-            color = params[4].toInt(),
+            color = ColorIndex(params[4].toInt()),
             lineStyle = LineStyle(
                 lineWidth = params[5].toInt(),
                 capType = CapType.fromFileValue(params[6].toInt()),
@@ -99,6 +99,9 @@ class Circle(
                 fillPitch2 = params[15].toInt(),
             )
         )
+    }
+
+    override fun paint(drawer: Drawer) {
     }
 
     override fun write(writer: Writer) = writer.writeParams(

@@ -11,7 +11,7 @@ class Arc(
     val radius: Int = 100,
     val startAngle: Int = 0,
     val sweepAngle: Int = 180,
-    override val color: Int,
+    override val color: ColorIndex,
     override val lineStyle: LineStyle = LineStyle()
 ) : Item, ColorItem, LineItem {
 
@@ -65,7 +65,7 @@ class Arc(
         lineStyle
     )
 
-    override fun withItemColor(newColor: Int) = Arc(
+    override fun withItemColor(newColor: ColorIndex) = Arc(
         centerX,
         centerY,
         radius,
@@ -96,7 +96,7 @@ class Arc(
             radius = params[3].toInt(),
             startAngle = params[4].toInt(),
             sweepAngle = params[5].toInt(),
-            color = params[6].toInt(),
+            color = ColorIndex(params[6].toInt()),
             lineStyle = LineStyle(
                 lineWidth = params[7].toInt(),
                 capType = CapType.fromFileValue(params[8].toInt()),
@@ -105,6 +105,9 @@ class Arc(
                 dashSpace = params[11].toInt()
             )
         )
+    }
+
+    override fun paint(drawer: Drawer) {
     }
 
     override fun write(writer: Writer) = writer.writeParams(
