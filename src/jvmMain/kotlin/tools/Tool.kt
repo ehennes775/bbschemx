@@ -1,10 +1,11 @@
 package tools
 
 import models.schematic.types.Drawer
+import models.schematic.types.Point
 
 interface Tool {
-    fun buttonPressed(drawingX: Int, drawingY: Int)
-    fun buttonReleased(drawingX: Int, drawingY: Int)
+    fun buttonPressed(drawingPoint: Point)
+    fun buttonReleased(drawingPoint: Point)
     fun draw(drawer: Drawer)
-    fun motion(drawingX: Int, drawingY: Int)
+    fun motion(drawingPoint: Point)
 }

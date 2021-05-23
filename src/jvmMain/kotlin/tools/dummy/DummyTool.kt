@@ -1,15 +1,16 @@
 package tools.dummy
 
 import models.schematic.types.Drawer
+import models.schematic.types.Point
 import tools.Tool
 
 class DummyTool : Tool {
-    override fun buttonPressed(drawingX: Int, drawingY: Int) {}
+    override fun buttonPressed(drawingPoint: Point) {}
 
-    override fun buttonReleased(drawingX: Int, drawingY: Int) {}
+    override fun buttonReleased(drawingPoint: Point) {}
 
     override fun draw(drawer: Drawer) {
     }
 
-    override fun motion(drawingX: Int, drawingY: Int) {}
+    override fun motion(drawingPoint: Point) {}
 }

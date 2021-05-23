@@ -112,11 +112,9 @@ class Bus(
     override fun paint(drawer: Drawer) {
         drawer.apply {
             beginDraw()
-
             drawer.moveTo(x0, y0)
             drawer.lineTo(x1, y1)
-
-            endDraw(ColorIndex.BUS, lineStyle)
+            endDraw(color, lineStyle)
         }
     }
 

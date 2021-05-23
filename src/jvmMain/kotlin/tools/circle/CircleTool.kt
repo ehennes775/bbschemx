@@ -2,19 +2,19 @@ package tools.circle
 
 import models.schematic.shapes.circle.Circle
 import models.schematic.types.Drawer
+import models.schematic.types.Point
 import tools.Tool
 import tools.ToolTarget
-import java.awt.geom.Point2D
 import kotlin.math.roundToInt
 
 class CircleTool(private val target: ToolTarget): Tool {
 
-    override fun buttonPressed(drawingX: Int, drawingY: Int) {
-        updateGeometry(drawingX, drawingY)
+    override fun buttonPressed(drawingPoint: Point) {
+        updateGeometry(drawingPoint)
         when (state) {
             State.S0 -> {
                 state = State.S1;
-                updateGeometry(drawingX, drawingY)
+                updateGeometry(drawingPoint)
             }
             State.S1 -> {
                 target.add(prototype)
@@ -23,7 +23,7 @@ class CircleTool(private val target: ToolTarget): Tool {
         }
     }
 
-    override fun buttonReleased(drawingX: Int, drawingY: Int) {}
+    override fun buttonReleased(drawingPoint: Point) {}
 
     override fun draw(drawer: Drawer) {
         when (state) {
@@ -32,10 +32,10 @@ class CircleTool(private val target: ToolTarget): Tool {
         }
     }
 
-    override fun motion(drawingX: Int, drawingY: Int) {
+    override fun motion(drawingPoint: Point) {
         when (state) {
             State.S0 -> {}
-            State.S1 -> updateGeometry(drawingX, drawingY)
+            State.S1 -> updateGeometry(drawingPoint)
         }
     }
 
@@ -58,18 +58,13 @@ class CircleTool(private val target: ToolTarget): Tool {
         state = State.S0
     }
 
-    private fun updateGeometry(drawingX: Int, drawingY: Int) {
+    private fun updateGeometry(drawingPoint: Point) {
         prototype = when (state) {
-            State.S0 -> prototype.withCenter(drawingX, drawingY)
-            State.S1 -> {
-                var radius = Point2D.distance(
-                    prototype.centerX.toDouble(),
-                    prototype.centerY.toDouble(),
-                    drawingX.toDouble(),
-                    drawingY.toDouble()
-                ).roundToInt()
-                prototype.withRadius(radius)
-            }
+            State.S0 -> drawingPoint
+                .let { prototype.withCenter(it.x, it.y) }
+            State.S1 -> drawingPoint
+                .let { it.distanceTo(prototype.centerX, prototype.centerY).roundToInt() }
+                .let { prototype.withRadius(it) }
         }
     }
 }

@@ -14,61 +14,18 @@ class Net(
     override val attributes: Attributes = Attributes()
 ) : Item, ColorItem, AttributeItem {
 
-    fun withPoint0(newX0: Int, newY0: Int) = Net(
-        newX0,
-        newY0,
-        x1,
-        y1,
-        color,
-        attributes
-    )
+    fun withValues(
+        x0: Int = this.x0,
+        y0: Int = this.y0,
+        x1: Int = this.x1,
+        y1: Int = this.y1,
+        color: ColorIndex = this.color,
+        attributes: Attributes = this.attributes
+    ) = Net(x0, y0, x1, y1, color, attributes)
 
-    fun withX0(newX0: Int) = withPoint0(
-        newX0,
-        y0,
-    )
+    override fun withItemColor(newColor: ColorIndex) = withValues(color = newColor)
 
-    fun withY0(newY0: Int) = withPoint0(
-        x0,
-        newY0,
-    )
-
-    fun withPoint1(newX1: Int, newY1: Int) = Net(
-        x0,
-        y0,
-        newX1,
-        newY1,
-        color,
-        attributes
-    )
-
-    fun withX1(newX1: Int) = withPoint1(
-        newX1,
-        y1,
-    )
-
-    fun withY1(newY1: Int) = withPoint1(
-        x1,
-        newY1,
-    )
-
-    override fun withItemColor(newColor: ColorIndex) = Net(
-       x0,
-       y0,
-       x1,
-       y1,
-       newColor,
-       attributes
-    )
-
-    override fun withAttributes(newAttributes: Attributes) = Net(
-        x0,
-        y0,
-        x1,
-        y1,
-        color,
-        newAttributes
-    )
+    override fun withAttributes(newAttributes: Attributes) = withValues(attributes = newAttributes)
 
     override fun calculateBounds() = Bounds.fromCorners(
         x0,
@@ -95,11 +52,9 @@ class Net(
     override fun paint(drawer: Drawer) {
         drawer.apply {
             beginDraw()
-
             moveTo(x0, y0)
             lineTo(x1, y1)
-
-            endDraw(ColorIndex.NET, lineStyle)
+            endDraw(color, lineStyle)
         }
     }
 

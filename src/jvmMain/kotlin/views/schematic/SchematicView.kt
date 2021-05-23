@@ -13,12 +13,11 @@ import models.schematic.Schematic
 import models.schematic.SchematicModel
 import models.schematic.types.Bounds
 import models.schematic.types.ColorIndex
+import models.schematic.types.Point
 import tools.Tool
 import tools.ToolListener
 import tools.ToolSource
 import tools.ToolTarget
-import tools.circle.CircleTool
-import tools.dummy.DummyTool
 import tools.line.LineTool
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
@@ -255,14 +254,14 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         override fun mousePressed(event: MouseEvent?) {
             event?.let {
                 val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.buttonPressed(point.x.roundToInt(), point.y.roundToInt())
+                tool.buttonPressed(Point(point.x.roundToInt(), point.y.roundToInt()))
             }
         }
 
         override fun mouseReleased(event: MouseEvent?) {
             event?.let {
                 val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.buttonReleased(point.x.roundToInt(), point.y.roundToInt())
+                tool.buttonReleased(Point(point.x.roundToInt(), point.y.roundToInt()))
             }
         }
 
@@ -278,7 +277,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         override fun mouseMoved(event: MouseEvent?) {
             event?.let {
                 val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.motion(point.x.roundToInt(), point.y.roundToInt())
+                tool.motion(Point(point.x.roundToInt(), point.y.roundToInt()))
             }
         }
     }
@@ -287,6 +286,8 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         addMouseListener(mouseListener)
         addMouseMotionListener(mouseListener)
     }
+
+    override val gridSize: Int = 100
 
     override fun add(item: Item) {
         if (true) {
