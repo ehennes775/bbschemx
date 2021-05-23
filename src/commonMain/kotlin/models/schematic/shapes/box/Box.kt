@@ -11,10 +11,20 @@ class Box(
     val lowerY: Int = 0,
     val upperX: Int = 100,
     val upperY: Int = 100,
-    override val color: ColorIndex,
+    override val color: ColorIndex = ColorIndex.GRAPHIC,
     override val lineStyle: LineStyle = LineStyle(),
     override val fillStyle: FillStyle = FillStyle()
 ) : Item, ColorItem, LineItem, FillItem {
+
+    fun withPoint0(newLowerX: Int, newLowerY: Int) = Box(
+        newLowerX,
+        newLowerY,
+        upperX,
+        upperY,
+        color,
+        lineStyle,
+        fillStyle
+    )
 
     fun withLowerX(newLowerX: Int) = Box(
         newLowerX,
@@ -31,6 +41,16 @@ class Box(
         newLowerY,
         upperX,
         upperY,
+        color,
+        lineStyle,
+        fillStyle
+    )
+
+    fun withPoint1(newUpperX: Int, newUpperY: Int) = Box(
+        lowerX,
+        lowerY,
+        newUpperX,
+        newUpperY,
         color,
         lineStyle,
         fillStyle

@@ -6,25 +6,16 @@ import models.schematic.io.Writer
 import models.schematic.types.*
 
 class Line(
-    val x0: Int,
-    val y0: Int,
-    val x1: Int,
-    val y1: Int,
-    override val color: ColorIndex,
-    override val lineStyle: LineStyle
+    val x0: Int = 0,
+    val y0: Int = 0,
+    val x1: Int = 0,
+    val y1: Int = 0,
+    override val color: ColorIndex = ColorIndex.GRAPHIC,
+    override val lineStyle: LineStyle = LineStyle()
 ) : Item, ColorItem, LineItem {
 
-    fun withX0(newX0: Int) = Line(
+    fun withPoint0(newX0: Int, newY0: Int) = Line(
         newX0,
-        y0,
-        x1,
-        y1,
-        color,
-        lineStyle
-    )
-
-    fun withY0(newY0: Int) = Line(
-        x0,
         newY0,
         x1,
         y1,
@@ -32,22 +23,33 @@ class Line(
         lineStyle
     )
 
-    fun withX1(newX1: Int) = Line(
+    fun withX0(newX0: Int) = withPoint0(
+        newX0,
+        y0,
+    )
+
+    fun withY0(newY0: Int) = withPoint0(
+        x0,
+        newY0,
+    )
+
+    fun withPoint1(newX1: Int, newY1: Int) = Line(
         x0,
         y0,
         newX1,
-        y1,
+        newY1,
         color,
         lineStyle
     )
 
-    fun withY1(newY1: Int) = Line(
-        x0,
-        y0,
+    fun withX1(newX1: Int) = withPoint1(
+        newX1,
+        y1,
+    )
+
+    fun withY1(newY1: Int) = withPoint1(
         x1,
         newY1,
-        color,
-        lineStyle
     )
 
     override fun withItemColor(newColor: ColorIndex) = Line(

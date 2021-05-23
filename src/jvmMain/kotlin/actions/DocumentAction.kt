@@ -37,11 +37,9 @@ abstract class DocumentAction(name: String, private val pane: JTabbedPane) : Abs
     init {
         pane.addChangeListener(changeListener)
         pane.addContainerListener(containerListener)
-        pane.components.forEach {
-            (it as DocumentView)?.let { documentView ->
-                documentView.addDocumentListener(documentListener)
-            }
-        }
+        pane.components
+            .mapNotNull { it as? DocumentView }
+            .forEach { it.addDocumentListener(documentListener) }
     }
 
     val currentDocument: DocumentView get() = pane.selectedComponent as DocumentView

@@ -9,26 +9,27 @@ class Circle(
     val centerX: Int = 0,
     val centerY: Int = 0,
     val radius: Int = 100,
-    override val color: ColorIndex,
+    override val color: ColorIndex = ColorIndex.GRAPHIC,
     override val lineStyle: LineStyle = LineStyle(),
     override val fillStyle: FillStyle = FillStyle()
 ) : Item, ColorItem, LineItem, FillItem {
-    fun withCenterX(newCenterX: Int) = Circle(
+    fun withCenter(newCenterX: Int, newCenterY: Int) = Circle(
         newCenterX,
-        centerY,
+        newCenterY,
         radius,
         color,
         lineStyle,
         fillStyle
     )
 
-    fun withCenterY(newCenterY: Int) = Circle(
+    fun withCenterX(newCenterX: Int) = withCenter(
+        newCenterX,
+        centerY,
+    )
+
+    fun withCenterY(newCenterY: Int) = withCenter(
         centerX,
         newCenterY,
-        radius,
-        color,
-        lineStyle,
-        fillStyle
     )
 
     fun withRadius(newRadius: Int) = Circle(

@@ -13,19 +13,29 @@ import models.schematic.Schematic
 import models.schematic.SchematicModel
 import models.schematic.types.Bounds
 import models.schematic.types.ColorIndex
+import tools.Tool
+import tools.ToolListener
+import tools.ToolSource
+import tools.ToolTarget
+import tools.circle.CircleTool
+import tools.dummy.DummyTool
+import tools.line.LineTool
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.Rectangle
+import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
+import java.awt.event.MouseMotionListener
 import java.awt.geom.AffineTransform
+import java.awt.geom.Point2D
 import javax.swing.JPanel
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable, SelectCapable, UndoCapable {
+class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable, SelectCapable, UndoCapable, ToolSource, ToolTarget {
 
     init {
         background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
@@ -181,6 +191,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
             g.transform(currentTransform)
             JavaDrawer(g).also { d ->
                 schematicModel.paint(d)
+                tool.draw(d)
             }
         }
     }
@@ -224,5 +235,66 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
             repaint()
         }
+    }
+
+    override var tool: Tool = LineTool(this)
+    override val toolTarget: ToolTarget get() = this
+
+    override fun addToolListener(listener: ToolListener) {
+    }
+
+    override fun removeToolListener(listener: ToolListener) {
+    }
+
+
+
+    private val mouseListener = object: MouseListener, MouseMotionListener {
+        override fun mouseClicked(e: MouseEvent?) {
+        }
+
+        override fun mousePressed(event: MouseEvent?) {
+            event?.let {
+                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
+                tool.buttonPressed(point.x.roundToInt(), point.y.roundToInt())
+            }
+        }
+
+        override fun mouseReleased(event: MouseEvent?) {
+            event?.let {
+                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
+                tool.buttonReleased(point.x.roundToInt(), point.y.roundToInt())
+            }
+        }
+
+        override fun mouseEntered(e: MouseEvent?) {
+        }
+
+        override fun mouseExited(e: MouseEvent?) {
+        }
+
+        override fun mouseDragged(e: MouseEvent?) {
+        }
+
+        override fun mouseMoved(event: MouseEvent?) {
+            event?.let {
+                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
+                tool.motion(point.x.roundToInt(), point.y.roundToInt())
+            }
+        }
+    }
+
+    init {
+        addMouseListener(mouseListener)
+        addMouseMotionListener(mouseListener)
+    }
+
+    override fun add(item: Item) {
+        if (true) {
+            //schematicModel.add(item)
+        }
+    }
+
+    override fun repaint(item: Item) {
+        repaint()
     }
 }

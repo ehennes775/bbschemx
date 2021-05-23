@@ -1,4 +1,14 @@
 import actions.DocumentAction
+import tools.ToolAction
+import tools.ToolThing
+import tools.arc.ArcToolFactory
+import tools.box.BoxToolFactory
+import tools.bus.BusToolFactory
+import tools.circle.CircleToolFactory
+import tools.line.LineToolFactory
+import tools.net.NetToolFactory
+import tools.pin.PinToolFactory
+import tools.select.SelectToolFactory
 import views.document.DocumentView
 import views.library.LibraryModel
 import views.library.LibraryPanel
@@ -26,9 +36,22 @@ class Application : JFrame() {
     }
 
     private val tabbedDocumentPane = JTabbedPane().apply {
-        //addTab("Thing 1", SchematicView())
-        //addTab("Thing 2", SchematicView())
+        addTab("Thing 1", SchematicView())
+        addTab("Thing 2", SchematicView())
     }
+
+
+    private val toolTarget = ToolThing(tabbedDocumentPane)
+
+    private val arcToolAction = object: ToolAction("Arc", toolTarget, ArcToolFactory()) {}
+    private val busToolAction = object: ToolAction("Bus", toolTarget, BusToolFactory()) {}
+    private val boxToolAction = object: ToolAction("Box", toolTarget, BoxToolFactory()) {}
+    private val circleToolAction = object: ToolAction("Circle", toolTarget, CircleToolFactory()) {}
+    private val lineToolAction = object: ToolAction("Line", toolTarget, LineToolFactory()) {}
+    private val netToolAction = object: ToolAction("Net", toolTarget, NetToolFactory()) {}
+    private val pinToolAction = object: ToolAction("Pin", toolTarget, PinToolFactory()) {}
+    private val selectToolAction = object: ToolAction("Select", toolTarget, SelectToolFactory()) {}
+
 
     private val libraryTree = LibraryPanel()
 
@@ -79,6 +102,17 @@ class Application : JFrame() {
             addSeparator()
             add(JMenuItem(SelectAllAction()))
             add(JMenuItem(SelectNoneAction()))
+        })
+        add(JMenu("Tools").apply {
+            add(JRadioButtonMenuItem(selectToolAction))
+            addSeparator()
+            add(JRadioButtonMenuItem(arcToolAction))
+            add(JRadioButtonMenuItem(boxToolAction))
+            add(JRadioButtonMenuItem(busToolAction))
+            add(JRadioButtonMenuItem(circleToolAction))
+            add(JRadioButtonMenuItem(lineToolAction))
+            add(JRadioButtonMenuItem(netToolAction))
+            add(JRadioButtonMenuItem(pinToolAction))
         })
     }
 
@@ -188,6 +222,10 @@ class Application : JFrame() {
             currentDocument.also { if (it is SelectCapable) it.selectNone() }
         }
     }
+
+
+
+
 }
 
 fun main() {

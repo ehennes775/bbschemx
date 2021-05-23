@@ -11,13 +11,13 @@ class Arc(
     val radius: Int = 100,
     val startAngle: Int = 0,
     val sweepAngle: Int = 180,
-    override val color: ColorIndex,
+    override val color: ColorIndex = ColorIndex.GRAPHIC,
     override val lineStyle: LineStyle = LineStyle()
 ) : Item, ColorItem, LineItem {
 
-    fun withCenterX(newCenterX: Int) = Arc(
+    fun withCenter(newCenterX: Int, newCenterY: Int) = Arc(
         newCenterX,
-        centerY,
+        newCenterY,
         radius,
         startAngle,
         sweepAngle,
@@ -25,14 +25,14 @@ class Arc(
         lineStyle
     )
 
-    fun withCenterY(newCenterY: Int) = Arc(
+    fun withCenterX(newCenterX: Int) = withCenter(
+        newCenterX,
+        centerY,
+    )
+
+    fun withCenterY(newCenterY: Int) = withCenter(
         centerX,
         newCenterY,
-        radius,
-        startAngle,
-        sweepAngle,
-        color,
-        lineStyle
     )
 
     fun withRadius(newRadius: Int) = Arc(

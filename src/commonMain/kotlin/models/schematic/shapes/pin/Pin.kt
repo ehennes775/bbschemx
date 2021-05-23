@@ -8,29 +8,18 @@ import models.schematic.shapes.net.Net
 import models.schematic.types.*
 
 class Pin(
-    val x0: Int,
-    val y0: Int,
-    val x1: Int,
-    val y1: Int,
-    override val color: ColorIndex,
-    val pinType: PinType,
-    val activeEnd: Int,
+    val x0: Int = 0,
+    val y0: Int = 0,
+    val x1: Int = 0,
+    val y1: Int = 0,
+    override val color: ColorIndex = ColorIndex.PIN,
+    val pinType: PinType = PinType.NET,
+    val activeEnd: Int = 0,
     override val attributes: Attributes = Attributes()
 ) : Item, ColorItem, AttributeItem {
 
-    fun withX0(newX0: Int) = Pin(
+    fun withPoint0(newX0: Int, newY0: Int) = Pin(
         newX0,
-        y0,
-        x1,
-        y1,
-        color,
-        pinType,
-        activeEnd,
-        attributes
-    )
-
-    fun withY0(newY0: Int) = Pin(
-        x0,
         newY0,
         x1,
         y1,
@@ -40,26 +29,35 @@ class Pin(
         attributes
     )
 
-    fun withX1(newX1: Int) = Pin(
+    fun withX0(newX0: Int) = withPoint0(
+        newX0,
+        y0,
+    )
+
+    fun withY0(newY0: Int) = withPoint0(
+        x0,
+        newY0,
+    )
+
+    fun withPoint1(newX1: Int, newY1: Int) = Pin(
         x0,
         y0,
         newX1,
-        y1,
+        newY1,
         color,
         pinType,
         activeEnd,
         attributes
     )
 
-    fun withY1(newY1: Int) = Pin(
-        x0,
-        y0,
+    fun withX1(newX1: Int) = withPoint1(
+        newX1,
+        y1,
+    )
+
+    fun withY1(newY1: Int) = withPoint1(
         x1,
         newY1,
-        color,
-        pinType,
-        activeEnd,
-        attributes
     )
 
     override fun withItemColor(newColor: ColorIndex) = Pin(

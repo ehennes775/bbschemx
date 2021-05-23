@@ -6,27 +6,17 @@ import models.schematic.io.Writer
 import models.schematic.types.*
 
 class Bus(
-    val x0: Int,
-    val y0: Int,
-    val x1: Int,
-    val y1: Int,
-    override val color: ColorIndex,
-    val ripperDirection: Int,
+    val x0: Int = 0,
+    val y0: Int = 0,
+    val x1: Int = 0,
+    val y1: Int = 0,
+    override val color: ColorIndex = ColorIndex.BUS,
+    val ripperDirection: Int = 0,
     override val attributes: Attributes = Attributes()
 ) : Item, ColorItem, AttributeItem {
 
-    fun withX0(newX0: Int) = Bus(
+    fun withPoint0(newX0: Int, newY0: Int) = Bus(
         newX0,
-        y0,
-        x1,
-        y1,
-        color,
-        ripperDirection,
-        attributes
-    )
-
-    fun withY0(newY0: Int) = Bus(
-        x0,
         newY0,
         x1,
         y1,
@@ -35,24 +25,34 @@ class Bus(
         attributes
     )
 
-    fun withX1(newX1: Int) = Bus(
+    fun withX0(newX0: Int) = withPoint0(
+        newX0,
+        y0,
+    )
+
+    fun withY0(newY0: Int) = withPoint0(
+        x0,
+        newY0,
+    )
+
+    fun withPoint1(newX1: Int, newY1: Int) = Bus(
         x0,
         y0,
         newX1,
-        y1,
+        newY1,
         color,
         ripperDirection,
         attributes
     )
 
-    fun withY1(newY1: Int) = Bus(
-        x0,
-        y0,
+    fun withX1(newX1: Int) = withPoint1(
+        newX1,
+        y1,
+    )
+
+    fun withY1(newY1: Int) = withPoint1(
         x1,
         newY1,
-        color,
-        ripperDirection,
-        attributes
     )
 
     override fun withItemColor(newColor: ColorIndex) = Bus(
