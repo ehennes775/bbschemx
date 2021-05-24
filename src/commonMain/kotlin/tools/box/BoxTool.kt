@@ -1,8 +1,8 @@
 package tools.box
 
 import models.schematic.shapes.box.Box
-import models.schematic.types.Drawer
-import models.schematic.types.Point
+import types.Drawer
+import types.Point
 import tools.Tool
 import tools.ToolTarget
 

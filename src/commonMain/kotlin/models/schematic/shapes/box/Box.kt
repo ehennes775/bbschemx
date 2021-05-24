@@ -4,6 +4,7 @@ import models.schematic.Item
 import models.schematic.io.Reader
 import models.schematic.io.Writer
 import models.schematic.types.*
+import types.Drawer
 import kotlin.math.abs
 
 class Box(

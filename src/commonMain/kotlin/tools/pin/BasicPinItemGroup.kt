@@ -3,7 +3,7 @@ package tools.pin
 import models.schematic.shapes.circle.Circle
 import models.schematic.shapes.pin.Pin
 import models.schematic.types.ColorIndex
-import models.schematic.types.Drawer
+import types.Drawer
 import tools.ToolTarget
 
 class BasicPinItemGroup(

@@ -1,6 +1,7 @@
 package models.schematic.types
 
 import models.schematic.io.Writer
+import types.Drawer
 
 class Attributes(val items: List<Attribute> = listOf()) {
 

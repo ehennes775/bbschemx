@@ -7,6 +7,7 @@ import models.schematic.shapes.pin.Pin
 import models.schematic.shapes.pin.PinType
 import models.schematic.shapes.text.Text
 import models.schematic.types.*
+import types.Drawer
 
 class SchematicModel(private var schematic: Schematic) {
 

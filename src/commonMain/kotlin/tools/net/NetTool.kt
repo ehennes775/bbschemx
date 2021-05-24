@@ -1,8 +1,8 @@
 package tools.net
 
 import models.schematic.shapes.net.Net
-import models.schematic.types.Drawer
-import models.schematic.types.Point
+import types.Drawer
+import types.Point
 import tools.Tool
 import tools.ToolTarget
 

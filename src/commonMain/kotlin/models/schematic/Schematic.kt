@@ -13,6 +13,7 @@ import models.schematic.shapes.net.Net
 import models.schematic.shapes.path.Path
 import models.schematic.shapes.pin.Pin
 import models.schematic.shapes.text.Text
+import types.Drawer
 
 class Schematic(
     val version: Version = Version(),

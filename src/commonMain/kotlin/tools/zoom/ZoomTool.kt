@@ -1,14 +1,14 @@
 package tools.zoom
 
-import models.schematic.types.Drawer
-import models.schematic.types.Point
+import types.Drawer
+import types.Point
 import tools.Tool
 import tools.ToolTarget
 
 class ZoomTool(private val target: ToolTarget) : Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
-        updateGeometry(drawingPoint)
+        updateGeometry(widgetPoint)
         when (state) {
             State.S0 -> {
                 state = State.S1
@@ -23,6 +23,7 @@ class ZoomTool(private val target: ToolTarget) : Tool {
             State.S0 -> Unit
             State.S1 -> {
                 updateGeometry(widgetPoint)
+                target.zoomBox(point0, point1)
                 reset()
             }
         }
@@ -38,7 +39,7 @@ class ZoomTool(private val target: ToolTarget) : Tool {
     override fun motion(widgetPoint: Point, drawingPoint: Point) {
         when (state) {
             State.S0 -> Unit
-            State.S1 -> point1 = widgetPoint
+            State.S1 -> updateGeometry(widgetPoint)
         }
     }
 

@@ -6,6 +6,7 @@ import models.schematic.io.Writer
 import models.schematic.shapes.bus.Bus
 import models.schematic.shapes.net.Net
 import models.schematic.types.*
+import types.Drawer
 
 class Pin(
     val x0: Int = 0,

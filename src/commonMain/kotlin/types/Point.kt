@@ -1,4 +1,4 @@
-package models.schematic.types
+package types
 
 import kotlin.math.abs
 import kotlin.math.hypot

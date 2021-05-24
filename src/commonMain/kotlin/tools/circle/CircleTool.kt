@@ -1,8 +1,8 @@
 package tools.circle
 
 import models.schematic.shapes.circle.Circle
-import models.schematic.types.Drawer
-import models.schematic.types.Point
+import types.Drawer
+import types.Point
 import tools.Tool
 import tools.ToolTarget
 import kotlin.math.roundToInt

@@ -1,11 +1,13 @@
 package tools
 
 import models.schematic.Item
-import models.schematic.types.Point
+import types.Point
 
 interface ToolTarget {
     val gridSize: Int
     fun addItem(item: Item)
     fun repaint()
     fun repaint(item: Item)
+
+    fun zoomBox(p0: Point, p1: Point)
 }

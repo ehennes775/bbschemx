@@ -1,6 +1,6 @@
 package tools.pin
 
-import models.schematic.types.Drawer
+import types.Drawer
 import tools.ToolTarget
 
 interface PinItemGroup {

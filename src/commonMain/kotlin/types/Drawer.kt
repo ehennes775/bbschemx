@@ -1,6 +1,9 @@
-package models.schematic.types
+package types
 
 import models.schematic.shapes.text.Text
+import models.schematic.types.ColorIndex
+import models.schematic.types.FillStyle
+import models.schematic.types.LineStyle
 
 interface Drawer {
     fun beginDraw()

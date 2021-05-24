@@ -13,7 +13,7 @@ import models.schematic.Schematic
 import models.schematic.SchematicModel
 import models.schematic.types.Bounds
 import models.schematic.types.ColorIndex
-import models.schematic.types.Point
+import types.Point
 import tools.Tool
 import tools.ToolListener
 import tools.ToolSource
@@ -297,6 +297,61 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
 
     override fun repaint(item: Item) {
+        repaint()
+    }
+
+    override fun zoomBox(p0: Point, p1: Point) {
+        val dx = abs(p1.x - p0.x);
+        val dy = abs(p1.y - p0.y);
+
+        if ((dx >= 1.0) && (dy >= 1.0))
+        {
+            val zoomX = width.toDouble() / dx.toDouble()
+            val zoomY = height.toDouble() / dy.toDouble()
+
+            val zoom = minOf(zoomX, zoomY)
+
+            val centerX = (p1.x + p0.x) / 2.0
+            val centerY = (p1.y + p0.y) / 2.0
+
+            zoomPoint(centerX.roundToInt(), centerY.roundToInt(), zoom)
+        }
+    }
+
+    private fun zoomPoint(centerX: Int, centerY: Int, factor: Double) {
+        val tempTransform = currentTransform
+
+        var scale = floor(factor * 100.0 * currentTransform.scaleX);
+        //scale = scale.clamp(4.0, 125.0);
+        scale /= (100.0 * currentTransform.scaleX);
+
+        currentTransform.scale(scale, scale);
+
+        currentTransform = AffineTransform(
+            currentTransform.scaleX,
+            currentTransform.shearY,
+            currentTransform.shearX,
+            currentTransform.scaleY,
+            round(width.toDouble() / 2.0),
+            round(height.toDouble() / 2.0)
+        )
+
+        val dxy = tempTransform.transform(
+            Point2D.Double(centerX.toDouble(), centerY.toDouble()),
+            Point2D.Double()
+        )
+
+        currentTransform.translate(-dxy.x, -dxy.y);
+
+        currentTransform = AffineTransform(
+            currentTransform.scaleX,
+            currentTransform.shearY,
+            currentTransform.shearX,
+            currentTransform.scaleY,
+            round(currentTransform.translateX),
+            round(currentTransform.translateY)
+        )
+
         repaint()
     }
 }

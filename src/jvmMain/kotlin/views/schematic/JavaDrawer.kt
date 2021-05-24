@@ -2,7 +2,8 @@ package views.schematic
 
 import models.schematic.shapes.text.Text
 import models.schematic.types.*
-import models.schematic.types.Point
+import types.Point
+import types.Drawer
 import java.awt.*
 import java.awt.geom.AffineTransform
 import java.awt.geom.Arc2D

@@ -1,7 +1,7 @@
 package tools.select
 
-import models.schematic.types.Drawer
-import models.schematic.types.Point
+import types.Drawer
+import types.Point
 import tools.Tool
 
 class SelectTool: Tool {

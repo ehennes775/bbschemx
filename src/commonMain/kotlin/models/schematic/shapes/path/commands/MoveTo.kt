@@ -2,7 +2,7 @@ package models.schematic.shapes.path.commands
 
 import models.schematic.io.Writer
 import models.schematic.shapes.path.Command
-import models.schematic.types.Drawer
+import types.Drawer
 
 class MoveTo(
     private val x: Int,
