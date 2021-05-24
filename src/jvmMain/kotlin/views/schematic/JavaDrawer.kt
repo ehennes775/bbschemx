@@ -2,15 +2,15 @@ package views.schematic
 
 import models.schematic.shapes.text.Text
 import models.schematic.types.*
-import java.awt.BasicStroke
-import java.awt.Color
-import java.awt.Font
-import java.awt.Graphics2D
+import models.schematic.types.Point
+import java.awt.*
+import java.awt.geom.AffineTransform
 import java.awt.geom.Arc2D
 import java.awt.geom.Path2D
 import kotlin.math.PI
+import kotlin.math.abs
 
-class JavaDrawer(private val graphics: Graphics2D): Drawer {
+class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: AffineTransform): Drawer {
 
     init {
         graphics.apply {
@@ -142,6 +142,21 @@ class JavaDrawer(private val graphics: Graphics2D): Drawer {
                 drawString(it, lineX, lineY)
                 lineY += 100.0f
             }
+            transform = savedTransform
+        }
+    }
+
+    override fun drawZoomBox(point0: Point, point1: Point) {
+        graphics.apply {
+            val savedTransform = transform
+            transform = oldTransform
+            color = COLORS[ColorIndex.ZOOM_BOX]
+            draw(Rectangle(
+                minOf(point0.x, point1.x),
+                minOf(point0.y, point1.y),
+                abs(point1.x - point0.x),
+                abs(point1.y - point0.y),
+            ))
             transform = savedTransform
         }
     }

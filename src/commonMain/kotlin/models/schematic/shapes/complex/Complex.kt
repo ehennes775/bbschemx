@@ -26,6 +26,8 @@ class Complex(
         attributes = newAttributes
     )
 
+    override val isSignificant: Boolean get() = true
+
     override fun calculateBounds() = Bounds.EMPTY
 
     companion object : Creator {

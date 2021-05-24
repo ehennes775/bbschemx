@@ -1,14 +1,14 @@
-package tools.bus
+package tools.net
 
-import models.schematic.shapes.bus.Bus
+import models.schematic.shapes.net.Net
 import models.schematic.types.Drawer
 import models.schematic.types.Point
 import tools.Tool
 import tools.ToolTarget
 
-class BusTool(private val target: ToolTarget) : Tool {
+class NetTool(private val target: ToolTarget) : Tool {
 
-    override fun buttonPressed(drawingPoint: Point) {
+    override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
         when (state) {
             State.S0 -> {
@@ -16,13 +16,13 @@ class BusTool(private val target: ToolTarget) : Tool {
                 updateGeometry(drawingPoint)
             }
             State.S1 -> {
-                target.add(prototype)
+                target.addItem(prototype)
                 reset();
             }
         }
     }
 
-    override fun buttonReleased(drawingPoint: Point) {}
+    override fun buttonReleased(widgetPoint: Point, drawingPoint: Point) {}
 
     override fun draw(drawer: Drawer) {
         when (state) {
@@ -31,14 +31,14 @@ class BusTool(private val target: ToolTarget) : Tool {
         }
     }
 
-    override fun motion(drawingPoint: Point) {
+    override fun motion(widgetPoint: Point, drawingPoint: Point) {
         when (state) {
             State.S0 -> {}
             State.S1 -> updateGeometry(drawingPoint)
         }
     }
 
-    private var prototype: Bus = Bus()
+    private var prototype: Net = Net()
         set(value) {
             target.repaint(field)
             field = value
@@ -53,7 +53,7 @@ class BusTool(private val target: ToolTarget) : Tool {
     private var state = State.S0
 
     private fun reset() {
-        prototype = Bus()
+        prototype = Net()
         state = State.S0
     }
 
@@ -61,11 +61,11 @@ class BusTool(private val target: ToolTarget) : Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withPoint0(it.x, it.y) }
+                .let { prototype.withValues(x0 = it.x, y0 = it.y) }
             State.S1 -> drawingPoint
                 .snapToGrid(target.gridSize)
                 .snapOrthogonal(prototype.x0, prototype.y0)
-                .let { prototype.withPoint1(it.x, it.y) }
+                .let { prototype.withValues(x1 = it.x, y1 = it.y) }
         }
     }
 }

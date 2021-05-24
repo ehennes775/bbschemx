@@ -9,7 +9,7 @@ import kotlin.math.roundToInt
 
 class ArcTool(private val target: ToolTarget): Tool {
 
-    override fun buttonPressed(drawingPoint: Point) {
+    override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
         when (state) {
             State.S0 -> {
@@ -25,13 +25,13 @@ class ArcTool(private val target: ToolTarget): Tool {
                 updateGeometry(drawingPoint)
             }
             State.S3 -> {
-                target.add(prototype)
+                target.addItem(prototype)
                 reset();
             }
         }
     }
 
-    override fun buttonReleased(drawingPoint: Point) {}
+    override fun buttonReleased(widgetPoint: Point, drawingPoint: Point) {}
 
     override fun draw(drawer: Drawer) {
         when (state) {
@@ -40,7 +40,7 @@ class ArcTool(private val target: ToolTarget): Tool {
         }
     }
 
-    override fun motion(drawingPoint: Point) {
+    override fun motion(widgetPoint: Point, drawingPoint: Point) {
         when (state) {
             State.S0 -> {}
             else -> updateGeometry(drawingPoint)
@@ -71,8 +71,10 @@ class ArcTool(private val target: ToolTarget): Tool {
     private fun updateGeometry(drawingPoint: Point) {
         prototype = when (state) {
             State.S0 -> drawingPoint
+                .snapToGrid(target.gridSize)
                 .let { prototype.withCenter(it.x, it.y) }
             State.S1 -> drawingPoint
+                .snapToGrid(target.gridSize)
                 .let { it.distanceTo(prototype.centerX, prototype.centerY).roundToInt() }
                 .let { prototype.withRadius(it) }
             State.S2 -> {

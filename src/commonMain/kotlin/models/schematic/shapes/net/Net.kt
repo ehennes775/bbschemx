@@ -27,6 +27,8 @@ class Net(
 
     override fun withAttributes(newAttributes: Attributes) = withValues(attributes = newAttributes)
 
+    override val isSignificant: Boolean get() = ((x1 - x0) != 0) && ((y1 - y0) != 0)
+
     override fun calculateBounds() = Bounds.fromCorners(
         x0,
         y0,

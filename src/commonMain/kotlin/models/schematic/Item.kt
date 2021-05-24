@@ -5,6 +5,7 @@ import models.schematic.types.Bounds
 import models.schematic.types.Drawer
 
 interface Item {
+    val isSignificant: Boolean
     fun calculateBounds(): Bounds
     fun paint(drawer: Drawer)
     fun write(writer: Writer)

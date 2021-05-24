@@ -1,12 +1,14 @@
 package models.schematic.types
 
 import kotlin.math.abs
+import kotlin.math.hypot
 
 data class Point(val x: Int, val y: Int) {
 
-    fun distanceTo(otherX: Int, otherY: Int): Double {
-        return 10.0
-    }
+    fun distanceTo(otherX: Int, otherY: Int): Double = hypot(
+        (otherX - x).toDouble(),
+        (otherY - y).toDouble()
+    )
 
     fun snapToGrid(grid: Int) = Point(
         x = Internal.snap(x, grid),

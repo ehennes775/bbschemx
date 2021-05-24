@@ -85,6 +85,8 @@ class Arc(
         newLineStyle
     )
 
+    override val isSignificant: Boolean get() = (radius != 0) && (sweepAngle != 0)
+
     override fun calculateBounds() = Bounds.EMPTY
 
     companion object : Creator {

@@ -124,7 +124,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         }
     }
 
-    fun addItem(item: Item) {
+    override fun addItem(item: Item) {
         addItems(listOf(item))
     }
 
@@ -187,8 +187,9 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
     override fun paintComponent(graphics: Graphics?) {
         super.paintComponent(graphics)
         (graphics as Graphics2D).also { g ->
+            val oldTransform = g.transform
             g.transform(currentTransform)
-            JavaDrawer(g).also { d ->
+            JavaDrawer(g, oldTransform).also { d ->
                 schematicModel.paint(d)
                 tool.draw(d)
             }
@@ -254,14 +255,14 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         override fun mousePressed(event: MouseEvent?) {
             event?.let {
                 val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.buttonPressed(Point(point.x.roundToInt(), point.y.roundToInt()))
+                tool.buttonPressed(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
             }
         }
 
         override fun mouseReleased(event: MouseEvent?) {
             event?.let {
                 val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.buttonReleased(Point(point.x.roundToInt(), point.y.roundToInt()))
+                tool.buttonReleased(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
             }
         }
 
@@ -271,13 +272,17 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         override fun mouseExited(e: MouseEvent?) {
         }
 
-        override fun mouseDragged(e: MouseEvent?) {
+        override fun mouseDragged(event: MouseEvent?) {
+            event?.let {
+                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
+                tool.motion(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
+            }
         }
 
         override fun mouseMoved(event: MouseEvent?) {
             event?.let {
                 val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.motion(Point(point.x.roundToInt(), point.y.roundToInt()))
+                tool.motion(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
             }
         }
     }
@@ -289,11 +294,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
     override val gridSize: Int = 100
 
-    override fun add(item: Item) {
-        if (true) {
-            //schematicModel.add(item)
-        }
-    }
+
 
     override fun repaint(item: Item) {
         repaint()

@@ -1,6 +1,6 @@
 import actions.DocumentAction
-import tools.ToolAction
-import tools.ToolThing
+import tools2.ToolAction
+import tools2.ToolThing
 import tools.arc.ArcToolFactory
 import tools.box.BoxToolFactory
 import tools.bus.BusToolFactory
@@ -9,8 +9,8 @@ import tools.line.LineToolFactory
 import tools.net.NetToolFactory
 import tools.pin.PinToolFactory
 import tools.select.SelectToolFactory
+import tools.zoom.ZoomToolFactory
 import views.document.DocumentView
-import views.library.LibraryModel
 import views.library.LibraryPanel
 import views.schematic.ColorEditor
 import views.schematic.FillEditor
@@ -51,6 +51,7 @@ class Application : JFrame() {
     private val netToolAction = object: ToolAction("Net", toolTarget, NetToolFactory()) {}
     private val pinToolAction = object: ToolAction("Pin", toolTarget, PinToolFactory()) {}
     private val selectToolAction = object: ToolAction("Select", toolTarget, SelectToolFactory()) {}
+    private val zoomToolAction = object: ToolAction("Zoom", toolTarget, ZoomToolFactory()) {}
 
 
     private val libraryTree = LibraryPanel()
@@ -113,6 +114,7 @@ class Application : JFrame() {
             add(JRadioButtonMenuItem(lineToolAction))
             add(JRadioButtonMenuItem(netToolAction))
             add(JRadioButtonMenuItem(pinToolAction))
+            add(JRadioButtonMenuItem(zoomToolAction))
         })
     }
 

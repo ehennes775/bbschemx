@@ -39,6 +39,8 @@ class Path(
         commands = newCommands
     )
 
+    override val isSignificant: Boolean get() = commands.isNotEmpty()
+
     override fun calculateBounds() = Bounds.EMPTY
 
     companion object : Creator {

@@ -1,5 +1,8 @@
-package tools
+package tools2
 
+import tools.ToolFactory
+import tools.ToolListener
+import tools.ToolSource
 import tools.dummy.DummyToolFactory
 import views.document.DocumentView
 import java.awt.event.ContainerEvent

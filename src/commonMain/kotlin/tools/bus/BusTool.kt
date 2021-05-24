@@ -1,13 +1,14 @@
-package tools.pin
+package tools.bus
 
+import models.schematic.shapes.bus.Bus
 import models.schematic.types.Drawer
 import models.schematic.types.Point
 import tools.Tool
 import tools.ToolTarget
 
-class PinTool(private val target: ToolTarget) : Tool {
+class BusTool(private val target: ToolTarget) : Tool {
 
-    override fun buttonPressed(drawingPoint: Point) {
+    override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
         when (state) {
             State.S0 -> {
@@ -15,33 +16,33 @@ class PinTool(private val target: ToolTarget) : Tool {
                 updateGeometry(drawingPoint)
             }
             State.S1 -> {
-                //target.add(prototype)
+                target.addItem(prototype)
                 reset();
             }
         }
     }
 
-    override fun buttonReleased(drawingPoint: Point) {}
+    override fun buttonReleased(widgetPoint: Point, drawingPoint: Point) {}
 
     override fun draw(drawer: Drawer) {
         when (state) {
             State.S0 -> {}
-            State.S1 -> prototype.draw(drawer)
+            State.S1 -> prototype.paint(drawer)
         }
     }
 
-    override fun motion(drawingPoint: Point) {
+    override fun motion(widgetPoint: Point, drawingPoint: Point) {
         when (state) {
             State.S0 -> {}
             State.S1 -> updateGeometry(drawingPoint)
         }
     }
 
-    private var prototype: PinItemGroup = BasicPinItemGroup()
+    private var prototype: Bus = Bus()
         set(value) {
-            field.repaint(target)
+            target.repaint(field)
             field = value
-            field.repaint(target)
+            target.repaint(field)
         }
 
     private enum class State {
@@ -52,7 +53,7 @@ class PinTool(private val target: ToolTarget) : Tool {
     private var state = State.S0
 
     private fun reset() {
-        prototype = BasicPinItemGroup()
+        prototype = Bus()
         state = State.S0
     }
 
@@ -60,11 +61,11 @@ class PinTool(private val target: ToolTarget) : Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withFirstPoint(it.x, it.y) }
+                .let { prototype.withPoint0(it.x, it.y) }
             State.S1 -> drawingPoint
                 .snapToGrid(target.gridSize)
                 .snapOrthogonal(prototype.x0, prototype.y0)
-                .let { prototype.withSecondPoint(it.x, it.y) }
+                .let { prototype.withPoint1(it.x, it.y) }
         }
     }
 }

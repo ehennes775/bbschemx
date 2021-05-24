@@ -8,7 +8,7 @@ import tools.ToolTarget
 
 class LineTool(private val target: ToolTarget) : Tool {
 
-    override fun buttonPressed(drawingPoint: Point) {
+    override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
         when (state) {
             State.S0 -> {
@@ -16,13 +16,13 @@ class LineTool(private val target: ToolTarget) : Tool {
                 updateGeometry(drawingPoint)
             }
             State.S1 -> {
-                target.add(prototype)
+                target.addItem(prototype)
                 reset();
             }
         }
     }
 
-    override fun buttonReleased(drawingPoint: Point) {}
+    override fun buttonReleased(widgetPoint: Point, drawingPoint: Point) {}
 
     override fun draw(drawer: Drawer) {
         when (state) {
@@ -31,7 +31,7 @@ class LineTool(private val target: ToolTarget) : Tool {
         }
     }
 
-    override fun motion(drawingPoint: Point) {
+    override fun motion(widgetPoint: Point, drawingPoint: Point) {
         when (state) {
             State.S0 -> {}
             State.S1 -> updateGeometry(drawingPoint)
@@ -60,8 +60,10 @@ class LineTool(private val target: ToolTarget) : Tool {
     private fun updateGeometry(drawingPoint: Point) {
         prototype = when (state) {
             State.S0 -> drawingPoint
+                .snapToGrid(target.gridSize)
                 .let { prototype.withPoint0(it.x, it.y) }
             State.S1 -> drawingPoint
+                .snapToGrid(target.gridSize)
                 .let { prototype.withPoint1(it.x, it.y) }
         }
     }

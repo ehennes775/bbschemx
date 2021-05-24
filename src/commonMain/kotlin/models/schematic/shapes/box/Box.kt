@@ -106,6 +106,8 @@ class Box(
         newFillStyle
     )
 
+    override val isSignificant: Boolean get() = ((upperX - lowerX) != 0) && ((upperY - lowerY) != 0)
+
     override fun calculateBounds() = Bounds.fromCorners(
         lowerX,
         lowerY,

@@ -10,6 +10,8 @@ interface Drawer {
     fun drawCircle(centerX: Int, centerY: Int, radius: Int)
     fun drawText(text: Text)
 
+    fun drawZoomBox(point0: Point, point1: Point)
+
     fun moveTo(x: Int, y: Int)
     fun lineTo(x: Int, y: Int)
     fun close()

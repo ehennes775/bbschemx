@@ -170,6 +170,13 @@ class SchematicModel(private var schematic: Schematic) {
         it.withItemColor(newTextColor)
     }
 
+    fun add(items: List<Item>) {
+        schematic = Schematic(
+            schematic.version,
+            schematic.items + items
+        )
+    }
+
 
     fun calculateBounds() = schematic.calculateBounds()
 
