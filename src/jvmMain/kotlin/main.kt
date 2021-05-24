@@ -1,15 +1,15 @@
 import actions.DocumentAction
+import tools.arc.ArcTool
 import tools2.ToolAction
 import tools2.ToolThing
-import tools.arc.ArcToolFactory
-import tools.box.BoxToolFactory
-import tools.bus.BusToolFactory
-import tools.circle.CircleToolFactory
-import tools.line.LineToolFactory
-import tools.net.NetToolFactory
-import tools.pin.PinToolFactory
-import tools.select.SelectToolFactory
-import tools.zoom.ZoomToolFactory
+import tools.box.BoxTool
+import tools.bus.BusTool
+import tools.circle.CircleTool
+import tools.line.LineTool
+import tools.net.NetTool
+import tools.pin.PinTool
+import tools.select.SelectTool
+import tools.zoom.ZoomTool
 import views.document.DocumentView
 import views.library.LibraryPanel
 import views.schematic.ColorEditor
@@ -43,15 +43,15 @@ class Application : JFrame() {
 
     private val toolTarget = ToolThing(tabbedDocumentPane)
 
-    private val arcToolAction = object: ToolAction("Arc", toolTarget, ArcToolFactory()) {}
-    private val busToolAction = object: ToolAction("Bus", toolTarget, BusToolFactory()) {}
-    private val boxToolAction = object: ToolAction("Box", toolTarget, BoxToolFactory()) {}
-    private val circleToolAction = object: ToolAction("Circle", toolTarget, CircleToolFactory()) {}
-    private val lineToolAction = object: ToolAction("Line", toolTarget, LineToolFactory()) {}
-    private val netToolAction = object: ToolAction("Net", toolTarget, NetToolFactory()) {}
-    private val pinToolAction = object: ToolAction("Pin", toolTarget, PinToolFactory()) {}
-    private val selectToolAction = object: ToolAction("Select", toolTarget, SelectToolFactory()) {}
-    private val zoomToolAction = object: ToolAction("Zoom", toolTarget, ZoomToolFactory()) {}
+    private val arcToolAction = object: ToolAction("Arc", toolTarget, ArcTool) {}
+    private val busToolAction = object: ToolAction("Bus", toolTarget, BusTool) {}
+    private val boxToolAction = object: ToolAction("Box", toolTarget, BoxTool) {}
+    private val circleToolAction = object: ToolAction("Circle", toolTarget, CircleTool) {}
+    private val lineToolAction = object: ToolAction("Line", toolTarget, LineTool) {}
+    private val netToolAction = object: ToolAction("Net", toolTarget, NetTool) {}
+    private val pinToolAction = object: ToolAction("Pin", toolTarget, PinTool) {}
+    private val selectToolAction = object: ToolAction("Select", toolTarget, SelectTool) {}
+    private val zoomToolAction = object: ToolAction("Zoom", toolTarget, ZoomTool) {}
 
 
     private val libraryTree = LibraryPanel()

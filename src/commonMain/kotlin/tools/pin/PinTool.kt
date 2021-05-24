@@ -3,6 +3,7 @@ package tools.pin
 import types.Drawer
 import types.Point
 import tools.Tool
+import tools.ToolFactory
 import tools.ToolTarget
 
 class PinTool(private val target: ToolTarget) : Tool {
@@ -66,5 +67,10 @@ class PinTool(private val target: ToolTarget) : Tool {
                 .snapOrthogonal(prototype.x0, prototype.y0)
                 .let { prototype.withSecondPoint(it.x, it.y) }
         }
+    }
+
+    companion object : ToolFactory {
+
+        override fun createTool(target: ToolTarget) = PinTool(target)
     }
 }

@@ -18,6 +18,7 @@ import tools.Tool
 import tools.ToolListener
 import tools.ToolSource
 import tools.ToolTarget
+import tools.dummy.DummyTool
 import tools.line.LineTool
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
@@ -237,7 +238,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         }
     }
 
-    override var tool: Tool = LineTool(this)
+    override var tool: Tool = DummyTool.createTool(this)
     override val toolTarget: ToolTarget get() = this
 
     override fun addToolListener(listener: ToolListener) {

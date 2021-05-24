@@ -6,6 +6,7 @@ import views.schematic.io.JavaBasedReader
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
+import java.awt.Insets
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import javax.swing.JScrollPane
@@ -38,13 +39,16 @@ class LibraryPanel: JPanel() {
 
 
     init {
-        border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        border = BorderFactory.createEmptyBorder(5, 5, 5, 5)
         layout = GridBagLayout()
+
+        val insets1 = Insets(5, 5, 5, 5)
 
         add(libraryPreview, GridBagConstraints().apply {
             gridx = 0
             gridy = 0
             fill = GridBagConstraints.BOTH
+            insets = insets1
             weightx = 1.0
             weighty = 0.0
         })
@@ -53,6 +57,7 @@ class LibraryPanel: JPanel() {
             gridx = 0
             gridy = 1
             fill = GridBagConstraints.BOTH
+            insets = insets1
             weightx = 1.0
             weighty = 1.0
         })

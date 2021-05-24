@@ -3,6 +3,7 @@ package tools.zoom
 import types.Drawer
 import types.Point
 import tools.Tool
+import tools.ToolFactory
 import tools.ToolTarget
 
 class ZoomTool(private val target: ToolTarget) : Tool {
@@ -71,5 +72,10 @@ class ZoomTool(private val target: ToolTarget) : Tool {
             State.S0 -> point0 = widgetPoint
             State.S1 -> point1 = widgetPoint
         }
+    }
+
+    companion object : ToolFactory {
+
+        override fun createTool(target: ToolTarget) = ZoomTool(target)
     }
 }

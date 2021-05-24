@@ -4,6 +4,7 @@ import models.schematic.shapes.net.Net
 import types.Drawer
 import types.Point
 import tools.Tool
+import tools.ToolFactory
 import tools.ToolTarget
 
 class NetTool(private val target: ToolTarget) : Tool {
@@ -68,4 +69,10 @@ class NetTool(private val target: ToolTarget) : Tool {
                 .let { prototype.withValues(x1 = it.x, y1 = it.y) }
         }
     }
+
+    companion object : ToolFactory {
+
+        override fun createTool(target: ToolTarget) = NetTool(target)
+    }
+
 }

@@ -4,6 +4,7 @@ import models.schematic.shapes.bus.Bus
 import types.Drawer
 import types.Point
 import tools.Tool
+import tools.ToolFactory
 import tools.ToolTarget
 
 class BusTool(private val target: ToolTarget) : Tool {
@@ -68,4 +69,9 @@ class BusTool(private val target: ToolTarget) : Tool {
                 .let { prototype.withPoint1(it.x, it.y) }
         }
     }
+
+    companion object : ToolFactory {
+        override fun createTool(target: ToolTarget) = BusTool(target)
+    }
+
 }

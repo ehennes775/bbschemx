@@ -4,6 +4,7 @@ import models.schematic.shapes.box.Box
 import types.Drawer
 import types.Point
 import tools.Tool
+import tools.ToolFactory
 import tools.ToolTarget
 
 class BoxTool(private val target: ToolTarget) : Tool {
@@ -67,4 +68,10 @@ class BoxTool(private val target: ToolTarget) : Tool {
                 .let { prototype.withPoint1(it.x, it.y) }
         }
     }
+
+    companion object : ToolFactory {
+
+        override fun createTool(target: ToolTarget) = BoxTool(target)
+    }
+
 }

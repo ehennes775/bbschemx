@@ -4,6 +4,7 @@ import models.schematic.shapes.circle.Circle
 import types.Drawer
 import types.Point
 import tools.Tool
+import tools.ToolFactory
 import tools.ToolTarget
 import kotlin.math.roundToInt
 
@@ -69,4 +70,10 @@ class CircleTool(private val target: ToolTarget): Tool {
                 .let { prototype.withRadius(it) }
         }
     }
+
+    companion object : ToolFactory {
+
+        override fun createTool(target: ToolTarget) = CircleTool(target)
+    }
+
 }

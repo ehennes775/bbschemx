@@ -4,6 +4,7 @@ import models.schematic.shapes.arc.Arc
 import types.Drawer
 import types.Point
 import tools.Tool
+import tools.ToolFactory
 import tools.ToolTarget
 import kotlin.math.roundToInt
 
@@ -84,5 +85,10 @@ class ArcTool(private val target: ToolTarget): Tool {
                 prototype
             }
         }
+    }
+
+    companion object : ToolFactory {
+
+        override fun createTool(target: ToolTarget) = ArcTool(target)
     }
 }

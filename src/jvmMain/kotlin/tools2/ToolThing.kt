@@ -3,7 +3,7 @@ package tools2
 import tools.ToolFactory
 import tools.ToolListener
 import tools.ToolSource
-import tools.dummy.DummyToolFactory
+import tools.dummy.DummyTool
 import views.document.DocumentView
 import java.awt.event.ContainerEvent
 import java.awt.event.ContainerListener
@@ -39,7 +39,7 @@ class ToolThing(private val tabbedPane: JTabbedPane): ToolActionTarget {
 
     val currentDocument: DocumentView? get() = tabbedPane.selectedComponent as? DocumentView
 
-    override var toolFactory: ToolFactory = DummyToolFactory()
+    override var toolFactory: ToolFactory = DummyTool
         set(value) {
             field = value
             tabbedPane.components
