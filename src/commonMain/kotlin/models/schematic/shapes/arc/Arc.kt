@@ -111,6 +111,11 @@ class Arc(
     }
 
     override fun paint(drawer: Drawer) {
+        drawer.apply {
+            beginDraw()
+            drawer.drawArc(centerX, centerY, radius, startAngle, sweepAngle)
+            endDraw(color, lineStyle)
+        }
     }
 
     override fun write(writer: Writer) = writer.writeParams(

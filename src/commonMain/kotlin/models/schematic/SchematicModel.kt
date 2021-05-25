@@ -1,5 +1,7 @@
 package models.schematic
 
+import State
+import models.schematic.io.Reader
 import models.schematic.listeners.InvalidateListener
 import models.schematic.listeners.PropertyListener
 import models.schematic.listeners.SelectionListener
@@ -183,5 +185,72 @@ class SchematicModel(private var schematic: Schematic) {
 
     fun paint(drawer: Drawer) {
         schematic.paint(drawer)
+    }
+
+
+    private var currentState: State = State(Schematic(), setOf())
+    private val redoStack = mutableListOf<State>()
+    private val undoStack = mutableListOf<State>()
+
+    private fun deleteItems(predicate: (Item) -> Boolean) {
+        val nextState = currentState.deleteItems(predicate)
+        undoStack.add(currentState)
+        currentState = nextState
+        redoStack.clear()
+    }
+
+    private fun selectItems(predicate: (Item) -> Boolean) {
+        val nextState = currentState.selectItems(predicate)
+        undoStack.add(currentState)
+        currentState = nextState
+        redoStack.clear()
+    }
+
+    val canSave: Boolean get() = false
+
+    fun save() {
+    }
+
+    val canRedo: Boolean get() = true
+
+    fun redo() {
+        if (redoStack.isNotEmpty()) {
+            undoStack.add(0, currentState)
+            currentState = redoStack.removeFirst()
+        }
+    }
+
+    val canUndo: Boolean get() = undoStack.isNotEmpty()
+
+    fun undo() {
+        if (undoStack.isNotEmpty()) {
+            redoStack.add(0, currentState)
+            currentState = undoStack.removeFirst()
+        }
+    }
+
+    fun addItems(items: List<Item>) {
+        val nextState = currentState.addItems(items)
+        undoStack.add(currentState)
+        currentState = nextState
+        redoStack.clear()
+    }
+
+    fun deleteSelectedItems() { deleteItems { currentState.isSelected(it) }
+    }
+
+    val canSelectAll: Boolean get() = true
+
+    val canSelectNone: Boolean get() = true
+
+    fun selectAll() { selectItems { true } }
+
+    fun selectNone() { selectItems { false } }
+
+
+    companion object {
+
+        fun read(reader: Reader): SchematicModel = SchematicModel(Schematic.read(reader))
+
     }
 }

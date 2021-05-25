@@ -15,8 +15,6 @@ class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: Aff
 
     init {
         graphics.apply {
-            //translate(100.0, 700.0)
-            //scale(1.0, -1.0)
         }
     }
 
@@ -46,6 +44,21 @@ class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: Aff
                 FillType.VOID -> draw(currentPath)
             }
         }
+    }
+
+    override fun drawArc(centerX: Int, centerY: Int, radius: Int, startAngle: Int, sweepAngle: Int) {
+        currentPath.append(
+            Arc2D.Double(
+                (centerX - radius).toDouble(),
+                (centerY - radius).toDouble(),
+                2.0 * radius,
+                2.0 * radius,
+                -startAngle.toDouble(),
+                -sweepAngle.toDouble(),
+                Arc2D.OPEN
+            ),
+            false
+        )
     }
 
     override fun drawCircle(centerX: Int, centerY: Int, radius: Int) {

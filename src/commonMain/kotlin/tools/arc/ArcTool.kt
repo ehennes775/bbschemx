@@ -5,7 +5,9 @@ import types.Drawer
 import types.Point
 import tools.Tool
 import tools.ToolFactory
+import tools.ToolSettings
 import tools.ToolTarget
+import types.Angle
 import kotlin.math.roundToInt
 
 class ArcTool(private val target: ToolTarget): Tool {
@@ -14,20 +16,20 @@ class ArcTool(private val target: ToolTarget): Tool {
         updateGeometry(drawingPoint)
         when (state) {
             State.S0 -> {
-                state = State.S1;
+                state = State.S1
                 updateGeometry(drawingPoint)
             }
             State.S1 -> {
-                state = State.S2;
+                state = State.S2
                 updateGeometry(drawingPoint)
             }
             State.S2 -> {
-                state = State.S3;
+                state = State.S3
                 updateGeometry(drawingPoint)
             }
             State.S3 -> {
                 target.addItem(prototype)
-                reset();
+                reset()
             }
         }
     }
@@ -48,7 +50,7 @@ class ArcTool(private val target: ToolTarget): Tool {
         }
     }
 
-    private var prototype: Arc = Arc()
+    private var prototype: Arc = createInitialArc()
         set(value) {
             target.repaint(field)
             field = value
@@ -65,7 +67,7 @@ class ArcTool(private val target: ToolTarget): Tool {
     private var state = State.S0
 
     private fun reset() {
-        prototype = Arc()
+        prototype = createInitialArc()
         state = State.S0
     }
 
@@ -75,20 +77,33 @@ class ArcTool(private val target: ToolTarget): Tool {
                 .snapToGrid(target.gridSize)
                 .let { prototype.withCenter(it.x, it.y) }
             State.S1 -> drawingPoint
-                .snapToGrid(target.gridSize)
-                .let { it.distanceTo(prototype.centerX, prototype.centerY).roundToInt() }
+                .snapToGrid(target.gridSize).distanceTo(prototype.centerX, prototype.centerY).roundToInt()
                 .let { prototype.withRadius(it) }
-            State.S2 -> {
-                prototype
-            }
-            State.S3 -> {
-                prototype
-            }
+            State.S2 -> drawingPoint
+                .let { Angle.calculateAngle(prototype.centerX, prototype.centerY, it.x, it.y) }
+                .let { Angle.fromRadians(it) }
+                .let { prototype.withStartAngle(it) }
+            State.S3 -> drawingPoint
+                .let { Angle.calculateAngle(prototype.centerX, prototype.centerY, it.x, it.y) }
+                .let { Angle.fromRadians(it) }
+                .let { arcDirection.calculateSweep(prototype.startAngle, it) }
+                .let { prototype.withSweepAngle(it) }
         }
     }
 
-    companion object : ToolFactory {
+    companion object : ToolFactory, ToolSettings {
+
+        private var arcDirection = ArcDirection.COUNTERCLOCKWISE
+        // FIXME: set() -> updateGeometry
+
+        override fun nextAlternativeForm() {
+            arcDirection = arcDirection.nextDirection
+        }
 
         override fun createTool(target: ToolTarget) = ArcTool(target)
+
+        private fun createInitialArc() = Arc(
+            sweepAngle = arcDirection.calculateSweep(0, 180)
+        )
     }
 }

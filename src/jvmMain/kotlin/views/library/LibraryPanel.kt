@@ -1,6 +1,7 @@
 package views.library
 
 import models.schematic.Schematic
+import models.schematic.SchematicModel
 import views.schematic.SchematicView
 import views.schematic.io.JavaBasedReader
 import java.awt.Dimension
@@ -25,10 +26,10 @@ class LibraryPanel: JPanel() {
     private val treeSelectionListener: TreeSelectionListener = TreeSelectionListener {
         libraryTree.let { tree ->
             val item = tree.selectionPaths.single().lastPathComponent as SymbolFile
-            libraryPreview.schematic = item?.let {
+            libraryPreview.schematicModel = item?.let {
                 val reader = JavaBasedReader(item.path.toFile().bufferedReader())
-                Schematic.read(reader)
-            } ?: Schematic()
+                SchematicModel.read(reader)
+            } ?: SchematicModel(Schematic())
         }
     }
 

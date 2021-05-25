@@ -41,20 +41,6 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
     }
 
-    var schematic = _schematic
-        set(value) {
-            field = value
-            schematicModel = SchematicModel(field)
-            zoomExtents()
-        }
-
-
-    private var currentState: State = State(Schematic(), setOf())
-    private val redoStack = mutableListOf<State>()
-    private val undoStack = mutableListOf<State>()
-
-    private val selectionListeners = mutableListOf<SelectionListener>()
-
 
     private val invalidateListener = object : InvalidateListener {
         override fun invalidateItem(item: Item) {
@@ -62,8 +48,26 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         }
     }
 
+    private lateinit var _schematicModel: SchematicModel
+
+    var schematicModel: SchematicModel
+        get() = _schematicModel
+        set (value) {
+            _schematicModel.removeInvalidateListener(invalidateListener)
+            _schematicModel = value
+            _schematicModel.addInvalidateListener(invalidateListener)
+            zoomExtents()
+        }
+
+    init {
+        SchematicModel(_schematic).apply {
+            _schematicModel = this
+            schematicModel = this
+        }
+    }
 
 
+    private val selectionListeners = mutableListOf<SelectionListener>()
 
     fun addSelectionListener(listener: SelectionListener) {
         selectionListeners.add(listener)
@@ -74,99 +78,6 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
     }
 
     fun applyToSelection(transform: (Item) -> Unit) {
-    }
-
-
-    private var _schematicModel: SchematicModel = SchematicModel(schematic)
-
-    private var schematicModel: SchematicModel
-        get() = _schematicModel
-        set (value) {
-            _schematicModel.removeInvalidateListener(invalidateListener)
-            _schematicModel = value
-            _schematicModel.addInvalidateListener(invalidateListener)
-            zoomExtents()
-        }
-
-    init {
-        schematicModel = SchematicModel(schematic)
-    }
-
-
-
-    override val canSave: Boolean
-        get() = false
-
-    override fun save() {
-    }
-
-    private fun canRedo(): Boolean {
-        return redoStack.isNotEmpty()
-    }
-
-    override val canRedo: Boolean
-        get() = true
-
-    override fun redo() {
-        if (redoStack.isNotEmpty()) {
-            undoStack.add(0, currentState)
-            currentState = redoStack.removeFirst()
-        }
-    }
-
-    private fun canUndo(): Boolean {
-        return undoStack.isNotEmpty()
-    }
-
-    override fun undo() {
-        if (undoStack.isNotEmpty()) {
-            redoStack.add(0, currentState)
-            currentState = undoStack.removeFirst()
-        }
-    }
-
-    override fun addItem(item: Item) {
-        addItems(listOf(item))
-    }
-
-    fun addItems(items: List<Item>) {
-        val nextState = currentState.addItems(items)
-        undoStack.add(currentState)
-        currentState = nextState
-        redoStack.clear()
-    }
-
-    fun deleteSelectedItems() {
-        deleteItems { currentState.isSelected(it) }
-    }
-
-    override val canSelectAll: Boolean
-        get() = true
-
-    override val canSelectNone: Boolean
-        get() = true
-
-    override fun selectAll() {
-        selectItems { true }
-    }
-
-    override fun selectNone() {
-        selectItems { false }
-    }
-
-
-    private fun deleteItems(predicate: (Item) -> Boolean) {
-        val nextState = currentState.deleteItems(predicate)
-        undoStack.add(currentState)
-        currentState = nextState
-        redoStack.clear()
-    }
-
-    private fun selectItems(predicate: (Item) -> Boolean) {
-        val nextState = currentState.selectItems(predicate)
-        undoStack.add(currentState)
-        currentState = nextState
-        redoStack.clear()
     }
 
     companion object {
@@ -185,8 +96,14 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
     }
 
+    private var firstZoom = true
+
     override fun paintComponent(graphics: Graphics?) {
         super.paintComponent(graphics)
+        if (firstZoom) {
+            zoomExtents()
+            firstZoom = false
+        }
         (graphics as Graphics2D).also { g ->
             val oldTransform = g.transform
             g.transform(currentTransform)
@@ -199,6 +116,84 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
     private var currentTransform = AffineTransform()
 
+
+    override var tool: Tool = DummyTool.createTool(this)
+    override val toolTarget: ToolTarget get() = this
+
+    override fun addToolListener(listener: ToolListener) {
+    }
+
+    override fun removeToolListener(listener: ToolListener) {
+    }
+
+
+
+    private val mouseListener = object: MouseListener, MouseMotionListener {
+
+        override fun mouseClicked(e: MouseEvent?) {}
+
+        override fun mousePressed(event: MouseEvent?) {
+            event?.let { tool.buttonPressed(calculateEventPoint(it), calculateDrawingPoint(it)) }
+        }
+
+        override fun mouseReleased(event: MouseEvent?) {
+            event?.let { tool.buttonReleased(calculateEventPoint(it), calculateDrawingPoint(it)) }
+        }
+
+        override fun mouseEntered(e: MouseEvent?) {}
+
+        override fun mouseExited(e: MouseEvent?) {}
+
+        override fun mouseDragged(event: MouseEvent?) {
+            event?.let { tool.motion(calculateEventPoint(it), calculateDrawingPoint(it)) }
+        }
+
+        override fun mouseMoved(event: MouseEvent?) {
+            event?.let { tool.motion(calculateEventPoint(it), calculateDrawingPoint(it)) }
+        }
+
+        private fun calculateDrawingPoint(event: MouseEvent) = event
+            .let { Point2D.Double(it.x.toDouble(), it.y.toDouble()) }
+            .let { currentTransform.inverseTransform(it, null) }
+            .let { Point(it.x.roundToInt(), it.y.roundToInt()) }
+
+        private fun calculateEventPoint(event: MouseEvent) = event
+            .let { Point(it.x, it.y) }
+    }
+
+    init {
+        addMouseListener(mouseListener)
+        addMouseMotionListener(mouseListener)
+    }
+
+    override val gridSize: Int = 100
+
+    override fun addItem(item: Item) {
+        //TODO("Not yet implemented")
+    }
+
+
+    override fun repaint(item: Item) {
+        repaint()
+    }
+
+    override fun zoomBox(p0: Point, p1: Point) {
+        val dx = abs(p1.x - p0.x);
+        val dy = abs(p1.y - p0.y);
+
+        if ((dx >= 1.0) && (dy >= 1.0))
+        {
+            zoomPoint(
+                centerX = ((p1.x + p0.x) / 2.0).roundToInt(),
+                centerY = ((p1.y + p0.y) / 2.0).roundToInt(),
+                factor = minOf(
+                    width.toDouble() / dx.toDouble(),
+                    height.toDouble() / dy.toDouble()
+                )
+            )
+        }
+    }
+
     private fun zoomExtents() {
         if ((width > 0) && (height > 0)) {
             AffineTransform().apply {
@@ -210,12 +205,12 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
                     bounds = Bounds.fromCorners(-500, -500, 1500, 1500)
                 }
 
-                var initialScale: Double = minOf(
+                val initialScale: Double = minOf(
                     (0.9 * width / abs(bounds.width)),
                     (0.9 * height / abs(bounds.height))
                 )
 
-                var finalScale = floor(100.0 * initialScale) / 100.0;
+                val finalScale = floor(100.0 * initialScale) / 100.0;
 
                 scale(finalScale, -finalScale);
 
@@ -238,95 +233,16 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         }
     }
 
-    override var tool: Tool = DummyTool.createTool(this)
-    override val toolTarget: ToolTarget get() = this
-
-    override fun addToolListener(listener: ToolListener) {
-    }
-
-    override fun removeToolListener(listener: ToolListener) {
-    }
-
-
-
-    private val mouseListener = object: MouseListener, MouseMotionListener {
-        override fun mouseClicked(e: MouseEvent?) {
-        }
-
-        override fun mousePressed(event: MouseEvent?) {
-            event?.let {
-                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.buttonPressed(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
-            }
-        }
-
-        override fun mouseReleased(event: MouseEvent?) {
-            event?.let {
-                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.buttonReleased(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
-            }
-        }
-
-        override fun mouseEntered(e: MouseEvent?) {
-        }
-
-        override fun mouseExited(e: MouseEvent?) {
-        }
-
-        override fun mouseDragged(event: MouseEvent?) {
-            event?.let {
-                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.motion(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
-            }
-        }
-
-        override fun mouseMoved(event: MouseEvent?) {
-            event?.let {
-                val point = currentTransform.transform(Point2D.Double(event.x.toDouble(), event.y.toDouble()), null)
-                tool.motion(Point(event.x, event.y), Point(point.x.roundToInt(), point.y.roundToInt()))
-            }
-        }
-    }
-
-    init {
-        addMouseListener(mouseListener)
-        addMouseMotionListener(mouseListener)
-    }
-
-    override val gridSize: Int = 100
-
-
-
-    override fun repaint(item: Item) {
-        repaint()
-    }
-
-    override fun zoomBox(p0: Point, p1: Point) {
-        val dx = abs(p1.x - p0.x);
-        val dy = abs(p1.y - p0.y);
-
-        if ((dx >= 1.0) && (dy >= 1.0))
-        {
-            val zoomX = width.toDouble() / dx.toDouble()
-            val zoomY = height.toDouble() / dy.toDouble()
-
-            val zoom = minOf(zoomX, zoomY)
-
-            val centerX = (p1.x + p0.x) / 2.0
-            val centerY = (p1.y + p0.y) / 2.0
-
-            zoomPoint(centerX.roundToInt(), centerY.roundToInt(), zoom)
-        }
-    }
-
     private fun zoomPoint(centerX: Int, centerY: Int, factor: Double) {
         val tempTransform = currentTransform
 
         var scale = floor(factor * 100.0 * currentTransform.scaleX);
+        // FIXME
         //scale = scale.clamp(4.0, 125.0);
         scale /= (100.0 * currentTransform.scaleX);
 
-        currentTransform.scale(scale, scale);
+        // FIXME
+        //currentTransform.scale(scale, scale);
 
         currentTransform = AffineTransform(
             currentTransform.scaleX,
@@ -337,7 +253,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
             round(height.toDouble() / 2.0)
         )
 
-        val dxy = tempTransform.transform(
+        val dxy = tempTransform.inverseTransform(
             Point2D.Double(centerX.toDouble(), centerY.toDouble()),
             Point2D.Double()
         )
@@ -355,4 +271,18 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
         repaint()
     }
+
+    override val canRedo: Boolean get() = schematicModel.canRedo
+    override fun redo() = schematicModel.redo()
+
+    override val canSave: Boolean get() = schematicModel.canSave
+    override fun save() = schematicModel.save()
+
+    override val canSelectAll: Boolean get() = schematicModel.canSelectAll
+    override val canSelectNone: Boolean get() = schematicModel.canSelectNone
+    override fun selectAll() = schematicModel.selectAll()
+    override fun selectNone() = schematicModel.selectNone()
+
+    override val canUndo: Boolean get() = schematicModel.canUndo
+    override fun undo() = schematicModel.undo()
 }

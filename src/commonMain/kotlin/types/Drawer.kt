@@ -10,6 +10,7 @@ interface Drawer {
     fun endDraw(color: ColorIndex, lineStyle: LineStyle)
     fun endDraw(color: ColorIndex, lineStyle: LineStyle, fillStyle: FillStyle)
 
+    fun drawArc(centerX: Int, centerY: Int, radius: Int, startAngle: Int, sweepAngle: Int)
     fun drawCircle(centerX: Int, centerY: Int, radius: Int)
     fun drawText(text: Text)
 
