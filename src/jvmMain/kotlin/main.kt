@@ -29,7 +29,7 @@ class Application : JFrame() {
         val font = FontUIResource("Sans", Font.PLAIN, 16)
 
         UIManager.getDefaults().keys.forEach {
-            if (UIManager.get(it) is FontUIResource ) {
+            if (UIManager.get(it) is FontUIResource) {
                 UIManager.put(it, font)
             }
         }
@@ -43,15 +43,16 @@ class Application : JFrame() {
 
     private val toolTarget = ToolThing(tabbedDocumentPane)
 
-    private val arcToolAction = object: ToolAction("Arc", toolTarget, ArcTool) {}
-    private val busToolAction = object: ToolAction("Bus", toolTarget, BusTool) {}
-    private val boxToolAction = object: ToolAction("Box", toolTarget, BoxTool) {}
-    private val circleToolAction = object: ToolAction("Circle", toolTarget, CircleTool) {}
-    private val lineToolAction = object: ToolAction("Line", toolTarget, LineTool) {}
-    private val netToolAction = object: ToolAction("Net", toolTarget, NetTool) {}
-    private val pinToolAction = object: ToolAction("Pin", toolTarget, PinTool) {}
-    private val selectToolAction = object: ToolAction("Select", toolTarget, SelectTool) {}
-    private val zoomToolAction = object: ToolAction("Zoom", toolTarget, ZoomTool) {}
+
+    private val arcToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("ArcTool.png")), toolTarget, ArcTool) {}
+    private val busToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("BusTool.png")), toolTarget, BusTool) {}
+    private val boxToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("BoxTool.png")), toolTarget, BoxTool) {}
+    private val circleToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("CircleTool.png")), toolTarget, CircleTool) {}
+    private val lineToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("LineTool.png")), toolTarget, LineTool) {}
+    private val netToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("NetTool.png")), toolTarget, NetTool) {}
+    private val pinToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("PinTool.png")), toolTarget, PinTool) {}
+    private val selectToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("SelectTool.png")), toolTarget, SelectTool) {}
+    private val zoomToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("ZoomTool.png")), toolTarget, ZoomTool) {}
 
 
     private val libraryTree = LibraryPanel()
@@ -74,12 +75,35 @@ class Application : JFrame() {
         title = "bbschemx"
         setSize(1000, 500)
         defaultCloseOperation = EXIT_ON_CLOSE
+
         jMenuBar = createMenu()
-        contentPane = createContent()
+
+        contentPane.also {
+            add(createToolBar(), BorderLayout.NORTH)
+            add(createMain(), BorderLayout.CENTER)
+        }
     }
 
-    private fun createToolButtons(vararg actions: AbstractAction): List<AbstractButton> =
-        actions.map { JToggleButton(it) }
+    private fun createMenu() = JMenuBar().apply {
+        add(JMenu("File").apply {
+            add(JMenuItem(NewAction()))
+            add(JMenuItem(OpenAction()))
+            addSeparator()
+            add(JMenuItem(SaveAction()))
+            add(JMenuItem(SaveAllAction()))
+        })
+        add(JMenu("Edit").apply {
+            add(JMenuItem(UndoAction()))
+            add(JMenuItem(RedoAction()))
+            addSeparator()
+            add(JMenuItem(CutAction()))
+            add(JMenuItem(CopyAction()))
+            add(JMenuItem(PasteAction()))
+            addSeparator()
+            add(JMenuItem(SelectAllAction()))
+            add(JMenuItem(SelectNoneAction()))
+        })
+    }
 
     private fun createToolBar() = JToolBar().apply {
         layout = FlowLayout(FlowLayout.LEFT)
@@ -105,149 +129,121 @@ class Application : JFrame() {
         }
     }
 
-    private fun createContent() = JPanel().apply {
-        layout = BorderLayout()
-        add(createToolBar(), BorderLayout.NORTH)
+    private fun createToolButtons(vararg actions: AbstractAction) = actions.map { JToggleButton(it) }
 
-        add(JSplitPane().apply {
-            orientation = JSplitPane.HORIZONTAL_SPLIT
-            leftComponent = tabbedToolPane
-            rightComponent = tabbedDocumentPane
-        }, BorderLayout.CENTER)
+    private fun createMain() = JSplitPane().apply {
+        orientation = JSplitPane.HORIZONTAL_SPLIT
+        leftComponent = tabbedToolPane
+        rightComponent = tabbedDocumentPane
     }
 
-        private fun createMenu() = JMenuBar().apply {
-            add(JMenu("File").apply {
-                add(JMenuItem(NewAction()))
-                add(JMenuItem(OpenAction()))
-                addSeparator()
-                add(JMenuItem(SaveAction()))
-                add(JMenuItem(SaveAllAction()))
-            })
-            add(JMenu("Edit").apply {
-                add(JMenuItem(UndoAction()))
-                add(JMenuItem(RedoAction()))
-                addSeparator()
-                add(JMenuItem(CutAction()))
-                add(JMenuItem(CopyAction()))
-                add(JMenuItem(PasteAction()))
-                addSeparator()
-                add(JMenuItem(SelectAllAction()))
-                add(JMenuItem(SelectNoneAction()))
-            })
+
+    private inner class CopyAction : DocumentAction("Copy", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is CopyCapable && it.canCopy }
+
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is CopyCapable) it.copy() }
+        }
+    }
+
+    private inner class CutAction : DocumentAction("Cut", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is CutCapable && it.canCut }
+
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is CutCapable) it.cut() }
+        }
+    }
+
+    private inner class NewAction : DocumentAction("New", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) = true
+
+        override fun actionPerformed(e: ActionEvent?) {
+            tabbedDocumentPane.addTab("Untitled", SchematicView())
+        }
+    }
+
+    private inner class OpenAction : DocumentAction("Open...", tabbedDocumentPane) {
+        var dialog = FileDialog(this@Application, "Open...", FileDialog.LOAD).apply {
+            isMultipleMode = true
         }
 
+        override fun calculateEnabled(currentDocument: DocumentView) = true
 
-        private inner class CopyAction : DocumentAction("Copy", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is CopyCapable && it.canCopy }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is CopyCapable) it.copy() }
-            }
-        }
-
-        private inner class CutAction : DocumentAction("Cut", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is CutCapable && it.canCut }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is CutCapable) it.cut() }
-            }
-        }
-
-        private inner class NewAction : DocumentAction("New", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) = true
-
-            override fun actionPerformed(e: ActionEvent?) {
-                tabbedDocumentPane.addTab("Untitled", SchematicView())
-            }
-        }
-
-        private inner class OpenAction : DocumentAction("Open...", tabbedDocumentPane) {
-            var dialog = FileDialog(this@Application, "Open...", FileDialog.LOAD).apply {
-                isMultipleMode = true
-            }
-
-            override fun calculateEnabled(currentDocument: DocumentView) = true
-
-            override fun actionPerformed(e: ActionEvent?) {
-                dialog.isVisible = true
-                dialog.files.forEach {
-                    tabbedDocumentPane.addTab(it.name, SchematicView.load(it))
-                }
-            }
-        }
-
-        private inner class PasteAction : DocumentAction("Paste", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is PasteCapable && it.canPaste }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is PasteCapable) it.paste() }
-            }
-        }
-
-        private inner class RedoAction : DocumentAction("Redo", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is RedoCapable && it.canRedo }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is RedoCapable) it.redo() }
-            }
-        }
-
-        private inner class SaveAction : DocumentAction("Save", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is SaveCapable && it.canSave }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is SaveCapable) it.save() }
-            }
-        }
-
-        private inner class SaveAllAction : DocumentAction("Save All", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                tabbedDocumentPane.components.any { it is SaveCapable && it.canSave }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                tabbedDocumentPane.components.forEach { document ->
-                    document.also { if (it is SaveCapable) it.save() }
-                }
-            }
-        }
-
-        private inner class UndoAction : DocumentAction("Undo", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is CopyCapable && it.canCopy }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is UndoCapable) it.undo() }
-            }
-        }
-
-        private inner class SelectAllAction : DocumentAction("Select All", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is SelectCapable && it.canSelectAll }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is SelectCapable) it.selectAll() }
-            }
-        }
-
-        private inner class SelectNoneAction : DocumentAction("Select None", tabbedDocumentPane) {
-            override fun calculateEnabled(currentDocument: DocumentView) =
-                currentDocument.let { it is SelectCapable && it.canSelectNone }
-
-            override fun actionPerformed(e: ActionEvent?) {
-                currentDocument.also { if (it is SelectCapable) it.selectNone() }
+        override fun actionPerformed(e: ActionEvent?) {
+            dialog.isVisible = true
+            dialog.files.forEach {
+                tabbedDocumentPane.addTab(it.name, SchematicView.load(it))
             }
         }
     }
 
+    private inner class PasteAction : DocumentAction("Paste", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is PasteCapable && it.canPaste }
 
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is PasteCapable) it.paste() }
+        }
+    }
 
+    private inner class RedoAction : DocumentAction("Redo", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is RedoCapable && it.canRedo }
 
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is RedoCapable) it.redo() }
+        }
+    }
+
+    private inner class SaveAction : DocumentAction("Save", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is SaveCapable && it.canSave }
+
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is SaveCapable) it.save() }
+        }
+    }
+
+    private inner class SaveAllAction : DocumentAction("Save All", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            tabbedDocumentPane.components.any { it is SaveCapable && it.canSave }
+
+        override fun actionPerformed(e: ActionEvent?) {
+            tabbedDocumentPane.components.forEach { document ->
+                document.also { if (it is SaveCapable) it.save() }
+            }
+        }
+    }
+
+    private inner class UndoAction : DocumentAction("Undo", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is CopyCapable && it.canCopy }
+
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is UndoCapable) it.undo() }
+        }
+    }
+
+    private inner class SelectAllAction : DocumentAction("Select All", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is SelectCapable && it.canSelectAll }
+
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is SelectCapable) it.selectAll() }
+        }
+    }
+
+    private inner class SelectNoneAction : DocumentAction("Select None", tabbedDocumentPane) {
+        override fun calculateEnabled(currentDocument: DocumentView) =
+            currentDocument.let { it is SelectCapable && it.canSelectNone }
+
+        override fun actionPerformed(e: ActionEvent?) {
+            currentDocument.also { if (it is SelectCapable) it.selectNone() }
+        }
+    }
+}
 
 
 fun main() {
