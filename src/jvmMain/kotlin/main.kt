@@ -1,4 +1,5 @@
 import actions.DocumentAction
+import actions.RevealAction
 import tools.arc.ArcTool
 import tools2.ToolAction
 import tools2.ToolThing
@@ -54,6 +55,8 @@ class Application : JFrame() {
     private val selectToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("SelectTool.png")), toolTarget, SelectTool) {}
     private val zoomToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("ZoomTool.png")), toolTarget, ZoomTool) {}
 
+    private val revealAction = RevealAction("Reveal", tabbedDocumentPane)
+
 
     private val libraryTree = LibraryPanel()
 
@@ -103,6 +106,9 @@ class Application : JFrame() {
             add(JMenuItem(SelectAllAction()))
             add(JMenuItem(SelectNoneAction()))
         })
+        add(JMenu("View").apply {
+            add(revealAction.createMenuItem())
+        })
     }
 
     private fun createToolBar() = JToolBar().apply {
@@ -127,6 +133,7 @@ class Application : JFrame() {
             add(it)
             toolGroup.add(it)
         }
+        add(revealAction.createToolbarButton())
     }
 
     private fun createToolButtons(vararg actions: AbstractAction) = actions.map { JToggleButton(it) }

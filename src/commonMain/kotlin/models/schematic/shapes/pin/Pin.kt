@@ -7,6 +7,7 @@ import models.schematic.shapes.bus.Bus
 import models.schematic.shapes.net.Net
 import models.schematic.types.*
 import types.Drawer
+import types.RevealMode
 
 class Pin(
     val x0: Int = 0,
@@ -128,7 +129,7 @@ class Pin(
         )
     }
 
-    override fun paint(drawer: Drawer) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode) {
         drawer.apply {
             beginDraw()
 

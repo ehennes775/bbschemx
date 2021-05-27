@@ -8,6 +8,7 @@ import tools.ToolFactory
 import tools.ToolSettings
 import tools.ToolTarget
 import types.Angle
+import types.RevealMode
 import kotlin.math.roundToInt
 
 class ArcTool(private val target: ToolTarget): Tool {
@@ -39,7 +40,7 @@ class ArcTool(private val target: ToolTarget): Tool {
     override fun draw(drawer: Drawer) {
         when (state) {
             State.S0 -> {}
-            else -> prototype.paint(drawer)
+            else -> prototype.paint(drawer, RevealMode.SHOWN)
         }
     }
 

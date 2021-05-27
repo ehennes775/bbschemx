@@ -5,6 +5,7 @@ import models.schematic.io.Reader
 import models.schematic.io.Writer
 import models.schematic.types.*
 import types.Drawer
+import types.RevealMode
 
 class Text(
     val insertX: Int,
@@ -175,8 +176,8 @@ class Text(
         )
     }
 
-    override fun paint(drawer: Drawer) {
-        if (visibility == Visibility.VISIBLE) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+        if (revealMode.textIsVisible(visibility)) {
             drawer.drawText(this)
         }
     }

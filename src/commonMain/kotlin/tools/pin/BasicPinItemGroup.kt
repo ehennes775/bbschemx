@@ -5,6 +5,7 @@ import models.schematic.shapes.pin.Pin
 import models.schematic.types.ColorIndex
 import types.Drawer
 import tools.ToolTarget
+import types.RevealMode
 
 class BasicPinItemGroup(
     private val prototypePin: Pin = Pin(),
@@ -27,8 +28,8 @@ class BasicPinItemGroup(
     )
 
     override fun draw(drawer: Drawer) {
-        prototypePin.paint(drawer)
-        prototypeBubble.paint(drawer)
+        prototypePin.paint(drawer, RevealMode.SHOWN)
+        prototypeBubble.paint(drawer, RevealMode.SHOWN)
     }
 
     override fun repaint(target: ToolTarget) {

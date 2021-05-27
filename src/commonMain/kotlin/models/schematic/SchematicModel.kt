@@ -10,6 +10,7 @@ import models.schematic.shapes.pin.PinType
 import models.schematic.shapes.text.Text
 import models.schematic.types.*
 import types.Drawer
+import types.RevealMode
 
 class SchematicModel(private var schematic: Schematic) {
 
@@ -183,8 +184,8 @@ class SchematicModel(private var schematic: Schematic) {
 
     fun calculateBounds() = schematic.calculateBounds()
 
-    fun paint(drawer: Drawer) {
-        schematic.paint(drawer)
+    fun paint(drawer: Drawer, revealMode: RevealMode) {
+        schematic.paint(drawer, revealMode)
     }
 
 

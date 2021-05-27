@@ -4,7 +4,6 @@ import RedoCapable
 import SaveCapable
 import SelectCapable
 import models.schematic.listeners.SelectionListener
-import State
 import UndoCapable
 import actions.DocumentListener
 import models.schematic.listeners.InvalidateListener
@@ -19,7 +18,7 @@ import tools.ToolListener
 import tools.ToolSource
 import tools.ToolTarget
 import tools.dummy.DummyTool
-import tools.line.LineTool
+import types.RevealMode
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
 import java.awt.Graphics
@@ -40,6 +39,13 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
     init {
         background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
     }
+
+
+    var revealMode: RevealMode = RevealMode.HIDDEN
+        set(value) {
+            field = value
+            repaint()
+        }
 
 
     private val invalidateListener = object : InvalidateListener {
@@ -108,7 +114,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
             val oldTransform = g.transform
             g.transform(currentTransform)
             JavaDrawer(g, oldTransform).also { d ->
-                schematicModel.paint(d)
+                schematicModel.paint(d, revealMode)
                 tool.draw(d)
             }
         }

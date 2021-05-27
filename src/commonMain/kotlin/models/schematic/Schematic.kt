@@ -14,6 +14,7 @@ import models.schematic.shapes.path.Path
 import models.schematic.shapes.pin.Pin
 import models.schematic.shapes.text.Text
 import types.Drawer
+import types.RevealMode
 
 class Schematic(
     val version: Version = Version(),
@@ -115,11 +116,11 @@ class Schematic(
     )
 
 
-    fun paint(drawer: Drawer) {
+    fun paint(drawer: Drawer, revealMode: RevealMode) {
         items.forEach {
-            it.paint(drawer)
+            it.paint(drawer, revealMode)
             if (it is AttributeItem) {
-                it.attributes.paint(drawer)
+                it.attributes.paint(drawer, revealMode)
             }
         }
     }

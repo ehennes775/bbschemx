@@ -5,6 +5,7 @@ import models.schematic.io.Reader
 import models.schematic.io.Writer
 import models.schematic.types.*
 import types.Drawer
+import types.RevealMode
 
 class Complex(
     val insertX: Int,
@@ -44,7 +45,7 @@ class Complex(
         )
     }
 
-    override fun paint(drawer: Drawer) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode) {
         // drawer.draw(this)
     }
 

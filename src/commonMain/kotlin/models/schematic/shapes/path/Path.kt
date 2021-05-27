@@ -5,6 +5,7 @@ import models.schematic.io.Reader
 import models.schematic.io.Writer
 import models.schematic.types.*
 import types.Drawer
+import types.RevealMode
 
 class Path(
     override val color: ColorIndex,
@@ -72,7 +73,7 @@ class Path(
         }
     }
 
-    override fun paint(drawer: Drawer) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode) {
         drawer.beginDraw()
         commands.forEach { it.paint(drawer) }
         drawer.endDraw(color, lineStyle, fillStyle)

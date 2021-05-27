@@ -6,6 +6,7 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolTarget
+import types.RevealMode
 
 class LineTool(private val target: ToolTarget) : Tool {
 
@@ -28,7 +29,7 @@ class LineTool(private val target: ToolTarget) : Tool {
     override fun draw(drawer: Drawer) {
         when (state) {
             State.S0 -> {}
-            State.S1 -> prototype.paint(drawer)
+            State.S1 -> prototype.paint(drawer, RevealMode.SHOWN)
         }
     }
 

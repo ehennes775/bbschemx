@@ -5,6 +5,7 @@ import models.schematic.io.Reader
 import models.schematic.io.Writer
 import models.schematic.types.*
 import types.Drawer
+import types.RevealMode
 
 class Bus(
     val x0: Int = 0,
@@ -112,7 +113,7 @@ class Bus(
         )
     }
 
-    override fun paint(drawer: Drawer) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode) {
         drawer.apply {
             beginDraw()
             drawer.moveTo(x0, y0)
