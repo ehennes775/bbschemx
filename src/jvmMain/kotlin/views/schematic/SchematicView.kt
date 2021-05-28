@@ -18,6 +18,7 @@ import tools.ToolListener
 import tools.ToolSource
 import tools.ToolTarget
 import tools.dummy.DummyTool
+import types.GridMode
 import types.RevealMode
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
@@ -40,6 +41,12 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
     }
 
+
+    var gridMode: GridMode = GridMode.ON
+        set(value) {
+            field = value
+            repaint()
+        }
 
     var revealMode: RevealMode = RevealMode.HIDDEN
         set(value) {
@@ -172,7 +179,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         addMouseMotionListener(mouseListener)
     }
 
-    override val gridSize: Int = 100
+    override var gridSize: Int = 100
 
     override fun addItem(item: Item) {
         //TODO("Not yet implemented")
@@ -200,7 +207,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         }
     }
 
-    private fun zoomExtents() {
+    fun zoomExtents() {
         if ((width > 0) && (height > 0)) {
             AffineTransform().apply {
                 translate(round(width / 2.0), round(height / 2.0))

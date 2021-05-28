@@ -1,5 +1,4 @@
-import actions.DocumentAction
-import actions.RevealAction
+import actions.*
 import tools.arc.ArcTool
 import tools2.ToolAction
 import tools2.ToolThing
@@ -11,6 +10,7 @@ import tools.net.NetTool
 import tools.pin.PinTool
 import tools.select.SelectTool
 import tools.zoom.ZoomTool
+import views.IconLoader
 import views.document.DocumentView
 import views.library.LibraryPanel
 import views.schematic.ColorEditor
@@ -22,7 +22,7 @@ import java.awt.event.ActionEvent
 import javax.swing.*
 import javax.swing.plaf.FontUIResource
 
-class Application : JFrame() {
+class Application : JFrame(), IconLoader {
 
     init {
         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())
@@ -35,6 +35,7 @@ class Application : JFrame() {
             }
         }
     }
+
 
     private val tabbedDocumentPane = JTabbedPane().apply {
         addTab("Thing 1", SchematicView())
@@ -55,8 +56,13 @@ class Application : JFrame() {
     private val selectToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("SelectTool.png")), toolTarget, SelectTool) {}
     private val zoomToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("ZoomTool.png")), toolTarget, ZoomTool) {}
 
+    private val clipboardActions = ClipboardActions(tabbedDocumentPane)
+    private val gridAction = GridAction("Grid Mode", tabbedDocumentPane)
+    private val gridSizeActions: GridSizeActions = GridSizeActions(tabbedDocumentPane)
     private val revealAction = RevealAction("Reveal", tabbedDocumentPane)
-
+    private val selectActions = SelectActions(tabbedDocumentPane)
+    private val undoRedoActions = UndoRedoActions(tabbedDocumentPane)
+    private val zoomActions = ZoomActions(tabbedDocumentPane, this)
 
     private val libraryTree = LibraryPanel()
 
@@ -96,18 +102,27 @@ class Application : JFrame() {
             add(JMenuItem(SaveAllAction()))
         })
         add(JMenu("Edit").apply {
-            add(JMenuItem(UndoAction()))
-            add(JMenuItem(RedoAction()))
+            add(undoRedoActions.undoAction)
+            add(undoRedoActions.redoAction)
             addSeparator()
-            add(JMenuItem(CutAction()))
-            add(JMenuItem(CopyAction()))
-            add(JMenuItem(PasteAction()))
+            add(clipboardActions.cutAction)
+            add(clipboardActions.copyAction)
+            add(clipboardActions.pasteAction)
             addSeparator()
-            add(JMenuItem(SelectAllAction()))
-            add(JMenuItem(SelectNoneAction()))
+            add(selectActions.selectAllAction)
+            add(selectActions.selectNoneAction)
         })
         add(JMenu("View").apply {
+            add(zoomActions.zoomExtentsAction)
+            add(zoomActions.zoomInAction)
+            add(zoomActions.zoomOutAction)
+            addSeparator()
+            add(gridAction.createMenuItem())
             add(revealAction.createMenuItem())
+            addSeparator()
+            add(gridSizeActions.resetGridAction)
+            add(gridSizeActions.scaleDownAction)
+            add(gridSizeActions.scaleUpAction)
         })
     }
 
@@ -134,6 +149,10 @@ class Application : JFrame() {
             toolGroup.add(it)
         }
         add(revealAction.createToolbarButton())
+        addSeparator()
+        add(zoomActions.zoomInAction)
+        add(zoomActions.zoomOutAction)
+        add(zoomActions.zoomExtentsAction)
     }
 
     private fun createToolButtons(vararg actions: AbstractAction) = actions.map { JToggleButton(it) }
@@ -250,6 +269,8 @@ class Application : JFrame() {
             currentDocument.also { if (it is SelectCapable) it.selectNone() }
         }
     }
+
+    override fun loadIcon(name: String): ImageIcon = ImageIcon(this.javaClass.getResource(name))
 }
 
 

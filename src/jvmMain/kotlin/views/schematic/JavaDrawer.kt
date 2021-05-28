@@ -10,6 +10,7 @@ import java.awt.geom.Arc2D
 import java.awt.geom.Path2D
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: AffineTransform): Drawer {
 
@@ -142,7 +143,7 @@ class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: Aff
         private fun createFont(size: Int) = Font(FONT_NAME, FONT_STYLE, size)
     }
 
-    override fun drawText(text: Text) {
+    override fun drawText(alpha: Double, text: Text) {
         graphics.apply {
             font = createFont(text.size)
             val savedTransform = transform
@@ -151,7 +152,9 @@ class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: Aff
             rotate(PI * text.rotation.toDouble() / -180.0)
             val lineX = -thing1(font, text).toFloat()
             var lineY = thing3(font, text).toFloat();
-            color = COLORS[text.color]
+            color = COLORS[text.color]!!.let {
+                Color(it.red, it.green, it.blue, (255.0 * alpha).roundToInt())
+            }
             text.shownLines.forEach {
                 drawString(it, lineX, lineY)
                 lineY += 100.0f

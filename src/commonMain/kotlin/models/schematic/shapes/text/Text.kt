@@ -178,7 +178,7 @@ class Text(
 
     override fun paint(drawer: Drawer, revealMode: RevealMode) {
         if (revealMode.textIsVisible(visibility)) {
-            drawer.drawText(this)
+            drawer.drawText(revealMode.alpha(visibility), this)
         }
     }
 
