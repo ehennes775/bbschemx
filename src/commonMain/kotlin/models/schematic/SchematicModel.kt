@@ -182,7 +182,7 @@ class SchematicModel(private var schematic: Schematic) {
     }
 
 
-    fun calculateBounds() = schematic.calculateBounds()
+    fun calculateBounds(revealMode: RevealMode) = schematic.calculateBounds(revealMode)
 
     fun paint(drawer: Drawer, revealMode: RevealMode) {
         schematic.paint(drawer, revealMode)

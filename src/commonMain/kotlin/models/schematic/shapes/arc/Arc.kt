@@ -17,79 +17,27 @@ class Arc(
     override val lineStyle: LineStyle = LineStyle()
 ) : Item, ColorItem, LineItem {
 
-    fun withCenter(newCenterX: Int, newCenterY: Int) = Arc(
-        newCenterX,
-        newCenterY,
-        radius,
-        startAngle,
-        sweepAngle,
-        color,
-        lineStyle
+    fun withValues(
+        newCenterX: Int = centerY,
+        newCenterY: Int = centerY,
+        newRadius: Int = radius,
+        newStartAngle: Int = startAngle,
+        newSweepAngle: Int = sweepAngle,
+        newColor: ColorIndex = color,
+        newLineStyle: LineStyle = lineStyle
+    ) = Arc(newCenterX, newCenterY, newRadius, newStartAngle, newSweepAngle, newColor, newLineStyle)
+
+    override fun withItemColor(newColor: ColorIndex) = withValues(
+        newColor = newColor,
     )
 
-    fun withCenterX(newCenterX: Int) = withCenter(
-        newCenterX,
-        centerY,
-    )
-
-    fun withCenterY(newCenterY: Int) = withCenter(
-        centerX,
-        newCenterY,
-    )
-
-    fun withRadius(newRadius: Int) = Arc(
-        centerX,
-        centerY,
-        newRadius,
-        startAngle,
-        sweepAngle,
-        color,
-        lineStyle
-    )
-
-    fun withStartAngle(newStartAngle: Int) = Arc(
-        centerX,
-        centerY,
-        radius,
-        newStartAngle,
-        sweepAngle,
-        color,
-        lineStyle
-    )
-
-    fun withSweepAngle(newSweepAngle: Int) = Arc(
-        centerX,
-        centerY,
-        radius,
-        startAngle,
-        newSweepAngle,
-        color,
-        lineStyle
-    )
-
-    override fun withItemColor(newColor: ColorIndex) = Arc(
-        centerX,
-        centerY,
-        radius,
-        startAngle,
-        sweepAngle,
-        newColor,
-        lineStyle
-    )
-
-    override fun withLineStyle(newLineStyle: LineStyle) = Arc(
-        centerX,
-        centerY,
-        radius,
-        startAngle,
-        sweepAngle,
-        color,
-        newLineStyle
+    override fun withLineStyle(newLineStyle: LineStyle) = withValues(
+        newLineStyle = newLineStyle
     )
 
     override val isSignificant: Boolean get() = (radius != 0) && (sweepAngle != 0)
 
-    override fun calculateBounds() = Bounds.EMPTY
+    override fun calculateBounds(revealMode: RevealMode) = Bounds.EMPTY
 
     companion object : Creator {
         const val TOKEN = "A"
@@ -114,7 +62,7 @@ class Arc(
     override fun paint(drawer: Drawer, revealMode: RevealMode) {
         drawer.apply {
             beginDraw()
-            drawer.drawArc(centerX, centerY, radius, startAngle, sweepAngle)
+            drawArc(centerX, centerY, radius, startAngle, sweepAngle)
             endDraw(color, lineStyle)
         }
     }

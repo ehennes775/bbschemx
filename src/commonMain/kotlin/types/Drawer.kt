@@ -4,6 +4,7 @@ import models.schematic.shapes.text.Text
 import models.schematic.types.ColorIndex
 import models.schematic.types.FillStyle
 import models.schematic.types.LineStyle
+import java.awt.geom.AffineTransform
 
 interface Drawer {
     fun beginDraw()
@@ -19,4 +20,6 @@ interface Drawer {
     fun moveTo(x: Int, y: Int)
     fun lineTo(x: Int, y: Int)
     fun close()
+
+    fun drawGrid(gridSize: Int, width: Int, height: Int)
 }

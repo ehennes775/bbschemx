@@ -5,14 +5,14 @@ import models.schematic.types.*
 import types.Point
 import types.Drawer
 import java.awt.*
-import java.awt.geom.AffineTransform
-import java.awt.geom.Arc2D
-import java.awt.geom.Path2D
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.roundToInt
+import java.awt.geom.*
+import kotlin.math.*
 
-class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: AffineTransform): Drawer {
+class JavaDrawer(
+    private val graphics: Graphics2D,
+    private val oldTransform: AffineTransform,
+    private val currentTransform: AffineTransform
+    ): Drawer {
 
     init {
         graphics.apply {
@@ -89,6 +89,33 @@ class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: Aff
         currentPath.closePath()
     }
 
+    override fun drawGrid(gridSize: Int, width: Int, height: Int) {
+        graphics.apply {
+            val corner0 = currentTransform.inverseTransform(Point2D.Double(0.0, 0.0), null)
+            val corner1 = currentTransform.inverseTransform(Point2D.Double(width.toDouble(), height.toDouble()), null)
+
+            val y0 = ceil(minOf(corner0.y, corner1.y) / gridSize).roundToInt()
+            val y1 = floor(maxOf(corner0.y, corner1.y) / gridSize).roundToInt()
+
+            for (y in y0..y1) {
+                color = gridColor(y)
+                (gridSize * y).toDouble().let {
+                    draw(Line2D.Double(corner0.x, it, corner1.x, it))
+                }
+            }
+
+            val x0 = ceil(minOf(corner0.x, corner1.x) / gridSize).roundToInt()
+            val x1 = floor(maxOf(corner0.x, corner1.x) / gridSize).roundToInt()
+
+            for (x in x0..x1) {
+                color = gridColor(x)
+                (gridSize * x).toDouble().let {
+                    draw(Line2D.Double(it, corner0.y, it, corner1.y))
+                }
+            }
+        }
+    }
+
     companion object {
         private val BACKGROUND = Color.BLACK
         private val GRAPHIC = Color.GREEN.darker()
@@ -116,8 +143,8 @@ class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: Aff
             ColorIndex.FREESTYLE3 to Color(0.0f, 0.0f, 0.0f),
             ColorIndex.FREESTYLE4 to Color(0.0f, 0.0f, 0.0f),
             ColorIndex.JUNCTION to Color.YELLOW,
-            ColorIndex.MESH_GRID_MAJOR to Color.GRAY,
-            ColorIndex.MESH_GRID_MINOR to Color.GRAY
+            ColorIndex.MESH_GRID_MAJOR to Color.DARK_GRAY,
+            ColorIndex.MESH_GRID_MINOR to Color.DARK_GRAY.darker()
         ).withDefault { GRAPHIC }
 
         private const val JOIN_TYPE = BasicStroke.JOIN_ROUND
@@ -141,6 +168,12 @@ class JavaDrawer(private val graphics: Graphics2D, private val oldTransform: Aff
         private const val FONT_STYLE = Font.ITALIC
 
         private fun createFont(size: Int) = Font(FONT_NAME, FONT_STYLE, size)
+
+        private fun gridColor(coord: Int): Color = when {
+            coord == 0 -> Color.GRAY
+            coord % 5 == 0 -> COLORS[ColorIndex.MESH_GRID_MAJOR]!!
+            else -> COLORS[ColorIndex.MESH_GRID_MINOR]!!
+        }
     }
 
     override fun drawText(alpha: Double, text: Text) {

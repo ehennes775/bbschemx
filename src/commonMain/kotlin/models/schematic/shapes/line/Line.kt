@@ -74,7 +74,7 @@ class Line(
 
     override val isSignificant: Boolean get() = ((x1 - x0) != 0) && ((y1 - y0) != 0)
 
-    override fun calculateBounds() = Bounds.fromCorners(
+    override fun calculateBounds(revealMode: RevealMode) = Bounds.fromCorners(
         x0,
         y0,
         x1,

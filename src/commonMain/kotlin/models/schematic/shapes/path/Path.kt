@@ -43,7 +43,7 @@ class Path(
 
     override val isSignificant: Boolean get() = commands.isNotEmpty()
 
-    override fun calculateBounds() = Bounds.EMPTY
+    override fun calculateBounds(revealMode: RevealMode) = Bounds.EMPTY
 
     companion object : Creator {
         const val TOKEN = "H"

@@ -30,7 +30,7 @@ class Complex(
 
     override val isSignificant: Boolean get() = true
 
-    override fun calculateBounds() = Bounds.EMPTY
+    override fun calculateBounds(revealMode: RevealMode) = Bounds.EMPTY
 
     companion object : Creator {
         const val TOKEN = "C"

@@ -1,20 +1,35 @@
 package actions
 
+import views.schematic.SchematicView
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JTabbedPane
 
 open class UndoRedoActions(private val tabbedPane: JTabbedPane) {
 
-    val redoAction: AbstractAction = object: AbstractAction("Redo") {
+    private val currentView get() = tabbedPane.selectedComponent as? SchematicView
+
+    private val canRedo get() = currentView?.canRedo ?: false
+
+    private val canUndo get() = currentView?.canUndo ?: false
+
+    val redoAction: AbstractAction = object: AbstractAction(
+        "Redo"
+    ) {
         override fun actionPerformed(e: ActionEvent?) {
-            TODO("Not yet implemented")
+            currentView?.redo()
         }
+    }.apply {
+        isEnabled = canRedo
     }
 
-    val undoAction: AbstractAction = object: AbstractAction("Undo") {
+    val undoAction: AbstractAction = object: AbstractAction(
+        "Undo"
+    ) {
         override fun actionPerformed(e: ActionEvent?) {
-            TODO("Not yet implemented")
+            currentView?.undo()
         }
+    }.apply {
+        isEnabled = canUndo
     }
 }

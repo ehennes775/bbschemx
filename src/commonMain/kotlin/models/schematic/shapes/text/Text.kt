@@ -153,7 +153,11 @@ class Text(
 
     override val isSignificant: Boolean get() = true
 
-    override fun calculateBounds() = Bounds.EMPTY
+    override fun calculateBounds(revealMode: RevealMode) = if (revealMode.textIsVisible(visibility)) {
+        Bounds.fromCorners(insertX, insertY, insertX, insertY)
+    } else {
+        Bounds.EMPTY
+    }
 
     companion object : Creator {
         const val TOKEN = "T"

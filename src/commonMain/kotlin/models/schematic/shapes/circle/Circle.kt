@@ -72,7 +72,7 @@ class Circle(
 
     override val isSignificant: Boolean get() = (radius != 0)
 
-    override fun calculateBounds() = Bounds.fromCorners(
+    override fun calculateBounds(revealMode: RevealMode) = Bounds.fromCorners(
         centerX - radius,
         centerY - radius,
         centerX + radius,

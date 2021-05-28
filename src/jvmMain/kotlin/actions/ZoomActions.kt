@@ -24,7 +24,7 @@ class ZoomActions(private val tabbedPane: JTabbedPane, iconLoader: IconLoader) {
         iconLoader.loadIcon("ZoomIn.png")
     ) {
         override fun actionPerformed(e: ActionEvent?) {
-            TODO("Not yet implemented")
+            currentView?.zoomIn()
         }
     }
 
@@ -33,7 +33,7 @@ class ZoomActions(private val tabbedPane: JTabbedPane, iconLoader: IconLoader) {
         iconLoader.loadIcon("ZoomOut.png")
     ) {
         override fun actionPerformed(e: ActionEvent?) {
-            TODO("Not yet implemented")
+            currentView?.zoomOut()
         }
     }
 }

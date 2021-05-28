@@ -48,6 +48,12 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
             repaint()
         }
 
+    override var gridSize: Int = 100
+        set(value) {
+            field = value
+            repaint()
+        }
+
     var revealMode: RevealMode = RevealMode.HIDDEN
         set(value) {
             field = value
@@ -120,7 +126,10 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         (graphics as Graphics2D).also { g ->
             val oldTransform = g.transform
             g.transform(currentTransform)
-            JavaDrawer(g, oldTransform).also { d ->
+            JavaDrawer(g, oldTransform, currentTransform).also { d ->
+                if (gridMode == GridMode.ON) {
+                    d.drawGrid(gridSize, width, height)
+                }
                 schematicModel.paint(d, revealMode)
                 tool.draw(d)
             }
@@ -179,8 +188,6 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         addMouseMotionListener(mouseListener)
     }
 
-    override var gridSize: Int = 100
-
     override fun addItem(item: Item) {
         //TODO("Not yet implemented")
     }
@@ -212,7 +219,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
             AffineTransform().apply {
                 translate(round(width / 2.0), round(height / 2.0))
 
-                var bounds = schematicModel.calculateBounds()
+                var bounds = schematicModel.calculateBounds(revealMode)
 
                 if (bounds.empty) {
                     bounds = Bounds.fromCorners(-500, -500, 1500, 1500)
@@ -246,6 +253,14 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         }
     }
 
+    fun zoomIn() {
+        zoomPoint(width / 2, height / 2, 1.25);
+    }
+
+    fun zoomOut() {
+        zoomPoint(width / 2, height / 2, 0.8);
+    }
+
     private fun zoomPoint(centerX: Int, centerY: Int, factor: Double) {
         val tempTransform = currentTransform
 
@@ -255,7 +270,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         scale /= (100.0 * currentTransform.scaleX);
 
         // FIXME
-        //currentTransform.scale(scale, scale);
+        currentTransform.scale(scale, scale);
 
         currentTransform = AffineTransform(
             currentTransform.scaleX,
@@ -283,6 +298,21 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         )
 
         repaint()
+    }
+
+    val canCopy = true
+
+    fun copy() {
+    }
+
+    val canCut = true
+
+    fun cut() {
+    }
+
+    val canPaste = true
+
+    fun paste() {
     }
 
     override val canRedo: Boolean get() = schematicModel.canRedo

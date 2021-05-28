@@ -76,19 +76,19 @@ class ArcTool(private val target: ToolTarget): Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withCenter(it.x, it.y) }
+                .let { prototype.withValues(newCenterX = it.x, newCenterY = it.y) }
             State.S1 -> drawingPoint
                 .snapToGrid(target.gridSize).distanceTo(prototype.centerX, prototype.centerY).roundToInt()
-                .let { prototype.withRadius(it) }
+                .let { prototype.withValues(newRadius = it) }
             State.S2 -> drawingPoint
                 .let { Angle.calculateAngle(prototype.centerX, prototype.centerY, it.x, it.y) }
                 .let { Angle.fromRadians(it) }
-                .let { prototype.withStartAngle(it) }
+                .let { prototype.withValues(newStartAngle = it) }
             State.S3 -> drawingPoint
                 .let { Angle.calculateAngle(prototype.centerX, prototype.centerY, it.x, it.y) }
                 .let { Angle.fromRadians(it) }
                 .let { arcDirection.calculateSweep(prototype.startAngle, it) }
-                .let { prototype.withSweepAngle(it) }
+                .let { prototype.withValues(newSweepAngle = it) }
         }
     }
 

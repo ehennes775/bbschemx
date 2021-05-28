@@ -110,7 +110,7 @@ class Box(
 
     override val isSignificant: Boolean get() = ((upperX - lowerX) != 0) && ((upperY - lowerY) != 0)
 
-    override fun calculateBounds() = Bounds.fromCorners(
+    override fun calculateBounds(revealMode: RevealMode) = Bounds.fromCorners(
         lowerX,
         lowerY,
         upperX,

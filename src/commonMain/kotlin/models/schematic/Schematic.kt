@@ -95,8 +95,16 @@ class Schematic(
     }
 
 
-    fun calculateBounds() = items.fold(Bounds.EMPTY) { current, item ->
-        current.union(item.calculateBounds())
+    fun calculateBounds(revealMode: RevealMode) = items.fold(Bounds.EMPTY) { current, item ->
+        current.union(item.calculateBounds(revealMode)).let {
+            if (item is AttributeItem) {
+                item.attributes.items.fold(it) { c, i ->
+                    c.union(i.calculateBounds(revealMode))
+                }
+            } else {
+                it
+            }
+        }
     }
 
 
