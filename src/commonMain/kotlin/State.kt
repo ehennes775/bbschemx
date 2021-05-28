@@ -7,7 +7,7 @@ internal data class State(val schematic: Schematic, val selection: Set<Item>) {
     }
 
     fun addItems(items: List<Item>): State {
-        return State(schematic, selection)
+        return State(Schematic(schematic.version, schematic.items + items), selection)
     }
 
     fun deleteItems(predicate: (Item) -> Boolean): State {

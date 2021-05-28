@@ -4,7 +4,6 @@ import models.schematic.shapes.text.Text
 import models.schematic.types.ColorIndex
 import models.schematic.types.FillStyle
 import models.schematic.types.LineStyle
-import java.awt.geom.AffineTransform
 
 interface Drawer {
     fun beginDraw()

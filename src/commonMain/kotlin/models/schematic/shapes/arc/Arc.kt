@@ -18,7 +18,7 @@ class Arc(
 ) : Item, ColorItem, LineItem {
 
     fun withValues(
-        newCenterX: Int = centerY,
+        newCenterX: Int = centerX,
         newCenterY: Int = centerY,
         newRadius: Int = radius,
         newStartAngle: Int = startAngle,

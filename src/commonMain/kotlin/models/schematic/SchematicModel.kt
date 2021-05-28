@@ -12,7 +12,13 @@ import models.schematic.types.*
 import types.Drawer
 import types.RevealMode
 
-class SchematicModel(private var schematic: Schematic) {
+class SchematicModel(schematic: Schematic) {
+
+
+    private var currentState: State = State(schematic, setOf())
+    private val redoStack = mutableListOf<State>()
+    private val undoStack = mutableListOf<State>()
+
 
     private val invalidateListeners = mutableListOf<InvalidateListener>()
 
@@ -101,7 +107,7 @@ class SchematicModel(private var schematic: Schematic) {
 
 
     private inline fun <reified T> applyProperty(crossinline apply: (T) -> Item) {
-        schematic = schematic.map { if (it is T) apply(it) else it }
+        //schematic = schematic.map { if (it is T) apply(it) else it }
         firePropertyListener()
         fireSelectionChanged()
     }
@@ -174,24 +180,9 @@ class SchematicModel(private var schematic: Schematic) {
         it.withItemColor(newTextColor)
     }
 
-    fun add(items: List<Item>) {
-        schematic = Schematic(
-            schematic.version,
-            schematic.items + items
-        )
-    }
+    fun calculateBounds(revealMode: RevealMode) = currentState.schematic.calculateBounds(revealMode)
 
-
-    fun calculateBounds(revealMode: RevealMode) = schematic.calculateBounds(revealMode)
-
-    fun paint(drawer: Drawer, revealMode: RevealMode) {
-        schematic.paint(drawer, revealMode)
-    }
-
-
-    private var currentState: State = State(Schematic(), setOf())
-    private val redoStack = mutableListOf<State>()
-    private val undoStack = mutableListOf<State>()
+    fun paint(drawer: Drawer, revealMode: RevealMode) = currentState.schematic.paint(drawer, revealMode)
 
     private fun deleteItems(predicate: (Item) -> Boolean) {
         val nextState = currentState.deleteItems(predicate)

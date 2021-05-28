@@ -38,8 +38,8 @@ class Application : JFrame(), IconLoader {
 
 
     private val tabbedDocumentPane = JTabbedPane().apply {
-        addTab("Thing 1", SchematicView())
-        addTab("Thing 2", SchematicView())
+        //addTab("Thing 1", SchematicView())
+        //addTab("Thing 2", SchematicView())
     }
 
 

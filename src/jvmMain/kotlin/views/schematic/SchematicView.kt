@@ -188,9 +188,11 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         addMouseMotionListener(mouseListener)
     }
 
-    override fun addItem(item: Item) {
-        //TODO("Not yet implemented")
-    }
+
+    override fun addItem(item: Item) = schematicModel.addItems(listOf(item))
+
+    override fun addItems(items: List<Item>) = schematicModel.addItems(items)
+
 
 
     override fun repaint(item: Item) {
