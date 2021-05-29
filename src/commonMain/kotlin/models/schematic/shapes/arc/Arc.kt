@@ -39,6 +39,8 @@ class Arc(
 
     override fun calculateBounds(revealMode: RevealMode) = Bounds.EMPTY
 
+    override fun inside(bounds: Bounds) = false
+
     companion object : Creator {
         const val TOKEN = "A"
 
@@ -59,11 +61,11 @@ class Arc(
         )
     }
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         drawer.apply {
             beginDraw()
             drawArc(centerX, centerY, radius, startAngle, sweepAngle)
-            endDraw(color, lineStyle)
+            endDraw(selected, color, lineStyle)
         }
     }
 

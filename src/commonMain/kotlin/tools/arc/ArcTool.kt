@@ -40,7 +40,7 @@ class ArcTool(private val target: ToolTarget): Tool {
     override fun draw(drawer: Drawer) {
         when (state) {
             State.S0 -> {}
-            else -> prototype.paint(drawer, RevealMode.SHOWN)
+            else -> prototype.paint(drawer, RevealMode.SHOWN, false)
         }
     }
 

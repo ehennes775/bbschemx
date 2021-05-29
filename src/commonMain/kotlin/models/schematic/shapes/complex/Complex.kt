@@ -32,6 +32,8 @@ class Complex(
 
     override fun calculateBounds(revealMode: RevealMode) = Bounds.EMPTY
 
+    override fun inside(bounds: Bounds) = false
+
     companion object : Creator {
         const val TOKEN = "C"
 
@@ -45,7 +47,7 @@ class Complex(
         )
     }
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         // drawer.draw(this)
     }
 

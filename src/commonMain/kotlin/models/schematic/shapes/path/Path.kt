@@ -45,6 +45,8 @@ class Path(
 
     override fun calculateBounds(revealMode: RevealMode) = Bounds.EMPTY
 
+    override fun inside(bounds: Bounds) = false
+
     companion object : Creator {
         const val TOKEN = "H"
 
@@ -73,10 +75,10 @@ class Path(
         }
     }
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         drawer.beginDraw()
         commands.forEach { it.paint(drawer) }
-        drawer.endDraw(color, lineStyle, fillStyle)
+        drawer.endDraw(selected, color, lineStyle, fillStyle)
     }
 
     override fun write(writer: Writer) {

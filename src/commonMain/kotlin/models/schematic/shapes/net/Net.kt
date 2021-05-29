@@ -38,6 +38,8 @@ class Net(
         y1
     )
 
+    override fun inside(bounds: Bounds) = bounds.let { it.inside(x0, y0) && it.inside(x1, y1) }
+
     companion object : Creator {
         const val TOKEN = "N"
 
@@ -53,12 +55,12 @@ class Net(
     }
 
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         drawer.apply {
             beginDraw()
             moveTo(x0, y0)
             lineTo(x1, y1)
-            endDraw(color, lineStyle)
+            endDraw(selected, color, lineStyle)
         }
     }
 

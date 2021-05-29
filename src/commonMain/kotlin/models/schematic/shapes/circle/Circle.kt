@@ -80,6 +80,8 @@ class Circle(
         lineStyle.lineWidth
     )
 
+    override fun inside(bounds: Bounds) = false
+
     companion object : Creator {
         const val TOKEN = "V"
 
@@ -106,11 +108,11 @@ class Circle(
         )
     }
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         drawer.apply {
             beginDraw()
             drawCircle(centerX, centerY, radius)
-            endDraw(color, lineStyle, fillStyle)
+            endDraw(selected, color, lineStyle, fillStyle)
         }
     }
 

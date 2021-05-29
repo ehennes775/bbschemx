@@ -159,6 +159,8 @@ class Text(
         Bounds.EMPTY
     }
 
+    override fun inside(bounds: Bounds) = false
+
     companion object : Creator {
         const val TOKEN = "T"
 
@@ -180,7 +182,7 @@ class Text(
         )
     }
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         if (revealMode.textIsVisible(visibility)) {
             drawer.drawText(revealMode.alpha(visibility), this)
         }

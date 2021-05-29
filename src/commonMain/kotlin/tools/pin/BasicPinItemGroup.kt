@@ -28,8 +28,8 @@ class BasicPinItemGroup(
     )
 
     override fun draw(drawer: Drawer) {
-        prototypePin.paint(drawer, RevealMode.SHOWN)
-        prototypeBubble.paint(drawer, RevealMode.SHOWN)
+        prototypePin.paint(drawer, RevealMode.SHOWN, false)
+        prototypeBubble.paint(drawer, RevealMode.SHOWN, false)
     }
 
     override fun repaint(target: ToolTarget) {

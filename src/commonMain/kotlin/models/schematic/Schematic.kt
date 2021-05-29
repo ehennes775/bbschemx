@@ -124,11 +124,11 @@ class Schematic(
     )
 
 
-    fun paint(drawer: Drawer, revealMode: RevealMode) {
+    fun paint(drawer: Drawer, revealMode: RevealMode, selected: (Item) -> Boolean) {
         items.forEach {
-            it.paint(drawer, revealMode)
+            it.paint(drawer, revealMode, selected(it))
             if (it is AttributeItem) {
-                it.attributes.paint(drawer, revealMode)
+                it.attributes.paint(drawer, revealMode, selected)
             }
         }
     }

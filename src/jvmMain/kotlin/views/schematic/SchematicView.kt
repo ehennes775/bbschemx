@@ -199,6 +199,22 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         repaint()
     }
 
+    private fun Point.inverseTransform() = currentTransform.inverseTransform(
+        Point2D.Double(
+            this.x.toDouble(),
+            this.y.toDouble()
+        ), null
+    )
+
+    override fun selectBox(point0: Point, point1: Point) {
+        val p0 = point0.inverseTransform()
+        val p1 = point1.inverseTransform()
+
+        val bounds = Bounds.fromCorners(p0.x, p0.y, p1.x, p1.y)
+
+        schematicModel.selectItems(bounds)
+    }
+
     override fun zoomBox(p0: Point, p1: Point) {
         val dx = abs(p1.x - p0.x);
         val dy = abs(p1.y - p0.y);

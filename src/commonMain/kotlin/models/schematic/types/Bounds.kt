@@ -1,5 +1,9 @@
 package models.schematic.types
 
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
+
 class Bounds private constructor(val minX: Int, val minY: Int, val maxX: Int, val maxY: Int) {
 
     companion object {
@@ -21,6 +25,13 @@ class Bounds private constructor(val minX: Int, val minY: Int, val maxX: Int, va
         fun fromCorners(x0: Int, y0: Int, x1: Int, y1: Int, lineWidth: Int) = fromCorners(x0, y0, x1, y1).also{
             it.expand(lineWidth)
         }
+
+        fun fromCorners(x0: Double, y0: Double, x1:Double, y1: Double) = Bounds(
+            minX = floor(minOf(x0, x1)).roundToInt(),
+            minY = floor(minOf(y0, y1)).roundToInt(),
+            maxX = ceil(maxOf(x0, x1)).roundToInt(),
+            maxY = ceil(maxOf(y0, y1)).roundToInt(),
+        )
     }
 
     val empty = (minX > maxX) || (minY > maxY)
@@ -35,6 +46,8 @@ class Bounds private constructor(val minX: Int, val minY: Int, val maxX: Int, va
         maxX = maxX + expand,
         maxY = maxY + expand
     )
+
+    fun inside(x: Int, y: Int) = (x in minX..maxX) && (y in minY..maxY)
 
     fun union(other: Bounds) = Bounds(
         minX = minOf(minX, other.minX),

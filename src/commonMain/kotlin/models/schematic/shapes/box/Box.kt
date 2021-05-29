@@ -118,6 +118,10 @@ class Box(
         lineStyle.lineWidth
     )
 
+    override fun inside(bounds: Bounds) = bounds.let {
+        it.inside(lowerX, lowerY) && it.inside(upperX, upperY)
+    }
+
     companion object : Creator {
         const val TOKEN = "B"
 
@@ -152,7 +156,7 @@ class Box(
         }
     }
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         drawer.apply {
             beginDraw()
 
@@ -162,7 +166,7 @@ class Box(
             lineTo(lowerX, upperY)
             close()
 
-            endDraw(color , lineStyle, fillStyle)
+            endDraw(selected, color, lineStyle, fillStyle)
         }
     }
 

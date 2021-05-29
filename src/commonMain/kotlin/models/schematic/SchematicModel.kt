@@ -14,7 +14,6 @@ import types.RevealMode
 
 class SchematicModel(schematic: Schematic) {
 
-
     private var currentState: State = State(schematic, setOf())
     private val redoStack = mutableListOf<State>()
     private val undoStack = mutableListOf<State>()
@@ -182,7 +181,7 @@ class SchematicModel(schematic: Schematic) {
 
     fun calculateBounds(revealMode: RevealMode) = currentState.schematic.calculateBounds(revealMode)
 
-    fun paint(drawer: Drawer, revealMode: RevealMode) = currentState.schematic.paint(drawer, revealMode)
+    fun paint(drawer: Drawer, revealMode: RevealMode) = currentState.paint(drawer, revealMode)
 
     private fun deleteItems(predicate: (Item) -> Boolean) {
         val nextState = currentState.deleteItems(predicate)
@@ -235,14 +234,14 @@ class SchematicModel(schematic: Schematic) {
 
     val canSelectNone: Boolean get() = true
 
-    fun selectAll() { selectItems { true } }
+    fun selectAll() = selectItems { true }
 
-    fun selectNone() { selectItems { false } }
+    fun selectNone() = selectItems { false }
 
+    fun selectItems(bounds: Bounds) = selectItems { it.inside(bounds) }
 
     companion object {
 
         fun read(reader: Reader): SchematicModel = SchematicModel(Schematic.read(reader))
-
     }
 }

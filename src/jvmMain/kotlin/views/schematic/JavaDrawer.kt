@@ -25,17 +25,17 @@ class JavaDrawer(
         currentPath = Path2D.Double()
     }
 
-    override fun endDraw(colorIndex: ColorIndex, lineStyle: LineStyle) {
+    override fun endDraw(selected: Boolean, colorIndex: ColorIndex, lineStyle: LineStyle) {
         graphics.apply {
-            color = COLORS[colorIndex]
+            color = itemColor(selected, colorIndex)
             stroke = createStroke(lineStyle)
             draw(currentPath)
         }
     }
 
-    override fun endDraw(colorIndex: ColorIndex, lineStyle: LineStyle, fillStyle: FillStyle) {
+    override fun endDraw(selected: Boolean, colorIndex: ColorIndex, lineStyle: LineStyle, fillStyle: FillStyle) {
         graphics.apply {
-            color = COLORS[colorIndex]
+            color = itemColor(selected, colorIndex)
             stroke = createStroke(lineStyle)
             when (fillStyle.fillType) {
                 FillType.HOLLOW -> draw(currentPath)
@@ -175,6 +175,9 @@ class JavaDrawer(
             else -> COLORS[ColorIndex.MESH_GRID_MINOR]!!
         }
 
+        private fun itemColor(selected: Boolean, color: ColorIndex): Color =
+            COLORS[if (selected) ColorIndex.SELECT else color]!!
+
         private fun Color.semiTransparent() = Color(
             this.red, this.green, this.blue, 32
         )
@@ -217,19 +220,17 @@ class JavaDrawer(
     }
 
     override fun drawSelectBox(point0: Point, point1: Point) = drawRubberBox(
-        point0,
-        point1,
+        createRectangle(point0, point1),
         COLORS[ColorIndex.BOUNDING_BOX]!!
     )
 
     override fun drawZoomBox(point0: Point, point1: Point) = drawRubberBox(
-        point0,
-        point1,
+        createRectangle(point0, point1),
         COLORS[ColorIndex.ZOOM_BOX]!!
     )
 
-    private  fun drawRubberBox(point0: Point, point1: Point, boxColor: Color) {
-        createRectangle(point0, point1).let {
+    private fun drawRubberBox(rectangle: Rectangle, boxColor: Color) {
+        rectangle.let {
             graphics.apply {
                 stroke = RUBBER_BOX_STROKE
                 withTemporaryTransform(originalTransform) {

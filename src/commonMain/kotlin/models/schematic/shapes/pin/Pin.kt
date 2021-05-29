@@ -115,6 +115,8 @@ class Pin(
         y1
     )
 
+    override fun inside(bounds: Bounds) = bounds.let { it.inside(x0, y0) && it.inside(x1, y1) }
+
     companion object : Creator {
         const val TOKEN = "P"
 
@@ -129,7 +131,7 @@ class Pin(
         )
     }
 
-    override fun paint(drawer: Drawer, revealMode: RevealMode) {
+    override fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean) {
         drawer.apply {
             beginDraw()
 
@@ -141,7 +143,7 @@ class Pin(
                 PinType.NET -> Net.lineStyle
             }
 
-            endDraw(ColorIndex.PIN, lineStyle)
+            endDraw(selected, ColorIndex.PIN, lineStyle)
         }
     }
 

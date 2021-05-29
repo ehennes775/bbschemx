@@ -29,7 +29,7 @@ class NetTool(private val target: ToolTarget) : Tool {
     override fun draw(drawer: Drawer) {
         when (state) {
             State.S0 -> {}
-            State.S1 -> prototype.paint(drawer, RevealMode.SHOWN)
+            State.S1 -> prototype.paint(drawer, RevealMode.SHOWN, false)
         }
     }
 

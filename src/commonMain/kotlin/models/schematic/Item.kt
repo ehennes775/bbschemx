@@ -8,6 +8,7 @@ import types.RevealMode
 interface Item {
     val isSignificant: Boolean
     fun calculateBounds(revealMode: RevealMode): Bounds
-    fun paint(drawer: Drawer, revealMode: RevealMode)
+    fun inside(bounds: Bounds): Boolean
+    fun paint(drawer: Drawer, revealMode: RevealMode, selected: Boolean)
     fun write(writer: Writer)
 }

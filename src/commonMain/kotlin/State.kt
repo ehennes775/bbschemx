@@ -1,5 +1,7 @@
 import models.schematic.Item
 import models.schematic.Schematic
+import types.Drawer
+import types.RevealMode
 
 internal data class State(val schematic: Schematic, val selection: Set<Item>) {
     fun isSelected(item: Item): Boolean {
@@ -15,6 +17,13 @@ internal data class State(val schematic: Schematic, val selection: Set<Item>) {
     }
 
     fun selectItems(predicate: (Item) -> Boolean): State {
-        return State(schematic, selection)
+        return State(schematic, schematic.items.filter(predicate).toSet())
     }
+
+    fun paint(drawer: Drawer, revealMode: RevealMode) = schematic.paint(
+        drawer,
+        revealMode
+    ) { isSelected(it) }
+
+
 }
