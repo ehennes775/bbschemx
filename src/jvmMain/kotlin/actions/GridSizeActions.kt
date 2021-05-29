@@ -38,19 +38,19 @@ class GridSizeActions(private val tabbedPane: JTabbedPane) {
             ?: DEFAULT_SIZE
     }
 
-    var resetGridAction = object : AbstractAction("Reset Grid Size") {
+    val resetGridAction = object : AbstractAction("Reset Grid Size") {
         override fun actionPerformed(e: ActionEvent?) {
             resetGrid()
         }
     }
 
-    var scaleDownAction = object : AbstractAction("Scale Grid Down") {
+    val scaleDownAction = object : AbstractAction("Scale Grid Down") {
         override fun actionPerformed(e: ActionEvent?) {
             scaleGridDown()
         }
     }.apply { isEnabled = canScaleDown }
 
-    var scaleUpAction = object : AbstractAction("Scale Grid Up") {
+    val scaleUpAction = object : AbstractAction("Scale Grid Up") {
         override fun actionPerformed(e: ActionEvent?) {
             scaleGridUp()
         }
@@ -63,7 +63,9 @@ class GridSizeActions(private val tabbedPane: JTabbedPane) {
             25,
             50,
             100,
-            200
+            200,
+            400,
+            800
         )
     }
 

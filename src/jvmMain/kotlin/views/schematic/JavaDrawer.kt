@@ -10,7 +10,7 @@ import kotlin.math.*
 
 class JavaDrawer(
     private val graphics: Graphics2D,
-    private val oldTransform: AffineTransform,
+    private val originalTransform: AffineTransform,
     private val currentTransform: AffineTransform
     ): Drawer {
 
@@ -174,6 +174,26 @@ class JavaDrawer(
             coord % 5 == 0 -> COLORS[ColorIndex.MESH_GRID_MAJOR]!!
             else -> COLORS[ColorIndex.MESH_GRID_MINOR]!!
         }
+
+        private fun Color.semiTransparent() = Color(
+            this.red, this.green, this.blue, 32
+        )
+
+        private fun Graphics2D.withTemporaryTransform(tempTransform: AffineTransform, action: () -> Unit) {
+            val savedTransform = transform
+            transform = tempTransform
+            action()
+            transform = savedTransform
+        }
+
+        private fun createRectangle(point0: Point, point1: Point) = Rectangle(
+            minOf(point0.x, point1.x),
+            minOf(point0.y, point1.y),
+            abs(point1.x - point0.x),
+            abs(point1.y - point0.y),
+        )
+
+        private val RUBBER_BOX_STROKE = BasicStroke(1.0F)
     }
 
     override fun drawText(alpha: Double, text: Text) {
@@ -196,18 +216,29 @@ class JavaDrawer(
         }
     }
 
-    override fun drawZoomBox(point0: Point, point1: Point) {
-        graphics.apply {
-            val savedTransform = transform
-            transform = oldTransform
-            color = COLORS[ColorIndex.ZOOM_BOX]
-            draw(Rectangle(
-                minOf(point0.x, point1.x),
-                minOf(point0.y, point1.y),
-                abs(point1.x - point0.x),
-                abs(point1.y - point0.y),
-            ))
-            transform = savedTransform
+    override fun drawSelectBox(point0: Point, point1: Point) = drawRubberBox(
+        point0,
+        point1,
+        COLORS[ColorIndex.BOUNDING_BOX]!!
+    )
+
+    override fun drawZoomBox(point0: Point, point1: Point) = drawRubberBox(
+        point0,
+        point1,
+        COLORS[ColorIndex.ZOOM_BOX]!!
+    )
+
+    private  fun drawRubberBox(point0: Point, point1: Point, boxColor: Color) {
+        createRectangle(point0, point1).let {
+            graphics.apply {
+                stroke = RUBBER_BOX_STROKE
+                withTemporaryTransform(originalTransform) {
+                    color = boxColor.semiTransparent()
+                    fill(it)
+                    color = boxColor
+                    draw(it)
+                }
+            }
         }
     }
 

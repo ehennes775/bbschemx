@@ -21,4 +21,5 @@ interface Drawer {
     fun close()
 
     fun drawGrid(gridSize: Int, width: Int, height: Int)
+    fun drawSelectBox(point0: Point, point1: Point)
 }

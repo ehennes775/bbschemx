@@ -264,28 +264,18 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
     }
 
     private fun zoomPoint(centerX: Int, centerY: Int, factor: Double) {
-        val tempTransform = currentTransform
-
-        var scale = floor(factor * 100.0 * currentTransform.scaleX);
-        // FIXME
-        //scale = scale.clamp(4.0, 125.0);
-        scale /= (100.0 * currentTransform.scaleX);
-
-        // FIXME
-        currentTransform.scale(scale, scale);
-
-        currentTransform = AffineTransform(
-            currentTransform.scaleX,
-            currentTransform.shearY,
-            currentTransform.shearX,
-            currentTransform.scaleY,
-            round(width.toDouble() / 2.0),
-            round(height.toDouble() / 2.0)
-        )
-
-        val dxy = tempTransform.inverseTransform(
+        val dxy = currentTransform.inverseTransform(
             Point2D.Double(centerX.toDouble(), centerY.toDouble()),
             Point2D.Double()
+        )
+
+        currentTransform = AffineTransform(
+            currentTransform.scaleX * factor,
+            currentTransform.shearY,
+            currentTransform.shearX,
+            currentTransform.scaleY * factor,
+            round(width.toDouble() / 2.0),
+            round(height.toDouble() / 2.0)
         )
 
         currentTransform.translate(-dxy.x, -dxy.y);
