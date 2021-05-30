@@ -11,6 +11,7 @@ import tools.pin.PinTool
 import tools.select.SelectTool
 import tools.zoom.ZoomTool
 import views.IconLoader
+import views.attribute.AttributePanel
 import views.document.DocumentView
 import views.library.LibraryPanel
 import views.schematic.ColorEditor
@@ -66,6 +67,8 @@ class Application : JFrame(), IconLoader {
 
     private val libraryTree = LibraryPanel()
 
+    private val attributePanel = AttributePanel(tabbedDocumentPane)
+
     private val propertyPanel = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(ColorEditor(SchematicView()))
@@ -77,6 +80,7 @@ class Application : JFrame(), IconLoader {
 
     private val tabbedToolPane = JTabbedPane().apply {
         addTab("Library", libraryTree)
+        addTab("Attributes", attributePanel)
         addTab("Properties", propertyPanel)
     }
 

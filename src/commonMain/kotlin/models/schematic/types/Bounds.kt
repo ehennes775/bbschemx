@@ -36,9 +36,9 @@ class Bounds private constructor(val minX: Int, val minY: Int, val maxX: Int, va
 
     val empty = (minX > maxX) || (minY > maxY)
 
-    val width = maxOf(maxX - minX + 1, 0)
+    val width = if (empty) 0 else maxX - minX + 1
 
-    val height = maxOf(maxY - minY + 1, 0)
+    val height = if (empty) 0 else maxY - minY + 1
 
     fun expand(expand: Int) = if (empty) this else Bounds(
         minX = minX - expand,

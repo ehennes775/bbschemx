@@ -18,6 +18,7 @@ class SchematicModel(schematic: Schematic) {
     private val redoStack = mutableListOf<State>()
     private val undoStack = mutableListOf<State>()
 
+    val items: List<Item> get() = currentState.schematic.items
 
     private val invalidateListeners = mutableListOf<InvalidateListener>()
 
@@ -239,6 +240,14 @@ class SchematicModel(schematic: Schematic) {
     fun selectNone() = selectItems { false }
 
     fun selectItems(bounds: Bounds) = selectItems { it.inside(bounds) }
+
+    fun changeAttributeName(name: String, newValue: String) {
+        println("Update: name=$name newValue=$newValue")
+    }
+
+    fun changeAttributeValue(name: String, newValue: String) {
+        println("Update: name=$name newValue=$newValue")
+    }
 
     companion object {
 
