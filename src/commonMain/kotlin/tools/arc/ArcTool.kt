@@ -51,6 +51,9 @@ class ArcTool(private val target: ToolTarget): Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private var prototype: Arc = createInitialArc()
         set(value) {
             target.repaint(field)

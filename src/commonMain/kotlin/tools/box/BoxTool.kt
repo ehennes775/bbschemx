@@ -40,6 +40,9 @@ class BoxTool(private val target: ToolTarget) : Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private var prototype: Box = Box()
         set(value) {
             target.repaint(field)

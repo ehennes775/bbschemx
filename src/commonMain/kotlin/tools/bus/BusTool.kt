@@ -40,6 +40,9 @@ class BusTool(private val target: ToolTarget) : Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private var prototype: Bus = Bus()
         set(value) {
             target.repaint(field)

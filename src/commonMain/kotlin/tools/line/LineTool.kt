@@ -40,6 +40,9 @@ class LineTool(private val target: ToolTarget) : Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private var prototype: Line = Line()
         set(value) {
             target.repaint(field)

@@ -40,6 +40,9 @@ class NetTool(private val target: ToolTarget) : Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private var prototype: Net = Net()
         set(value) {
             target.repaint(field)

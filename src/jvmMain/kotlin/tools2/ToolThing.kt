@@ -17,12 +17,17 @@ class ToolThing(private val tabbedPane: JTabbedPane): ToolActionTarget {
 
     private val containerListener = object: ContainerListener {
         override fun componentAdded(e: ContainerEvent?) {
-            (e?.child as? ToolSource)?.addToolListener(toolListener)
-            (e?.child as? ToolSource)?.let { it.tool = toolFactory.createTool(it.toolTarget) }
+            (e?.child as? ToolSource)?.let {
+                it.addToolListener(toolListener)
+                it.tool = toolFactory.createTool(it.toolTarget)
+            }
         }
 
         override fun componentRemoved(e: ContainerEvent?) {
-            (e?.child as? ToolSource)?.removeToolListener(toolListener)
+            (e?.child as? ToolSource)?.let {
+                it.removeToolListener(toolListener)
+                it.tool = DummyTool()
+            }
         }
     }
 

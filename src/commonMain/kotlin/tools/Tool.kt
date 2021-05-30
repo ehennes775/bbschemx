@@ -8,4 +8,5 @@ interface Tool {
     fun buttonReleased(widgetPoint: Point, drawingPoint: Point)
     fun draw(drawer: Drawer)
     fun motion(widgetPoint: Point, drawingPoint: Point)
+    fun removeFromListeners()
 }

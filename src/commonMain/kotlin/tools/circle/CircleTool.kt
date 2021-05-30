@@ -41,6 +41,9 @@ class CircleTool(private val target: ToolTarget): Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private var prototype: Circle = Circle()
         set(value) {
             target.repaint(field)

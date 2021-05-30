@@ -140,6 +140,12 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
 
     override var tool: Tool = DummyTool.createTool(this)
+        set(value) {
+            field.removeFromListeners()
+            field = value
+        }
+
+
     override val toolTarget: ToolTarget get() = this
 
     override fun addToolListener(listener: ToolListener) {

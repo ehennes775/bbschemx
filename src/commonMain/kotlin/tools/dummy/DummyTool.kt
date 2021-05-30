@@ -16,6 +16,8 @@ class DummyTool : Tool {
 
     override fun motion(widgetPoint: Point, drawingPoint: Point) {}
 
+    override fun removeFromListeners() {}
+
     companion object : ToolFactory {
 
         override fun createTool(target: ToolTarget) = DummyTool()

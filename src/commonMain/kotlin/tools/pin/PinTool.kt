@@ -38,6 +38,9 @@ class PinTool(private val target: ToolTarget) : Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private var prototype: PinItemGroup = BasicPinItemGroup()
         set(value) {
             field.repaint(target)

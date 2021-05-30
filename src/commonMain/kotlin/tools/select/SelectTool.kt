@@ -44,6 +44,9 @@ class SelectTool(private val target: ToolTarget): Tool {
         }
     }
 
+    override fun removeFromListeners() {
+    }
+
     private enum class State {
         S0,
         S1
