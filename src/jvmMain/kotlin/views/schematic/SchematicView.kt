@@ -17,12 +17,11 @@ import tools.Tool
 import tools.ToolListener
 import tools.ToolSource
 import tools.ToolTarget
-import tools.dummy.DummyTool
+import tools.inert.InertTool
 import types.GridMode
 import types.RevealMode
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
-import views.schematic.keys.keymap
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.event.*
@@ -138,7 +137,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
     private var currentTransform = AffineTransform()
 
 
-    override var tool: Tool = DummyTool.createTool(this)
+    override var tool: Tool = InertTool.createTool(this)
         set(value) {
             field.removeFromListeners()
             field = value

@@ -5,6 +5,7 @@ import views.schematic.SchematicView
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JTabbedPane
+import javax.swing.UIManager.put
 
 class ZoomActions(private val tabbedPane: JTabbedPane, iconLoader: IconLoader) {
 
@@ -12,28 +13,40 @@ class ZoomActions(private val tabbedPane: JTabbedPane, iconLoader: IconLoader) {
 
     val zoomExtentsAction: AbstractAction = object: AbstractAction(
         "Zoom Extents",
-        iconLoader.loadIcon("ZoomExtents.png")
+        iconLoader.loadIcon("12x12/ZoomExtents.png")
     ) {
         override fun actionPerformed(e: ActionEvent?) {
             currentView?.zoomExtents()
+        }
+
+        init {
+            putValue(LARGE_ICON_KEY, iconLoader.loadIcon("24x24/ZoomExtents.png"))
         }
     }
 
     val zoomInAction: AbstractAction = object: AbstractAction(
         "Zoom In",
-        iconLoader.loadIcon("ZoomIn.png")
+        iconLoader.loadIcon("12x12/ZoomIn.png")
     ) {
         override fun actionPerformed(e: ActionEvent?) {
             currentView?.zoomIn()
+        }
+
+        init {
+            putValue(LARGE_ICON_KEY, iconLoader.loadIcon("24x24/ZoomIn.png"))
         }
     }
 
     val zoomOutAction: AbstractAction = object: AbstractAction(
         "Zoom Out",
-        iconLoader.loadIcon("ZoomOut.png")
+        iconLoader.loadIcon("12x12/ZoomOut.png")
     ) {
         override fun actionPerformed(e: ActionEvent?) {
             currentView?.zoomOut()
+        }
+
+        init {
+            putValue(LARGE_ICON_KEY, iconLoader.loadIcon("24x24/ZoomOut.png"))
         }
     }
 }

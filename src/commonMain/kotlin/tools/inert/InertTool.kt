@@ -1,4 +1,4 @@
-package tools.dummy
+package tools.inert
 
 import types.Drawer
 import types.Point
@@ -7,7 +7,7 @@ import tools.ToolFactory
 import tools.ToolSettings
 import tools.ToolTarget
 
-class DummyTool : Tool {
+class InertTool : Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {}
 
@@ -23,7 +23,7 @@ class DummyTool : Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = DummyTool()
+        override fun createTool(target: ToolTarget) = InertTool()
 
         override fun nextAlternativeForm() {}
     }

@@ -49,15 +49,15 @@ class Application : JFrame(), IconLoader {
     private val toolTarget = ToolThing(tabbedDocumentPane)
 
 
-    private val arcToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("ArcTool.png")), toolTarget, ArcTool) {}
-    private val busToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("BusTool.png")), toolTarget, BusTool) {}
-    private val boxToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("BoxTool.png")), toolTarget, BoxTool) {}
-    private val circleToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("CircleTool.png")), toolTarget, CircleTool) {}
-    private val lineToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("LineTool.png")), toolTarget, LineTool) {}
-    private val netToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("NetTool.png")), toolTarget, NetTool) {}
-    private val pinToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("PinTool.png")), toolTarget, PinTool) {}
-    private val selectToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("SelectTool.png")), toolTarget, SelectTool) {}
-    private val zoomToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("ZoomTool.png")), toolTarget, ZoomTool) {}
+    private val arcToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/ArcTool.png")), toolTarget, ArcTool) {}
+    private val busToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/BusTool.png")), toolTarget, BusTool) {}
+    private val boxToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/BoxTool.png")), toolTarget, BoxTool) {}
+    private val circleToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/CircleTool.png")), toolTarget, CircleTool) {}
+    private val lineToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/LineTool.png")), toolTarget, LineTool) {}
+    private val netToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/NetTool.png")), toolTarget, NetTool) {}
+    private val pinToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/PinTool.png")), toolTarget, PinTool) {}
+    private val selectToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/SelectTool.png")), toolTarget, SelectTool) {}
+    private val zoomToolAction = object : ToolAction(ImageIcon(this.javaClass.getResource("24x24/ZoomTool.png")), toolTarget, ZoomTool) {}
 
     private val clipboardActions = ClipboardActions(tabbedDocumentPane)
     private val gridAction = GridAction("Grid Mode", tabbedDocumentPane)

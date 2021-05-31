@@ -6,6 +6,7 @@ import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
 import tools.ToolTarget
+import types.RevealMode
 
 class PinTool(private val target: ToolTarget) : Tool {
 
@@ -17,7 +18,7 @@ class PinTool(private val target: ToolTarget) : Tool {
                 updateGeometry(drawingPoint)
             }
             State.S1 -> {
-                //target.add(prototype)
+                prototype.addItems(target)
                 reset();
             }
         }
@@ -27,8 +28,8 @@ class PinTool(private val target: ToolTarget) : Tool {
 
     override fun draw(drawer: Drawer) {
         when (state) {
-            State.S0 -> {}
-            State.S1 -> prototype.draw(drawer)
+            State.S0 -> Unit
+            State.S1 -> prototype.paint(drawer, RevealMode.SHOWN, true)
         }
     }
 
@@ -42,7 +43,7 @@ class PinTool(private val target: ToolTarget) : Tool {
     override fun removeFromListeners() {
     }
 
-    private var prototype: PinItemGroup = BasicPinItemGroup()
+    private var prototype = PinPrototype()
         set(value) {
             field.repaint(target)
             field = value
@@ -57,7 +58,7 @@ class PinTool(private val target: ToolTarget) : Tool {
     private var state = State.S0
 
     private fun reset() {
-        prototype = BasicPinItemGroup()
+        prototype = PinPrototype()
         state = State.S0
     }
 
@@ -65,11 +66,11 @@ class PinTool(private val target: ToolTarget) : Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withFirstPoint(it.x, it.y) }
+                .let { prototype.withValues(newX0 = it.x, newY0 = it.y) }
             State.S1 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .snapOrthogonal(prototype.x0, prototype.y0)
-                .let { prototype.withSecondPoint(it.x, it.y) }
+                //.snapOrthogonal(prototype.x0, prototype.y0)
+                .let { prototype.withValues(newX1 = it.x, newY1 = it.y) }
         }
     }
 
