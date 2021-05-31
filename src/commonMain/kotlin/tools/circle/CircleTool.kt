@@ -5,6 +5,7 @@ import types.Drawer
 import types.Point
 import tools.Tool
 import tools.ToolFactory
+import tools.ToolSettings
 import tools.ToolTarget
 import types.RevealMode
 import kotlin.math.roundToInt
@@ -75,9 +76,13 @@ class CircleTool(private val target: ToolTarget): Tool {
         }
     }
 
-    companion object : ToolFactory {
+    companion object : ToolFactory, ToolSettings {
+
+        override val settings get() = this
 
         override fun createTool(target: ToolTarget) = CircleTool(target)
+
+        override fun nextAlternativeForm() {}
     }
 
 }

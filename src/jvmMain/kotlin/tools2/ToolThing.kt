@@ -11,6 +11,9 @@ import javax.swing.JTabbedPane
 import javax.swing.event.ChangeListener
 
 class ToolThing(private val tabbedPane: JTabbedPane): ToolActionTarget {
+
+    val currentSettings get() = toolFactory.settings
+
     private val changeListener = ChangeListener {
 
     }

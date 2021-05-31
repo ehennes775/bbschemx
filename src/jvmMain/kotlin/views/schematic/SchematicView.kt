@@ -22,11 +22,10 @@ import types.GridMode
 import types.RevealMode
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
+import views.schematic.keys.keymap
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
-import java.awt.event.MouseMotionListener
+import java.awt.event.*
 import java.awt.geom.AffineTransform
 import java.awt.geom.Point2D
 import javax.swing.JPanel
@@ -342,4 +341,8 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
     override val canUndo: Boolean get() = schematicModel.canUndo
     override fun undo() = schematicModel.undo()
+
+    init {
+        isFocusable = true
+    }
 }

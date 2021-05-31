@@ -18,6 +18,8 @@ import views.schematic.ColorEditor
 import views.schematic.FillEditor
 import views.schematic.LineEditor
 import views.schematic.SchematicView
+import views.schematic.keys.KeyHandler
+import views.schematic.keys.keymap
 import java.awt.*
 import java.awt.event.ActionEvent
 import javax.swing.*
@@ -65,9 +67,13 @@ class Application : JFrame(), IconLoader {
     private val undoRedoActions = UndoRedoActions(tabbedDocumentPane)
     private val zoomActions = ZoomActions(tabbedDocumentPane, this)
 
+    private val alternateFormAction = AlternateFormAction(toolTarget)
+
     private val libraryTree = LibraryPanel()
 
     private val attributePanel = AttributePanel(tabbedDocumentPane)
+
+    private val keyHandler = KeyHandler(tabbedDocumentPane)
 
     private val propertyPanel = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
@@ -127,6 +133,7 @@ class Application : JFrame(), IconLoader {
             add(gridSizeActions.resetGridAction)
             add(gridSizeActions.scaleDownAction)
             add(gridSizeActions.scaleUpAction)
+            add(alternateFormAction) // TODO temporary
         })
     }
 
@@ -157,6 +164,8 @@ class Application : JFrame(), IconLoader {
         add(zoomActions.zoomInAction)
         add(zoomActions.zoomOutAction)
         add(zoomActions.zoomExtentsAction)
+        addSeparator()
+        add(alternateFormAction)
     }
 
     private fun createToolButtons(vararg actions: AbstractAction) = actions.map { JToggleButton(it) }
@@ -275,6 +284,9 @@ class Application : JFrame(), IconLoader {
     }
 
     override fun loadIcon(name: String): ImageIcon = ImageIcon(this.javaClass.getResource(name))
+
+
+    val temp = keymap
 }
 
 
