@@ -24,7 +24,7 @@ class BasicPinItemGroup(
 
     override fun withSecondPoint(newX: Int, newY: Int): PinItemGroup = BasicPinItemGroup(
         prototypePin.withPoint1(newX, newY),
-        prototypeBubble.withCenter(newX, newY)
+        prototypeBubble.withValues(newCenterX = newX, newCenterY = newY)
     )
 
     override fun draw(drawer: Drawer) {

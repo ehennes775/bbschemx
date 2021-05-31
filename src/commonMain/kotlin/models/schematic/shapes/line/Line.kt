@@ -16,60 +16,21 @@ class Line(
     override val lineStyle: LineStyle = LineStyle()
 ) : Item, ColorItem, LineItem {
 
-    fun withPoint0(newX0: Int, newY0: Int) = Line(
-        newX0,
-        newY0,
-        x1,
-        y1,
-        color,
-        lineStyle
+    fun withValues(
+        newX0: Int = x0,
+        newY0: Int = y0,
+        newX1: Int = x1,
+        newY1: Int = y1,
+        newColor: ColorIndex = color,
+        newLineStyle: LineStyle = lineStyle
+    ) = Line(newX0, newY0, newX1, newY1, newColor, newLineStyle)
+
+    override fun withItemColor(newColor: ColorIndex) = withValues(
+        newColor = newColor
     )
 
-    fun withX0(newX0: Int) = withPoint0(
-        newX0,
-        y0,
-    )
-
-    fun withY0(newY0: Int) = withPoint0(
-        x0,
-        newY0,
-    )
-
-    fun withPoint1(newX1: Int, newY1: Int) = Line(
-        x0,
-        y0,
-        newX1,
-        newY1,
-        color,
-        lineStyle
-    )
-
-    fun withX1(newX1: Int) = withPoint1(
-        newX1,
-        y1,
-    )
-
-    fun withY1(newY1: Int) = withPoint1(
-        x1,
-        newY1,
-    )
-
-    override fun withItemColor(newColor: ColorIndex) = Line(
-        x0,
-        y0,
-        x1,
-        y1,
-        newColor,
-        lineStyle
-    )
-
-    override fun withLineStyle(newLineStyle: LineStyle) = Line(
-        x0,
-        y0,
-        x1,
-        y1,
-        color,
-        newLineStyle
+    override fun withLineStyle(newLineStyle: LineStyle) = withValues(
+        newLineStyle = newLineStyle
     )
 
     override val isSignificant: Boolean get() = ((x1 - x0) != 0) && ((y1 - y0) != 0)

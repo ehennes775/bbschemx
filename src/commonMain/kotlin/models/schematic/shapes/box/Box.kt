@@ -18,94 +18,26 @@ class Box(
     override val fillStyle: FillStyle = FillStyle()
 ) : Item, ColorItem, LineItem, FillItem {
 
-    fun withPoint0(newLowerX: Int, newLowerY: Int) = Box(
-        newLowerX,
-        newLowerY,
-        upperX,
-        upperY,
-        color,
-        lineStyle,
-        fillStyle
+    fun withValues(
+        newLowerX: Int = lowerX,
+        newLowerY: Int = lowerY,
+        newUpperX: Int = upperX,
+        newUpperY: Int = upperY,
+        newColor: ColorIndex = color,
+        newLineStyle: LineStyle = lineStyle,
+        newFillStyle: FillStyle = fillStyle
+    ) = Box(newLowerX, newLowerY, newUpperX, newUpperY, newColor, newLineStyle, newFillStyle)
+
+    override fun withItemColor(newColor: ColorIndex) = withValues(
+        newColor = newColor,
     )
 
-    fun withLowerX(newLowerX: Int) = Box(
-        newLowerX,
-        lowerY,
-        upperX,
-        upperY,
-        color,
-        lineStyle,
-        fillStyle
+    override fun withLineStyle(newLineStyle: LineStyle) = withValues(
+        newLineStyle = newLineStyle,
     )
 
-    fun withLowerY(newLowerY: Int) = Box(
-        lowerX,
-        newLowerY,
-        upperX,
-        upperY,
-        color,
-        lineStyle,
-        fillStyle
-    )
-
-    fun withPoint1(newUpperX: Int, newUpperY: Int) = Box(
-        lowerX,
-        lowerY,
-        newUpperX,
-        newUpperY,
-        color,
-        lineStyle,
-        fillStyle
-    )
-
-    fun withUpperX(newUpperX: Int) = Box(
-        lowerX,
-        lowerY,
-        newUpperX,
-        upperY,
-        color,
-        lineStyle,
-        fillStyle
-    )
-
-    fun withUpperY(newUpperY: Int) = Box(
-        lowerX,
-        lowerY,
-        upperX,
-        newUpperY,
-        color,
-        lineStyle,
-        fillStyle
-    )
-
-    override fun withItemColor(newColor: ColorIndex) = Box(
-        lowerX,
-        lowerY,
-        upperX,
-        upperY,
-        newColor,
-        lineStyle,
-        fillStyle
-    )
-
-    override fun withLineStyle(newLineStyle: LineStyle) = Box(
-        lowerX,
-        lowerY,
-        upperX,
-        upperY,
-        color,
-        newLineStyle,
-        fillStyle
-    )
-
-    override fun withFillStyle(newFillStyle: FillStyle) = Box(
-        lowerX,
-        lowerY,
-        upperX,
-        upperY,
-        color,
-        lineStyle,
-        newFillStyle
+    override fun withFillStyle(newFillStyle: FillStyle) = withValues(
+        newFillStyle = newFillStyle
     )
 
     override val isSignificant: Boolean get() = ((upperX - lowerX) != 0) && ((upperY - lowerY) != 0)

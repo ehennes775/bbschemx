@@ -67,10 +67,10 @@ class BoxTool(private val target: ToolTarget) : Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withPoint0(it.x, it.y) }
+                .let { prototype.withValues(newLowerX = it.x, newLowerY = it.y) }
             State.S1 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withPoint1(it.x, it.y) }
+                .let { prototype.withValues(newUpperX = it.x, newUpperY = it.y) }
         }
     }
 

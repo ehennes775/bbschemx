@@ -67,10 +67,10 @@ class LineTool(private val target: ToolTarget) : Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withPoint0(it.x, it.y) }
+                .let { prototype.withValues(newX0 = it.x, newY0 = it.y) }
             State.S1 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withPoint1(it.x, it.y) }
+                .let { prototype.withValues(newX1 = it.x, newY1 = it.y) }
         }
     }
 

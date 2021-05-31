@@ -68,11 +68,12 @@ class CircleTool(private val target: ToolTarget): Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withCenter(it.x, it.y) }
-            State.S1 -> drawingPoint
-                .snapToGrid(target.gridSize)
-                .let { it.distanceTo(prototype.centerX, prototype.centerY).roundToInt() }
-                .let { prototype.withRadius(it) }
+                .let { prototype.withValues(newCenterX = it.x, newCenterY = it.y) }
+            State.S1 -> prototype.withValues(
+                newRadius = drawingPoint
+                    .snapToGrid(target.gridSize)
+                    .let { it.distanceTo(prototype.centerX, prototype.centerY).roundToInt() }
+            )
         }
     }
 

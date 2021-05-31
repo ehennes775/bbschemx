@@ -15,59 +15,26 @@ class Circle(
     override val lineStyle: LineStyle = LineStyle(),
     override val fillStyle: FillStyle = FillStyle()
 ) : Item, ColorItem, LineItem, FillItem {
-    fun withCenter(newCenterX: Int, newCenterY: Int) = Circle(
-        newCenterX,
-        newCenterY,
-        radius,
-        color,
-        lineStyle,
-        fillStyle
+
+    fun withValues(
+        newCenterX: Int = centerX,
+        newCenterY: Int = centerY,
+        newRadius: Int = radius,
+        newColor: ColorIndex = color,
+        newLineStyle: LineStyle = lineStyle,
+        newFillStyle: FillStyle = fillStyle
+    ) = Circle(newCenterX, newCenterY, newRadius, newColor, newLineStyle, newFillStyle)
+
+    override fun withItemColor(newColor: ColorIndex) = withValues(
+        newColor = newColor
     )
 
-    fun withCenterX(newCenterX: Int) = withCenter(
-        newCenterX,
-        centerY,
+    override fun withLineStyle(newLineStyle: LineStyle) = withValues(
+        newLineStyle = newLineStyle
     )
 
-    fun withCenterY(newCenterY: Int) = withCenter(
-        centerX,
-        newCenterY,
-    )
-
-    fun withRadius(newRadius: Int) = Circle(
-        centerX,
-        centerY,
-        newRadius,
-        color,
-        lineStyle,
-        fillStyle
-    )
-
-    override fun withItemColor(newColor: ColorIndex) = Circle(
-        centerX,
-        centerY,
-        radius,
-        newColor,
-        lineStyle,
-        fillStyle
-    )
-
-    override fun withLineStyle(newLineStyle: LineStyle) = Circle(
-        centerX,
-        centerY,
-        radius,
-        color,
-        newLineStyle,
-        fillStyle
-    )
-
-    override fun withFillStyle(newFillStyle: FillStyle) = Circle(
-        centerX,
-        centerY,
-        radius,
-        color,
-        lineStyle,
-        newFillStyle
+    override fun withFillStyle(newFillStyle: FillStyle) = withValues(
+        newFillStyle = newFillStyle
     )
 
     override val isSignificant: Boolean get() = (radius != 0)
