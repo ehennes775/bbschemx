@@ -6,10 +6,10 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.ToolTarget
+import views.SchematicView
 import types.RevealMode
 
-class LineTool(private val target: ToolTarget) : Tool {
+class LineTool(private val target: SchematicView) : Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
@@ -78,7 +78,7 @@ class LineTool(private val target: ToolTarget) : Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = LineTool(target)
+        override fun createTool(target: SchematicView) = LineTool(target)
 
         override fun nextAlternativeForm() {}
     }

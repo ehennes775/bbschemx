@@ -1,13 +1,13 @@
 package actions
 
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JTabbedPane
 
 open class ClipboardActions(private val tabbedPane: JTabbedPane) {
 
-    private val currentView get() = tabbedPane.selectedComponent as? SchematicView
+    private val currentView get() = tabbedPane.selectedComponent as? JavaSchematicView
 
     private val canCopy get() = currentView?.canCopy ?: false
 

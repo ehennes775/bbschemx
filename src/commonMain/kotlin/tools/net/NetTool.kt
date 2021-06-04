@@ -6,10 +6,10 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.ToolTarget
+import views.SchematicView
 import types.RevealMode
 
-class NetTool(private val target: ToolTarget) : Tool {
+class NetTool(private val target: SchematicView) : Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
@@ -79,7 +79,7 @@ class NetTool(private val target: ToolTarget) : Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = NetTool(target)
+        override fun createTool(target: SchematicView) = NetTool(target)
 
         override fun nextAlternativeForm() {}
     }

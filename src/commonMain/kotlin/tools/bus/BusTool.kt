@@ -6,10 +6,10 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.ToolTarget
+import views.SchematicView
 import types.RevealMode
 
-class BusTool(private val target: ToolTarget) : Tool {
+class BusTool(private val target: SchematicView) : Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
@@ -67,11 +67,11 @@ class BusTool(private val target: ToolTarget) : Tool {
         prototype = when (state) {
             State.S0 -> drawingPoint
                 .snapToGrid(target.gridSize)
-                .let { prototype.withPoint0(it.x, it.y) }
+                .let { prototype.withValues(newX0 = it.x, newY0 = it.y) }
             State.S1 -> drawingPoint
                 .snapToGrid(target.gridSize)
                 .snapOrthogonal(prototype.x0, prototype.y0)
-                .let { prototype.withPoint1(it.x, it.y) }
+                .let { prototype.withValues(newX1 = it.x, newY1 = it.y) }
         }
     }
 
@@ -79,7 +79,7 @@ class BusTool(private val target: ToolTarget) : Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = BusTool(target)
+        override fun createTool(target: SchematicView) = BusTool(target)
 
         override fun nextAlternativeForm() {}
     }

@@ -1,10 +1,10 @@
 package views.schematic
 
-import RedoCapable
-import SaveCapable
-import SelectCapable
+import views.RedoCapable
+import views.SaveCapable
+import views.SelectCapable
 import models.schematic.listeners.SelectionListener
-import UndoCapable
+import views.UndoCapable
 import actions.DocumentListener
 import models.schematic.listeners.InvalidateListener
 import models.schematic.Item
@@ -16,7 +16,7 @@ import types.Point
 import tools.Tool
 import tools.ToolListener
 import tools.ToolSource
-import tools.ToolTarget
+import views.SchematicView
 import tools.inert.InertTool
 import types.GridMode
 import types.RevealMode
@@ -33,7 +33,9 @@ import kotlin.math.floor
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable, SelectCapable, UndoCapable, ToolSource, ToolTarget {
+class JavaSchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable,
+    SelectCapable, UndoCapable, ToolSource,
+    SchematicView {
 
     init {
         background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
@@ -67,7 +69,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
 
     private lateinit var _schematicModel: SchematicModel
 
-    var schematicModel: SchematicModel
+    override var schematicModel: SchematicModel
         get() = _schematicModel
         set (value) {
             _schematicModel.removeInvalidateListener(invalidateListener)
@@ -98,10 +100,10 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
     }
 
     companion object {
-        fun load(file: java.io.File): SchematicView {
+        fun load(file: java.io.File): JavaSchematicView {
             val reader = JavaBasedReader(file.reader())
             val schematic = Schematic.read(reader)
-            return SchematicView(schematic)
+            return JavaSchematicView(schematic)
         }
     }
 
@@ -144,7 +146,7 @@ class SchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentVie
         }
 
 
-    override val toolTarget: ToolTarget get() = this
+    override val toolTarget: SchematicView get() = this
 
     override fun addToolListener(listener: ToolListener) {
     }

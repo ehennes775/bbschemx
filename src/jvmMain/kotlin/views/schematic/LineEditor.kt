@@ -3,12 +3,11 @@ package views.schematic
 import models.schematic.SchematicModel
 import models.schematic.types.CapType
 import models.schematic.types.DashType
-import models.schematic.types.LineItem
 import models.schematic.types.SelectedValue
 import java.awt.Dimension
 import javax.swing.JComboBox
 
-class LineEditor(schematicView: SchematicView) : PropertyEditorPanel() {
+class LineEditor(schematicView: JavaSchematicView) : PropertyEditorPanel() {
 
     private val lineWidths = arrayOf(
         "10",

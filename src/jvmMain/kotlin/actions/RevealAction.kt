@@ -1,7 +1,7 @@
 package actions
 
 import types.RevealMode
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import java.awt.event.ActionEvent
 import java.awt.event.ContainerEvent
 import java.awt.event.ContainerListener
@@ -13,7 +13,7 @@ class RevealAction(name: String, private val tabbedPane: JTabbedPane): AbstractA
 
     private val containerListener = object: ContainerListener {
         override fun componentAdded(event: ContainerEvent?) {
-            event?.let { it.child as SchematicView }?.let { it.revealMode = revealMode }
+            event?.let { it.child as JavaSchematicView }?.let { it.revealMode = revealMode }
         }
 
         override fun componentRemoved(event: ContainerEvent?) {}
@@ -22,7 +22,7 @@ class RevealAction(name: String, private val tabbedPane: JTabbedPane): AbstractA
     init {
         tabbedPane.addContainerListener(containerListener)
         tabbedPane.components
-            .mapNotNull { it as? SchematicView }
+            .mapNotNull { it as? JavaSchematicView }
             .forEach { it.revealMode = revealMode }
     }
 
@@ -32,7 +32,7 @@ class RevealAction(name: String, private val tabbedPane: JTabbedPane): AbstractA
         revealMode = revealMode.next
         buttons.forEach { it.isSelected = selected }
         tabbedPane.components
-            .mapNotNull { it as? SchematicView }
+            .mapNotNull { it as? JavaSchematicView }
             .forEach { it.revealMode = revealMode }
     }
 

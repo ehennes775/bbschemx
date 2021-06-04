@@ -1,6 +1,6 @@
 package views.schematic.keys
 
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.JTabbedPane
@@ -8,7 +8,7 @@ import javax.swing.event.ChangeListener
 
 class KeyHandler(private val tabbedPane: JTabbedPane) {
 
-    private var currentSchematicView: SchematicView? = null
+    private var currentSchematicView: JavaSchematicView? = null
         set(value) {
             field?.removeKeyListener(keyListener)
             field = value
@@ -16,7 +16,7 @@ class KeyHandler(private val tabbedPane: JTabbedPane) {
         }
 
     private val changeListener = ChangeListener {
-        currentSchematicView = tabbedPane.selectedComponent as? SchematicView
+        currentSchematicView = tabbedPane.selectedComponent as? JavaSchematicView
     }
 
     private val keyListener = object: KeyListener {
@@ -33,6 +33,6 @@ class KeyHandler(private val tabbedPane: JTabbedPane) {
 
     init {
         tabbedPane.addChangeListener(changeListener)
-        currentSchematicView = tabbedPane.selectedComponent as? SchematicView
+        currentSchematicView = tabbedPane.selectedComponent as? JavaSchematicView
     }
 }

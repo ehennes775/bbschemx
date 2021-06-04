@@ -2,7 +2,7 @@ package views.library
 
 import models.schematic.Schematic
 import models.schematic.SchematicModel
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import views.schematic.io.JavaBasedReader
 import java.awt.Dimension
 import java.awt.GridBagConstraints
@@ -17,7 +17,7 @@ import javax.swing.event.TreeSelectionListener
 class LibraryPanel: JPanel() {
     private val libraryModel = LibraryModel()
 
-    private val libraryPreview = SchematicView().apply {
+    private val libraryPreview = JavaSchematicView().apply {
         minimumSize = Dimension(600, 300)
         preferredSize = Dimension(600, 300)
         maximumSize = Dimension(600, 300)

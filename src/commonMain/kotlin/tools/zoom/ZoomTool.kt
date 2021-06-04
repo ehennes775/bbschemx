@@ -5,9 +5,9 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.ToolTarget
+import views.SchematicView
 
-class ZoomTool(private val target: ToolTarget) : Tool {
+class ZoomTool(private val target: SchematicView) : Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(widgetPoint)
@@ -82,7 +82,7 @@ class ZoomTool(private val target: ToolTarget) : Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = ZoomTool(target)
+        override fun createTool(target: SchematicView) = ZoomTool(target)
 
         override fun nextAlternativeForm() {}
     }

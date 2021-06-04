@@ -199,7 +199,7 @@ class JavaDrawer(
         private val RUBBER_BOX_STROKE = BasicStroke(1.0F)
     }
 
-    override fun drawText(alpha: Double, text: Text) {
+    override fun drawText(selected: Boolean, alpha: Double, text: Text) {
         graphics.apply {
             font = createFont(text.size)
             val savedTransform = transform
@@ -208,7 +208,7 @@ class JavaDrawer(
             rotate(PI * text.rotation.toDouble() / -180.0)
             val lineX = -thing1(font, text).toFloat()
             var lineY = thing3(font, text).toFloat();
-            color = COLORS[text.color]!!.let {
+            color = itemColor(selected, text.color).let {
                 Color(it.red, it.green, it.blue, (255.0 * alpha).roundToInt())
             }
             text.shownLines.forEach {

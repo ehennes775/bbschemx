@@ -1,6 +1,5 @@
 package models.schematic
 
-import State
 import models.schematic.io.Reader
 import models.schematic.listeners.InvalidateListener
 import models.schematic.listeners.PropertyListener
@@ -173,7 +172,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setPinType(newPinType: PinType) = applyProperty<Pin> {
-        it.withPinType(newPinType)
+        it.withValues(newPinType = newPinType)
     }
 
     fun setTextColor(newTextColor: ColorIndex) = applyProperty<Text> {

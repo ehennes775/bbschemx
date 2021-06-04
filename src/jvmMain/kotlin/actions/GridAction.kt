@@ -1,8 +1,7 @@
 package actions
 
 import types.GridMode
-import types.RevealMode
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import java.awt.event.ActionEvent
 import java.awt.event.ContainerEvent
 import java.awt.event.ContainerListener
@@ -14,7 +13,7 @@ class GridAction(name: String, private val tabbedPane: JTabbedPane): AbstractAct
 
     private val containerListener = object: ContainerListener {
         override fun componentAdded(event: ContainerEvent?) {
-            event?.let { it.child as SchematicView }?.let { it.gridMode = gridMode }
+            event?.let { it.child as JavaSchematicView }?.let { it.gridMode = gridMode }
         }
 
         override fun componentRemoved(event: ContainerEvent?) {}
@@ -23,7 +22,7 @@ class GridAction(name: String, private val tabbedPane: JTabbedPane): AbstractAct
     init {
         tabbedPane.addContainerListener(containerListener)
         tabbedPane.components
-            .mapNotNull { it as? SchematicView }
+            .mapNotNull { it as? JavaSchematicView }
             .forEach { it.gridMode = gridMode }
     }
 
@@ -33,7 +32,7 @@ class GridAction(name: String, private val tabbedPane: JTabbedPane): AbstractAct
         gridMode = gridMode.next
         buttons.forEach { it.isSelected = selected }
         tabbedPane.components
-            .mapNotNull { it as? SchematicView }
+            .mapNotNull { it as? JavaSchematicView }
             .forEach { it.gridMode = gridMode }
     }
 

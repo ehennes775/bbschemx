@@ -6,7 +6,7 @@ import views.attribute.name.NameRenderer
 import views.attribute.value.AttributeValue
 import views.attribute.value.ValueEditor
 import views.attribute.value.ValueRenderer
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.*
@@ -32,7 +32,7 @@ class AttributePanel(private val tabbedPane: JTabbedPane): JPanel() {
     }
 
     private val changeListener = ChangeListener {
-        attributeTable.model = (tabbedPane.selectedComponent as? SchematicView)?.let {
+        attributeTable.model = (tabbedPane.selectedComponent as? JavaSchematicView)?.let {
             AttributeModel(it.schematicModel)
         }
     }

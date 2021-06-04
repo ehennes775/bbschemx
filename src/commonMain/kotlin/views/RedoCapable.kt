@@ -1,3 +1,5 @@
+package views
+
 interface RedoCapable {
     val canRedo: Boolean
 

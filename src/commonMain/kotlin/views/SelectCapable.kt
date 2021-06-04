@@ -1,3 +1,5 @@
+package views
+
 interface SelectCapable {
     val canSelectAll: Boolean
     val canSelectNone: Boolean

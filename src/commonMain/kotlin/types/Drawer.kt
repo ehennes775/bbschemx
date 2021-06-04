@@ -12,7 +12,7 @@ interface Drawer {
 
     fun drawArc(centerX: Int, centerY: Int, radius: Int, startAngle: Int, sweepAngle: Int)
     fun drawCircle(centerX: Int, centerY: Int, radius: Int)
-    fun drawText(alpha: Double, text: Text)
+    fun drawText(selected: Boolean, alpha: Double, text: Text)
 
     fun drawZoomBox(point0: Point, point1: Point)
 

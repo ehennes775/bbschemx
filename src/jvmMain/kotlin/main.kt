@@ -10,14 +10,14 @@ import tools.net.NetTool
 import tools.pin.PinTool
 import tools.select.SelectTool
 import tools.zoom.ZoomTool
-import views.IconLoader
+import views.*
 import views.attribute.AttributePanel
 import views.document.DocumentView
 import views.library.LibraryPanel
 import views.schematic.ColorEditor
 import views.schematic.FillEditor
 import views.schematic.LineEditor
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import views.schematic.keys.KeyHandler
 import views.schematic.keys.keymap
 import java.awt.*
@@ -77,11 +77,11 @@ class Application : JFrame(), IconLoader {
 
     private val propertyPanel = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
-        add(ColorEditor(SchematicView()))
+        add(ColorEditor(JavaSchematicView()))
         Box.createVerticalGlue()
-        add(LineEditor(SchematicView()))
+        add(LineEditor(JavaSchematicView()))
         Box.createVerticalGlue()
-        add(FillEditor(SchematicView()))
+        add(FillEditor(JavaSchematicView()))
     }
 
     private val tabbedToolPane = JTabbedPane().apply {
@@ -155,15 +155,15 @@ class Application : JFrame(), IconLoader {
             toolGroup.add(it)
         }
         addSeparator()
+        add(zoomActions.zoomInAction)
+        add(zoomActions.zoomOutAction)
+        add(zoomActions.zoomExtentsAction)
         createToolButtons(zoomToolAction).forEach {
             add(it)
             toolGroup.add(it)
         }
-        add(revealAction.createToolbarButton())
         addSeparator()
-        add(zoomActions.zoomInAction)
-        add(zoomActions.zoomOutAction)
-        add(zoomActions.zoomExtentsAction)
+        add(revealAction.createToolbarButton())
         addSeparator()
         add(alternateFormAction)
     }
@@ -199,7 +199,7 @@ class Application : JFrame(), IconLoader {
         override fun calculateEnabled(currentDocument: DocumentView) = true
 
         override fun actionPerformed(e: ActionEvent?) {
-            tabbedDocumentPane.addTab("Untitled", SchematicView())
+            tabbedDocumentPane.addTab("Untitled", JavaSchematicView())
         }
     }
 
@@ -213,7 +213,7 @@ class Application : JFrame(), IconLoader {
         override fun actionPerformed(e: ActionEvent?) {
             dialog.isVisible = true
             dialog.files.forEach {
-                tabbedDocumentPane.addTab(it.name, SchematicView.load(it))
+                tabbedDocumentPane.addTab(it.name, JavaSchematicView.load(it))
             }
         }
     }

@@ -6,12 +6,12 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.ToolTarget
+import views.SchematicView
 import types.Angle
 import types.RevealMode
 import kotlin.math.roundToInt
 
-class ArcTool(private val target: ToolTarget): Tool {
+class ArcTool(private val target: SchematicView): Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
@@ -128,7 +128,7 @@ class ArcTool(private val target: ToolTarget): Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = ArcTool(target).also { addListener(it) }
+        override fun createTool(target: SchematicView) = ArcTool(target).also { addListener(it) }
 
         private fun createInitialArc() = Arc(
             sweepAngle = arcDirection.calculateSweep(0, 270)

@@ -1,14 +1,16 @@
 package tools.pin
 
+import models.schematic.shapes.pin.Pin
 import types.Drawer
 import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.ToolTarget
+import tools.pin.PinTool.Companion.highestPinNumberOrZero
+import views.SchematicView
 import types.RevealMode
 
-class PinTool(private val target: ToolTarget) : Tool {
+class PinTool(private val target: SchematicView) : Tool {
 
     override fun buttonPressed(widgetPoint: Point, drawingPoint: Point) {
         updateGeometry(drawingPoint)
@@ -43,7 +45,7 @@ class PinTool(private val target: ToolTarget) : Tool {
     override fun removeFromListeners() {
     }
 
-    private var prototype = PinPrototype()
+    private var prototype = target.createInitialPrototype()
         set(value) {
             field.repaint(target)
             field = value
@@ -58,7 +60,7 @@ class PinTool(private val target: ToolTarget) : Tool {
     private var state = State.S0
 
     private fun reset() {
-        prototype = PinPrototype()
+        prototype = target.createInitialPrototype()
         state = State.S0
     }
 
@@ -78,8 +80,28 @@ class PinTool(private val target: ToolTarget) : Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = PinTool(target)
+        override fun createTool(target: SchematicView) = PinTool(target)
 
         override fun nextAlternativeForm() {}
+
+        private fun SchematicView.createInitialPrototype() = this.highestPinNumberOrZero()
+            .let { (it + 1).toString() }
+            .let {
+                PinPrototype(
+                    attributeTable = mapOf(
+                        "pinnumber" to it,
+                        "pinseq" to it
+                    )
+                )
+            }
+
+        private fun SchematicView.highestPinNumberOrZero() = this.schematicModel.items
+            .mapNotNull { it as? Pin }
+            .flatMap { it.attributes.items }
+            .asSequence()
+            .filter { it.attributeNameOrNull == "pinnumber" }
+            .mapNotNull { it.attributeValueOrNull?.singleOrNull()?.toIntOrNull() }
+            .maxOrNull()
+            .let { it ?: 0 }
     }
 }

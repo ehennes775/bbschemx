@@ -1,15 +1,14 @@
 package actions
 
 import views.IconLoader
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JTabbedPane
-import javax.swing.UIManager.put
 
 class ZoomActions(private val tabbedPane: JTabbedPane, iconLoader: IconLoader) {
 
-    private val currentView get() = tabbedPane.selectedComponent as? SchematicView
+    private val currentView get() = tabbedPane.selectedComponent as? JavaSchematicView
 
     val zoomExtentsAction: AbstractAction = object: AbstractAction(
         "Zoom Extents",

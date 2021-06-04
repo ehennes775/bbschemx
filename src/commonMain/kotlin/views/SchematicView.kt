@@ -1,10 +1,13 @@
-package tools
+package views
 
 import models.schematic.Item
+import models.schematic.SchematicModel
 import types.Point
 
-interface ToolTarget {
+interface SchematicView {
     val gridSize: Int
+
+    var schematicModel: SchematicModel
 
     fun addItem(item: Item)
     fun addItems(items: List<Item>)

@@ -5,7 +5,7 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.ToolTarget
+import views.SchematicView
 
 class InertTool : Tool {
 
@@ -23,7 +23,7 @@ class InertTool : Tool {
 
         override val settings get() = this
 
-        override fun createTool(target: ToolTarget) = InertTool()
+        override fun createTool(target: SchematicView) = InertTool()
 
         override fun nextAlternativeForm() {}
     }

@@ -1,6 +1,6 @@
 package actions
 
-import views.schematic.SchematicView
+import views.schematic.JavaSchematicView
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JTabbedPane
@@ -12,7 +12,7 @@ class GridSizeActions(private val tabbedPane: JTabbedPane) {
             scaleDownAction.isEnabled = canScaleDown
             scaleUpAction.isEnabled = canScaleUp
             tabbedPane.components
-                .mapNotNull { it as SchematicView }
+                .mapNotNull { it as JavaSchematicView }
                 .forEach { it.gridSize = value }
         }
 

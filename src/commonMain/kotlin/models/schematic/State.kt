@@ -1,5 +1,5 @@
-import models.schematic.Item
-import models.schematic.Schematic
+package models.schematic
+
 import types.Drawer
 import types.RevealMode
 

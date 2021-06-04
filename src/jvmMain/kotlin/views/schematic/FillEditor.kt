@@ -5,7 +5,7 @@ import models.schematic.types.FillType
 import java.awt.Dimension
 import javax.swing.JComboBox
 
-class FillEditor(schematicView: SchematicView) : PropertyEditorPanel() {
+class FillEditor(schematicView: JavaSchematicView) : PropertyEditorPanel() {
 
     private val fillTypes = mapOf(
         "Hollow" to FillType.HOLLOW,
