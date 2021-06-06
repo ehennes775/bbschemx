@@ -15,7 +15,8 @@ kotlin {
 
         jvm()
 
-        val commonMain by getting
+        val commonMain by getting {
+        }
 
         val commonTest by getting {
             dependencies {
@@ -25,6 +26,10 @@ kotlin {
         }
 
         val jvmMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32")
+                implementation("org.xerial:sqlite-jdbc:3.34.0")
+            }
         }
 
         val jvmTest by getting {

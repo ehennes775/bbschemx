@@ -29,10 +29,10 @@ class PinPrototype(
 
     private val items = creator.createPin(x0, y0, x1, y1, bubble, radius, attributeTable)
 
-    fun paint(drawer: Drawer, shown: RevealMode, b: Boolean) = items.forEach {
-        it.paint(drawer, shown, b)
-        if (it is AttributeItem) {
-            it.attributes.items.forEach { it2 -> it2.paint(drawer, shown, b)}
+    fun paint(drawer: Drawer, shown: RevealMode, selected: Boolean) = items.forEach { item ->
+        item.paint(drawer, shown, selected)
+        if (item is AttributeItem) {
+            item.attributes.paint(drawer, shown) { selected }
         }
     }
 

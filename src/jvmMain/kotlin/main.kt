@@ -1,4 +1,6 @@
 import actions.*
+import settings.JavaSettingsSource
+import settings.SettingsSource
 import tools.arc.ArcTool
 import tools2.ToolAction
 import tools2.ToolThing
@@ -37,6 +39,14 @@ class Application : JFrame(), IconLoader {
                 UIManager.put(it, font)
             }
         }
+    }
+
+
+    val settingsSource: JavaSettingsSource = JavaSettingsSource().also {
+        it.colorScheme
+        it.lineWidth
+        it.dashLength
+        it.dashSpace
     }
 
 

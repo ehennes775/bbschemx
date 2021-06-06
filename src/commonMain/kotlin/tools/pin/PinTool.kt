@@ -6,7 +6,7 @@ import types.Point
 import tools.Tool
 import tools.ToolFactory
 import tools.ToolSettings
-import tools.pin.PinTool.Companion.highestPinNumberOrZero
+import tools.arc.ArcTool
 import views.SchematicView
 import types.RevealMode
 
@@ -21,7 +21,8 @@ class PinTool(private val target: SchematicView) : Tool {
             }
             State.S1 -> {
                 prototype.addItems(target)
-                reset();
+                state = State.S0
+                updateAttributeTable()
             }
         }
     }
@@ -37,15 +38,16 @@ class PinTool(private val target: SchematicView) : Tool {
 
     override fun motion(widgetPoint: Point, drawingPoint: Point) {
         when (state) {
-            State.S0 -> {}
+            State.S0 -> Unit
             State.S1 -> updateGeometry(drawingPoint)
         }
     }
 
     override fun removeFromListeners() {
+        removeListener(this)
     }
 
-    private var prototype = target.createInitialPrototype()
+    private var prototype = createInitialPrototype(target)
         set(value) {
             field.repaint(target)
             field = value
@@ -59,9 +61,12 @@ class PinTool(private val target: SchematicView) : Tool {
 
     private var state = State.S0
 
-    private fun reset() {
-        prototype = target.createInitialPrototype()
-        state = State.S0
+    private fun updateAttributeTable() {
+        prototype = prototype.withValues(newAttributeTable = createAttributeTable(target))
+    }
+
+    private fun updateBubble() {
+        prototype = prototype.withValues(newBubble = bubble)
     }
 
     private fun updateGeometry(drawingPoint: Point) {
@@ -78,30 +83,53 @@ class PinTool(private val target: SchematicView) : Tool {
 
     companion object : ToolFactory, ToolSettings {
 
+        var bubble: Boolean = false
+
         override val settings get() = this
 
-        override fun createTool(target: SchematicView) = PinTool(target)
+        override fun createTool(target: SchematicView) = PinTool(target).also { addListener(it) }
 
-        override fun nextAlternativeForm() {}
+        override fun nextAlternativeForm() {
+            bubble = ! bubble
+            fireSettingsChanged()
+        }
 
-        private fun SchematicView.createInitialPrototype() = this.highestPinNumberOrZero()
-            .let { (it + 1).toString() }
-            .let {
-                PinPrototype(
-                    attributeTable = mapOf(
+        private fun createInitialPrototype(view: SchematicView) =
+            PinPrototype(
+                bubble = bubble,
+                attributeTable = createAttributeTable(view)
+            )
+
+        private fun createAttributeTable(view: SchematicView) =
+            view.highestPinNumberOrZero()
+                .let { (it + 1).toString() }
+                .let {
+                    mapOf(
                         "pinnumber" to it,
                         "pinseq" to it
                     )
-                )
-            }
+                }
 
-        private fun SchematicView.highestPinNumberOrZero() = this.schematicModel.items
-            .mapNotNull { it as? Pin }
-            .flatMap { it.attributes.items }
-            .asSequence()
-            .filter { it.attributeNameOrNull == "pinnumber" }
-            .mapNotNull { it.attributeValueOrNull?.singleOrNull()?.toIntOrNull() }
-            .maxOrNull()
-            .let { it ?: 0 }
+
+        private fun SchematicView.highestPinNumberOrZero() =
+            this.schematicModel.items
+                .mapNotNull { it as? Pin }
+                .flatMap { it.attributes.items }
+                .asSequence()
+                .filter { it.attributeNameOrNull == "pinnumber" }
+                .mapNotNull { it.attributeValueOrNull?.singleOrNull()?.toIntOrNull() }
+                .maxOrNull() ?: 0
+
+        private val listeners = mutableListOf<PinTool>()
+
+        private fun addListener(pinTool: PinTool) {
+            listeners.add(pinTool)
+        }
+
+        private fun removeListener(pinTool: PinTool) {
+            listeners.remove(pinTool)
+        }
+
+        private fun fireSettingsChanged() = listeners.forEach { it.updateBubble() }
     }
 }
