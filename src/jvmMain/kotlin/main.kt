@@ -1,6 +1,6 @@
 import actions.*
+import scheme.ColorSchemeMenu
 import settings.JavaSettingsSource
-import settings.SettingsSource
 import tools.arc.ArcTool
 import tools2.ToolAction
 import tools2.ToolThing
@@ -16,20 +16,22 @@ import views.*
 import views.attribute.AttributePanel
 import views.document.DocumentView
 import views.library.LibraryPanel
-import views.schematic.ColorEditor
-import views.schematic.FillEditor
-import views.schematic.LineEditor
+import editors.ColorEditor
 import views.schematic.JavaSchematicView
 import views.schematic.keys.KeyHandler
-import views.schematic.keys.keymap
 import java.awt.*
 import java.awt.event.ActionEvent
+import java.awt.event.ComponentListener
+import java.awt.event.ContainerListener
 import javax.swing.*
+import javax.swing.event.ChangeEvent
+import javax.swing.event.ChangeListener
 import javax.swing.plaf.FontUIResource
 
 class Application : JFrame(), IconLoader {
 
-    init {
+   init {
+        //UIManager.setLookAndFeel(DarculaLaf())
         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())
 
         val font = FontUIResource("Sans", Font.PLAIN, 16)
@@ -42,13 +44,15 @@ class Application : JFrame(), IconLoader {
     }
 
 
-    val settingsSource: JavaSettingsSource = JavaSettingsSource().also {
+    private val settingsSource: JavaSettingsSource = JavaSettingsSource().also {
         it.colorScheme
         it.lineWidth
         it.dashLength
         it.dashSpace
     }
 
+    private val colorScheme = ColorScheme(settingsSource)
+    private val colorSchemeMenu = ColorSchemeMenu(colorScheme, settingsSource)
 
     private val tabbedDocumentPane = JTabbedPane().apply {
         //addTab("Thing 1", SchematicView())
@@ -79,19 +83,17 @@ class Application : JFrame(), IconLoader {
 
     private val alternateFormAction = AlternateFormAction(toolTarget)
 
-    private val libraryTree = LibraryPanel()
+    private val libraryTree = LibraryPanel(colorScheme)
 
     private val attributePanel = AttributePanel(tabbedDocumentPane)
 
     private val keyHandler = KeyHandler(tabbedDocumentPane)
 
+    private val colorEditor = ColorEditor(colorScheme, settingsSource)
+
     private val propertyPanel = JPanel().apply {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
-        add(ColorEditor(JavaSchematicView()))
-        Box.createVerticalGlue()
-        add(LineEditor(JavaSchematicView()))
-        Box.createVerticalGlue()
-        add(FillEditor(JavaSchematicView()))
+        add(colorEditor)
     }
 
     private val tabbedToolPane = JTabbedPane().apply {
@@ -144,6 +146,7 @@ class Application : JFrame(), IconLoader {
             add(gridSizeActions.scaleDownAction)
             add(gridSizeActions.scaleUpAction)
             add(alternateFormAction) // TODO temporary
+            add(colorSchemeMenu.colorSchemeMenu)
         })
     }
 
@@ -187,29 +190,11 @@ class Application : JFrame(), IconLoader {
     }
 
 
-    private inner class CopyAction : DocumentAction("Copy", tabbedDocumentPane) {
-        override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is CopyCapable && it.canCopy }
-
-        override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is CopyCapable) it.copy() }
-        }
-    }
-
-    private inner class CutAction : DocumentAction("Cut", tabbedDocumentPane) {
-        override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is CutCapable && it.canCut }
-
-        override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is CutCapable) it.cut() }
-        }
-    }
-
     private inner class NewAction : DocumentAction("New", tabbedDocumentPane) {
         override fun calculateEnabled(currentDocument: DocumentView) = true
 
         override fun actionPerformed(e: ActionEvent?) {
-            tabbedDocumentPane.addTab("Untitled", JavaSchematicView())
+            tabbedDocumentPane.addTab("Untitled", JavaSchematicView(colorScheme))
         }
     }
 
@@ -223,26 +208,8 @@ class Application : JFrame(), IconLoader {
         override fun actionPerformed(e: ActionEvent?) {
             dialog.isVisible = true
             dialog.files.forEach {
-                tabbedDocumentPane.addTab(it.name, JavaSchematicView.load(it))
+                tabbedDocumentPane.addTab(it.name, JavaSchematicView.load(colorScheme, it))
             }
-        }
-    }
-
-    private inner class PasteAction : DocumentAction("Paste", tabbedDocumentPane) {
-        override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is PasteCapable && it.canPaste }
-
-        override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is PasteCapable) it.paste() }
-        }
-    }
-
-    private inner class RedoAction : DocumentAction("Redo", tabbedDocumentPane) {
-        override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is RedoCapable && it.canRedo }
-
-        override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is RedoCapable) it.redo() }
         }
     }
 
@@ -266,37 +233,17 @@ class Application : JFrame(), IconLoader {
         }
     }
 
-    private inner class UndoAction : DocumentAction("Undo", tabbedDocumentPane) {
-        override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is CopyCapable && it.canCopy }
-
-        override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is UndoCapable) it.undo() }
-        }
-    }
-
-    private inner class SelectAllAction : DocumentAction("Select All", tabbedDocumentPane) {
-        override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is SelectCapable && it.canSelectAll }
-
-        override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is SelectCapable) it.selectAll() }
-        }
-    }
-
-    private inner class SelectNoneAction : DocumentAction("Select None", tabbedDocumentPane) {
-        override fun calculateEnabled(currentDocument: DocumentView) =
-            currentDocument.let { it is SelectCapable && it.canSelectNone }
-
-        override fun actionPerformed(e: ActionEvent?) {
-            currentDocument.also { if (it is SelectCapable) it.selectNone() }
-        }
-    }
-
     override fun loadIcon(name: String): ImageIcon = ImageIcon(this.javaClass.getResource(name))
 
 
-    val temp = keymap
+
+    private val thingListener = ChangeListener {
+        colorEditor.schematicModel = (tabbedDocumentPane.selectedComponent as? SchematicView)?.schematicModel
+    }
+
+    init {
+        tabbedDocumentPane.addChangeListener(thingListener)
+    }
 }
 
 

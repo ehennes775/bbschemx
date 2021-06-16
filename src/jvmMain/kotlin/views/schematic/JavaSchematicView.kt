@@ -1,10 +1,6 @@
 package views.schematic
 
-import views.RedoCapable
-import views.SaveCapable
-import views.SelectCapable
 import models.schematic.listeners.SelectionListener
-import views.UndoCapable
 import actions.DocumentListener
 import models.schematic.listeners.InvalidateListener
 import models.schematic.Item
@@ -16,10 +12,10 @@ import types.Point
 import tools.Tool
 import tools.ToolListener
 import tools.ToolSource
-import views.SchematicView
 import tools.inert.InertTool
 import types.GridMode
 import types.RevealMode
+import views.*
 import views.document.DocumentView
 import views.schematic.io.JavaBasedReader
 import java.awt.Graphics
@@ -33,12 +29,15 @@ import kotlin.math.floor
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-class JavaSchematicView(_schematic: Schematic = Schematic()) : JPanel(), DocumentView, SaveCapable, RedoCapable,
+class JavaSchematicView(
+    private val colorScheme: ColorScheme,
+    _schematic: Schematic = Schematic()
+) : JPanel(), DocumentView, SaveCapable, RedoCapable,
     SelectCapable, UndoCapable, ToolSource,
     SchematicView {
 
     init {
-        background = JavaDrawer.COLORS[ColorIndex.BACKGROUND]
+        background = colorScheme.lookupColor(ColorIndex.BACKGROUND)
     }
 
 
@@ -100,10 +99,10 @@ class JavaSchematicView(_schematic: Schematic = Schematic()) : JPanel(), Documen
     }
 
     companion object {
-        fun load(file: java.io.File): JavaSchematicView {
+        fun load(colorScheme: ColorScheme, file: java.io.File): JavaSchematicView {
             val reader = JavaBasedReader(file.reader())
             val schematic = Schematic.read(reader)
-            return JavaSchematicView(schematic)
+            return JavaSchematicView(colorScheme, schematic)
         }
     }
 
@@ -126,7 +125,7 @@ class JavaSchematicView(_schematic: Schematic = Schematic()) : JPanel(), Documen
         (graphics as Graphics2D).also { g ->
             val oldTransform = g.transform
             g.transform(currentTransform)
-            JavaDrawer(g, oldTransform, currentTransform).also { d ->
+            JavaDrawer(g, oldTransform, currentTransform, colorScheme).also { d ->
                 if (gridMode == GridMode.ON) {
                     d.drawGrid(gridSize, width, height)
                 }

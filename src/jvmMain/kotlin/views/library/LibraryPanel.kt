@@ -2,6 +2,7 @@ package views.library
 
 import models.schematic.Schematic
 import models.schematic.SchematicModel
+import views.ColorScheme
 import views.schematic.JavaSchematicView
 import views.schematic.io.JavaBasedReader
 import java.awt.Dimension
@@ -14,10 +15,10 @@ import javax.swing.JScrollPane
 import javax.swing.JTree
 import javax.swing.event.TreeSelectionListener
 
-class LibraryPanel: JPanel() {
+class LibraryPanel(colorScheme: ColorScheme): JPanel() {
     private val libraryModel = LibraryModel()
 
-    private val libraryPreview = JavaSchematicView().apply {
+    private val libraryPreview = JavaSchematicView(colorScheme).apply {
         minimumSize = Dimension(600, 300)
         preferredSize = Dimension(600, 300)
         maximumSize = Dimension(600, 300)

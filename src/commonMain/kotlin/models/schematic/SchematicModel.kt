@@ -66,15 +66,18 @@ class SchematicModel(schematic: Schematic) {
 
 
 
-    private fun <T,U> queryProperty(query: (T) -> U): SelectedValue<U> {
-        return setOf<U>().let {
+    private fun <T,U> queryProperty(query: (T) -> U) = items
+        .mapNotNull { it as? T }
+        .map { query(it) }
+        .toSet()
+        .let {
             when (it.count()) {
                 0 -> SelectedValue.None()
                 1 -> SelectedValue.Single(it.single())
                 else -> SelectedValue.Multiple()
             }
         }
-    }
+
 
     fun getCapType() = queryProperty<LineItem, CapType> { it.lineStyle.capType }
 
@@ -106,77 +109,124 @@ class SchematicModel(schematic: Schematic) {
 
 
     private inline fun <reified T> applyProperty(crossinline apply: (T) -> Item) {
-        //schematic = schematic.map { if (it is T) apply(it) else it }
+        currentState = State(
+            currentState.schematic.map { if (it is T) apply(it) else it },
+            currentState.selection
+        )
         firePropertyListener()
         fireSelectionChanged()
     }
 
-    fun setCapType(newCapType: CapType) = applyProperty<LineItem> { item ->
-        item.applyLineStyle { it.withCapType(newCapType) }
+    fun setCapType(newCapType: CapType) {
+        if (SelectedValue.Single(newCapType) != getCapType()) {
+            applyProperty<LineItem> { item ->
+                item.applyLineStyle { it.withCapType(newCapType) }
+            }
+        }
     }
 
-    fun setDashLength(newDashLength: Int) = applyProperty<LineItem> { item ->
-        item.applyLineStyle { it.withDashLength(newDashLength) }
+    fun setDashLength(newDashLength: Int) {
+        if (SelectedValue.Single(newDashLength) != getDashLength()) {
+            applyProperty<LineItem> { item ->
+                item.applyLineStyle { it.withDashLength(newDashLength) }
+            }
+        }
     }
 
-    fun setDashLength(newDashLength: String) = setDashLength(newDashLength.toInt())
-
-    fun setDashSpace(newDashSpace: Int) = applyProperty<LineItem> { item ->
-        item.applyLineStyle { it.withDashSpace(newDashSpace) }
+    fun setDashSpace(newDashSpace: Int) {
+        if (SelectedValue.Single(newDashSpace) != getDashSpace()) {
+            applyProperty<LineItem> { item ->
+                item.applyLineStyle { it.withDashSpace(newDashSpace) }
+            }
+        }
     }
 
-    fun setDashSpace(newDashSpace: String) = setDashSpace(newDashSpace.toInt())
-
-    fun setDashType(newDashType: DashType) = applyProperty<LineItem> { item ->
-        item.applyLineStyle { it.withDashType(newDashType) }
+    fun setDashType(newDashType: DashType) {
+        if (SelectedValue.Single(newDashType) != getDashType()) {
+            applyProperty<LineItem> { item ->
+                item.applyLineStyle { it.withDashType(newDashType) }
+            }
+        }
     }
 
-    fun setFillAngle1(newFillAngle: Int) = applyProperty<FillItem> { item ->
-        item.applyFillStyle { it.withFillAngle1(newFillAngle) }
+    fun setFillAngle1(newFillAngle: Int) {
+        if (SelectedValue.Single(newFillAngle) != getFillAngle1()) {
+            applyProperty<FillItem> { item ->
+                item.applyFillStyle { it.withFillAngle1(newFillAngle) }
+            }
+        }
     }
 
-    fun setFillAngle1(newFillAngle: String) = setFillAngle1(newFillAngle.toInt())
-
-    fun setFillAngle2(newFillAngle: Int) = applyProperty<FillItem> { item ->
-        item.applyFillStyle { it.withFillAngle2(newFillAngle) }
+    fun setFillAngle2(newFillAngle: Int) {
+        if (SelectedValue.Single(newFillAngle) != getFillAngle2()) {
+            applyProperty<FillItem> { item ->
+                item.applyFillStyle { it.withFillAngle2(newFillAngle) }
+            }
+        }
     }
 
-    fun setFillAngle2(newFillAngle: String) = setFillAngle2(newFillAngle.toInt())
-
-    fun setFillPitch1(newFillPitch: Int) = applyProperty<FillItem> { item ->
-        item.applyFillStyle { it.withFillPitch1(newFillPitch) }
+    fun setFillPitch1(newFillPitch: Int) {
+        if (SelectedValue.Single(newFillPitch) != getFillPitch1()) {
+            applyProperty<FillItem> { item ->
+                item.applyFillStyle { it.withFillPitch1(newFillPitch) }
+            }
+        }
     }
 
-    fun setFillPitch1(newFillPitch: String) = setFillPitch1(newFillPitch.toInt())
-
-    fun setFillPitch2(newFillPitch: Int) = applyProperty<FillItem> { item ->
-        item.applyFillStyle { it.withFillPitch2(newFillPitch) }
+    fun setFillPitch2(newFillPitch: Int) {
+        if (SelectedValue.Single(newFillPitch) != getFillPitch2()) {
+            applyProperty<FillItem> { item ->
+                item.applyFillStyle { it.withFillPitch2(newFillPitch) }
+            }
+        }
     }
 
-    fun setFillPitch2(newFillPitch: String) = setFillPitch2(newFillPitch.toInt())
-
-    fun setFillType(newFillType: FillType) = applyProperty<FillItem> { item ->
-        item.applyFillStyle { it.withFillType(newFillType) }
+    fun setFillType(newFillType: FillType) {
+        if (SelectedValue.Single(newFillType) != getFillType()) {
+            applyProperty<FillItem> { item ->
+                item.applyFillStyle { it.withFillType(newFillType) }
+            }
+        }
     }
 
-    fun setFillWidth(newFillWidth: Int) = applyProperty<FillItem> { item ->
-        item.applyFillStyle { it.withFillWidth(newFillWidth) }
+    fun setFillWidth(newFillWidth: Int) {
+        if (SelectedValue.Single(newFillWidth) != getFillWidth()) {
+            applyProperty<FillItem> { item ->
+                item.applyFillStyle { it.withFillWidth(newFillWidth) }
+            }
+        }
     }
 
-    fun setItemColor(newItemColor: ColorIndex) = applyProperty<ColorItem> {
-        it.withItemColor(newItemColor)
+    fun setItemColor(newItemColor: ColorIndex) {
+        if (SelectedValue.Single(newItemColor) != getItemColor()) {
+            applyProperty<ColorItem> {
+                it.withItemColor(newItemColor)
+            }
+        }
     }
 
-    fun setLineWidth(newLineWidth: Int) = applyProperty<LineItem> { item ->
-        item.applyLineStyle { it.withLineWidth(newLineWidth) }
+    fun setLineWidth(newLineWidth: Int) {
+        if (SelectedValue.Single(newLineWidth) != getLineWidth()) {
+            applyProperty<LineItem> { item ->
+                item.applyLineStyle { it.withLineWidth(newLineWidth) }
+            }
+        }
     }
 
-    fun setPinType(newPinType: PinType) = applyProperty<Pin> {
-        it.withValues(newPinType = newPinType)
+    fun setPinType(newPinType: PinType) {
+        if (SelectedValue.Single(newPinType) != getPinType()) {
+            applyProperty<Pin> {
+                it.withValues(newPinType = newPinType)
+            }
+        }
     }
 
-    fun setTextColor(newTextColor: ColorIndex) = applyProperty<Text> {
-        it.withItemColor(newTextColor)
+    fun setTextColor(newTextColor: ColorIndex) {
+        if (SelectedValue.Single(newTextColor) != getTextColor()) {
+            applyProperty<Text> {
+                it.withItemColor(newTextColor)
+            }
+        }
     }
 
     fun calculateBounds(revealMode: RevealMode) = currentState.schematic.calculateBounds(revealMode)

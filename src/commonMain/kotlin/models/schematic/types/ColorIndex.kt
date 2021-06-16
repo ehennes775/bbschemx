@@ -27,5 +27,6 @@ inline class ColorIndex(val fileValue: Int) {
         val JUNCTION = ColorIndex(21)
         val MESH_GRID_MAJOR = ColorIndex(22)
         val MESH_GRID_MINOR = ColorIndex(23)
+        val ORIGIN = ColorIndex(24)
     }
 }

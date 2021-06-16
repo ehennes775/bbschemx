@@ -27,6 +27,7 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
+                implementation("org.freeplane.bulenkov:darcula:2018.2")
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32")
                 implementation("org.xerial:sqlite-jdbc:3.34.0")
             }
