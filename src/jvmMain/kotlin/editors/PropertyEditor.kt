@@ -60,10 +60,10 @@ abstract class PropertyEditor(val comboBox: JComboBox<*>) {
         }
 
         private fun <T> selectedText(selectedValue: SelectedValue<T>?, convertValue: (T) -> String) = when (selectedValue) {
-            is SelectedValue.Multiple -> null
-            is SelectedValue.None -> null
+            is SelectedValue.Multiple -> ""
+            is SelectedValue.None -> ""
             is SelectedValue.Single -> convertValue(selectedValue.value)
-            null -> null
+            null -> ""
         }
     }
 }

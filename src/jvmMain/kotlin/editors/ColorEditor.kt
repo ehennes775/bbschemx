@@ -3,13 +3,12 @@ package editors
 import combos.color.createColorCombo
 import models.schematic.SchematicModel
 import models.schematic.listeners.SelectionListener
-import models.schematic.types.*
+import models.schematic.types.CapType
+import models.schematic.types.DashType
+import models.schematic.types.FillType
 import settings.JavaSettingsSource
 import views.ColorComboEntry
 import views.ColorScheme
-import java.awt.Dimension
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 import javax.swing.JComboBox
 import javax.swing.JTextField
 
@@ -22,38 +21,29 @@ class ColorEditor(
         set(value) {
             field?.removeSelectionListener(selectionListener)
             field = value
-            itemColorEditor.update()
-            lineWidthEditor.update()
-            dashTypeEditor.update()
-            dashLengthEditor.update()
-            dashSpaceEditor.update()
-            capTypeEditor.update()
-            fillTypeEditor.update()
-            fillAngle1Editor.update()
-            fillAngle2Editor.update()
-            fillPitch1Editor.update()
-            fillPitch2Editor.update()
-            fillWidthEditor.update()
-            textColorEditor.update()
+            update()
             field?.addSelectionListener(selectionListener)
         }
 
     private val selectionListener = object: SelectionListener {
         override fun selectionChanged() {
-            itemColorEditor.update()
-            lineWidthEditor.update()
-            dashTypeEditor.update()
-            dashLengthEditor.update()
-            dashSpaceEditor.update()
-            capTypeEditor.update()
-            fillTypeEditor.update()
-            fillAngle1Editor.update()
-            fillAngle2Editor.update()
-            fillPitch1Editor.update()
-            fillPitch2Editor.update()
-            fillWidthEditor.update()
-            textColorEditor.update()
         }
+    }
+
+    private fun update() {
+        itemColorEditor.update()
+        lineWidthEditor.update()
+        dashTypeEditor.update()
+        dashLengthEditor.update()
+        dashSpaceEditor.update()
+        capTypeEditor.update()
+        fillTypeEditor.update()
+        fillAngle1Editor.update()
+        fillAngle2Editor.update()
+        fillPitch1Editor.update()
+        fillPitch2Editor.update()
+        fillWidthEditor.update()
+        textColorEditor.update()
     }
 
     private val itemColorEditor = object: PropertyEditor(
@@ -123,6 +113,9 @@ class ColorEditor(
         }
 
         override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.getDashLength()) {
+                it.toString()
+            }
         }
     }
 
@@ -140,6 +133,9 @@ class ColorEditor(
         }
 
         override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.getDashSpace()) { dashSpace ->
+                dashSpace.toString()
+            }
         }
     }
 
@@ -193,6 +189,9 @@ class ColorEditor(
         }
 
         override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.getFillWidth()) { fillWidth ->
+                fillWidth.toString()
+            }
         }
     }
 
@@ -213,6 +212,9 @@ class ColorEditor(
         }
 
         override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.getFillAngle1()) { fillAngle ->
+                fillAngle.toString()
+            }
         }
     }
 
@@ -227,6 +229,9 @@ class ColorEditor(
         }
 
         override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.getFillAngle2()) { fillAngle ->
+                fillAngle.toString()
+            }
         }
     }
 
@@ -247,6 +252,9 @@ class ColorEditor(
         }
 
         override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.getFillPitch1()) { fillPitch ->
+                fillPitch.toString()
+            }
         }
     }
 
@@ -261,6 +269,9 @@ class ColorEditor(
         }
 
         override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.getFillPitch2()) { fillPitch ->
+                fillPitch.toString()
+            }
         }
     }
 
@@ -309,23 +320,5 @@ class ColorEditor(
 
     private fun createFillPitchCombo() = JComboBox(fillPitches).apply {
         isEditable = true
-    }
-
-    companion object {
-
-        fun <E> JComboBox<E>.getTextOrNull(): String? {
-            return (this.editor.editorComponent as JTextField).text
-        }
-
-        fun ActionEvent.eventSourceTextOrNull(): String? {
-            if (this.actionCommand == "comboBoxChanged") {
-                if (this.source is JComboBox<*>) {
-                    (this.source as JComboBox<*>).getTextOrNull()?.let {
-                        return it
-                    }
-                }
-            }
-            return null
-        }
     }
 }
