@@ -76,7 +76,7 @@ class Pin(
                 PinType.NET -> Net.lineStyle
             }
 
-            endDraw(selected, ColorIndex.PIN, lineStyle)
+            endDraw(selected, color, lineStyle)
         }
     }
 

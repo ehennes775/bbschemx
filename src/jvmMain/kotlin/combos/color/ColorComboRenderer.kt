@@ -50,8 +50,8 @@ class ColorComboRenderer: ListCellRenderer<ColorComboEntry> {
         cellHasFocus: Boolean
     ): Component {
         tingLayout.show(
-            ting, if (index < 0)
-                "goodbye" //""hello"
+            ting, if (value == null)
+                "hello"
             else
                 "goodbye"
         )

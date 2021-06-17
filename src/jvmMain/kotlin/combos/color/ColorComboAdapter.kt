@@ -16,10 +16,10 @@ class ColorComboAdapter(private val colorScheme: ColorScheme): ComboBoxModel<Col
     override fun removeListDataListener(l: ListDataListener?) {
     }
 
-    private var selectedItem: Any = colorScheme.colorComboTable.first()
+    private var selectedItem: Any? = colorScheme.colorComboTable.first()
 
     override fun setSelectedItem(anItem: Any?) {
-        anItem?.also { selectedItem = it }
+        selectedItem = anItem
     }
 
     override fun getSelectedItem(): Any? = selectedItem

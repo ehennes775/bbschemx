@@ -60,7 +60,12 @@ class JavaSchematicView(
         }
 
 
+
     private val invalidateListener = object : InvalidateListener {
+        override fun invalidateAll() {
+            repaint()
+        }
+
         override fun invalidateItem(item: Item) {
             repaint()
         }

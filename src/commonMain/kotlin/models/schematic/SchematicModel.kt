@@ -29,6 +29,10 @@ class SchematicModel(schematic: Schematic) {
         invalidateListeners.remove(listener)
     }
 
+    private fun fireInvalidateAll() {
+        invalidateListeners.forEach { it.invalidateAll() }
+    }
+
     fun fireInvalidateItem(item: Item) {
         invalidateListeners.forEach { it.invalidateItem(item) }
     }
@@ -66,7 +70,7 @@ class SchematicModel(schematic: Schematic) {
 
 
 
-    private fun <T,U> queryProperty(query: (T) -> U) = items
+    private inline fun <reified T,U> queryProperty(query: (T) -> U) = items
         .mapNotNull { it as? T }
         .map { query(it) }
         .toSet()
@@ -115,7 +119,9 @@ class SchematicModel(schematic: Schematic) {
         )
         firePropertyListener()
         fireSelectionChanged()
+        fireInvalidateAll()
     }
+
 
     fun setCapType(newCapType: CapType) {
         if (SelectedValue.Single(newCapType) != getCapType()) {
