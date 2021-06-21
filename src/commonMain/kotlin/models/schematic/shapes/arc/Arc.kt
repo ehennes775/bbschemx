@@ -51,12 +51,12 @@ class Arc(
             startAngle = params[4].toInt(),
             sweepAngle = params[5].toInt(),
             color = ColorIndex(params[6].toInt()),
-            lineStyle = LineStyle(
-                lineWidth = params[7].toInt(),
-                capType = CapType.fromFileValue(params[8].toInt()),
-                dashType = DashType.fromFileValue(params[9].toInt()),
-                dashLength = params[10].toInt(),
-                dashSpace = params[11].toInt()
+            lineStyle = LineStyle.fromFileParams(
+                lineWidth = params[7],
+                capType = params[8],
+                dashType = params[9],
+                dashLength = params[10],
+                dashSpace = params[11]
             )
         )
     }

@@ -54,12 +54,12 @@ class Line(
             x1 = params[3].toInt(),
             y1 = params[4].toInt(),
             color = ColorIndex(params[5].toInt()),
-            lineStyle = LineStyle(
-                lineWidth = params[6].toInt(),
-                capType = CapType.fromFileValue(params[7].toInt()),
-                dashType = DashType.fromFileValue(params[8].toInt()),
-                dashLength = params[9].toInt(),
-                dashSpace = params[10].toInt()
+            lineStyle = LineStyle.fromFileParams(
+                lineWidth = params[6],
+                capType = params[7],
+                dashType = params[8],
+                dashLength = params[9],
+                dashSpace = params[10]
             )
         )
     }

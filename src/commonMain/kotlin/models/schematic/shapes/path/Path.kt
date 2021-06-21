@@ -52,20 +52,20 @@ class Path(
 
         override fun read(params: Array<String>, reader: Reader) = Path(
             color = ColorIndex(params[1].toInt()),
-            lineStyle = LineStyle(
-                lineWidth = params[2].toInt(),
-                capType = CapType.fromFileValue(params[3].toInt()),
-                dashType = DashType.fromFileValue(params[4].toInt()),
-                dashLength = params[5].toInt(),
-                dashSpace = params[6].toInt()
+            lineStyle = LineStyle.fromFileParams(
+                lineWidth = params[2],
+                capType = params[3],
+                dashType = params[4],
+                dashLength = params[5],
+                dashSpace = params[6]
             ),
-            fillStyle = FillStyle(
-                fillType = FillType.fromFileValue(params[7].toInt()),
-                fillWidth = params[8].toInt(),
-                fillAngle1 = params[9].toInt(),
-                fillPitch1 = params[10].toInt(),
-                fillAngle2 = params[11].toInt(),
-                fillPitch2 = params[12].toInt(),
+            fillStyle = FillStyle.fromFileParams(
+                fillType = params[7],
+                fillWidth = params[8],
+                fillAngle1 = params[9],
+                fillPitch1 = params[10],
+                fillAngle2 = params[11],
+                fillPitch2 = params[12],
             ),
             commands = parseCommands(reader.readLines(params[13].toInt()).joinToString(separator = " "))
         )

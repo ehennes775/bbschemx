@@ -69,20 +69,20 @@ class Box(
                 upperX = cornerX + width,
                 upperY = cornerY + height,
                 color = ColorIndex(params[5].toInt()),
-                lineStyle = LineStyle(
-                    lineWidth = params[6].toInt(),
-                    capType = CapType.fromFileValue(params[7].toInt()),
-                    dashType = DashType.fromFileValue(params[8].toInt()),
-                    dashLength = params[9].toInt(),
-                    dashSpace = params[10].toInt()
+                lineStyle = LineStyle.fromFileParams(
+                    lineWidth = params[6],
+                    capType = params[7],
+                    dashType = params[8],
+                    dashLength = params[9],
+                    dashSpace = params[10]
                 ),
-                fillStyle = FillStyle(
-                    fillType = FillType.fromFileValue(params[11].toInt()),
-                    fillWidth = params[12].toInt(),
-                    fillAngle1 = params[13].toInt(),
-                    fillPitch1 = params[14].toInt(),
-                    fillAngle2 = params[15].toInt(),
-                    fillPitch2 = params[16].toInt(),
+                fillStyle = FillStyle.fromFileParams(
+                    fillType = params[11],
+                    fillWidth = params[12],
+                    fillAngle1 = params[13],
+                    fillPitch1 = params[14],
+                    fillAngle2 = params[15],
+                    fillPitch2 = params[16],
                 )
             )
         }

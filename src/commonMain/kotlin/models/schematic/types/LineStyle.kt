@@ -56,4 +56,20 @@ class LineStyle(
         dashSpace,
         newCapType
     )
+
+    companion object {
+        fun fromFileParams(
+            lineWidth: String,
+            dashType: String,
+            dashLength: String,
+            dashSpace: String,
+            capType: String
+        ) = LineStyle(
+            lineWidth.toIntOrNull().let { if (it != null && it > 0) it else 10 },
+            DashType.fromFileValue(dashType.toInt()),
+            dashLength.toIntOrNull().let { if (it != null && it > 0) it else 100 },
+            dashSpace.toIntOrNull().let { if (it != null && it > 0) it else 100 },
+            CapType.fromFileValue(capType.toInt())
+        )
+    }
 }

@@ -57,20 +57,20 @@ class Circle(
             centerY = params[2].toInt(),
             radius = params[3].toInt(),
             color = ColorIndex(params[4].toInt()),
-            lineStyle = LineStyle(
-                lineWidth = params[5].toInt(),
-                capType = CapType.fromFileValue(params[6].toInt()),
-                dashType = DashType.fromFileValue(params[7].toInt()),
-                dashLength = params[8].toInt(),
-                dashSpace = params[9].toInt(),
+            lineStyle = LineStyle.fromFileParams(
+                lineWidth = params[5],
+                capType = params[6],
+                dashType = params[7],
+                dashLength = params[8],
+                dashSpace = params[9],
             ),
-            fillStyle = FillStyle(
-                fillType = FillType.fromFileValue(params[10].toInt()),
-                fillWidth = params[11].toInt(),
-                fillAngle1 = params[12].toInt(),
-                fillPitch1 = params[13].toInt(),
-                fillAngle2 = params[14].toInt(),
-                fillPitch2 = params[15].toInt(),
+            fillStyle = FillStyle.fromFileParams(
+                fillType = params[10],
+                fillWidth = params[11],
+                fillAngle1 = params[12],
+                fillPitch1 = params[13],
+                fillAngle2 = params[14],
+                fillPitch2 = params[15],
             )
         )
     }
