@@ -9,6 +9,15 @@ class FillStyle(
     val fillPitch2: Int = DEFAULT_PITCH
 ) {
 
+    fun withValues(
+        newFillType: FillType = fillType,
+        newFillWidth: Int = fillWidth,
+        newFillAngle1: Int = fillAngle1,
+        newFillPitch1: Int = fillPitch1,
+        newFillAngle2: Int = fillAngle2,
+        newFillPitch2: Int = fillPitch2
+    ) = FillStyle(newFillType, newFillWidth, newFillAngle1, newFillPitch1, newFillAngle2, newFillPitch2)
+
     val fillTypeFileValue get() = fillType.fileValue
 
     val fillWidthFileValue get() = if (fillType.usesFillWidth) fillWidth else UNUSED_VALUE
@@ -20,60 +29,6 @@ class FillStyle(
     val fillAngle2FileValue get() = if (fillType.usesSecondSet) fillAngle2 else UNUSED_VALUE
 
     val fillPitch2FileValue get() = if (fillType.usesSecondSet) fillPitch2 else UNUSED_VALUE
-
-    fun withFillType(newFillType: FillType) = FillStyle(
-        newFillType,
-        fillWidth,
-        fillAngle1,
-        fillPitch1,
-        fillAngle2,
-        fillPitch2
-    )
-
-    fun withFillWidth(newFillWidth: Int) = FillStyle(
-        fillType,
-        newFillWidth,
-        fillAngle1,
-        fillPitch1,
-        fillAngle2,
-        fillPitch2
-    )
-
-    fun withFillAngle1(newFillAngle1: Int) = FillStyle(
-        fillType,
-        fillWidth,
-        newFillAngle1,
-        fillPitch1,
-        fillAngle2,
-        fillPitch2
-    )
-
-    fun withFillPitch1(newFillPitch1: Int) = FillStyle(
-        fillType,
-        fillWidth,
-        fillAngle1,
-        newFillPitch1,
-        fillAngle2,
-        fillPitch2
-    )
-
-    fun withFillAngle2(newFillAngle2: Int) = FillStyle(
-        fillType,
-        fillWidth,
-        fillAngle1,
-        fillPitch1,
-        newFillAngle2,
-        fillPitch2
-    )
-
-    fun withFillPitch2(newFillPitch2: Int) = FillStyle(
-        fillType,
-        fillWidth,
-        fillAngle1,
-        fillPitch1,
-        fillAngle2,
-        newFillPitch2
-    )
 
     companion object {
 

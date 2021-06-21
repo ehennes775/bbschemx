@@ -180,7 +180,7 @@ class SchematicModel(schematic: Schematic) {
     fun setCapType(newCapType: CapType) {
         if (SelectedValue.Single(newCapType) != queryCapType()) {
             applyProperty<LineItem> { item ->
-                item.applyLineStyle { it.withCapType(newCapType) }
+                item.applyLineStyle { it.withValues(newCapType = newCapType) }
             }
         }
     }
@@ -188,7 +188,7 @@ class SchematicModel(schematic: Schematic) {
     fun setDashLength(newDashLength: Int) {
         if (SelectedValue.Single(newDashLength) != queryDashLength()) {
             applyProperty<LineItem> { item ->
-                item.applyLineStyle { it.withDashLength(newDashLength) }
+                item.applyLineStyle { it.withValues(newDashLength = newDashLength) }
             }
         }
     }
@@ -196,7 +196,7 @@ class SchematicModel(schematic: Schematic) {
     fun setDashSpace(newDashSpace: Int) {
         if (SelectedValue.Single(newDashSpace) != queryDashSpace()) {
             applyProperty<LineItem> { item ->
-                item.applyLineStyle { it.withDashSpace(newDashSpace) }
+                item.applyLineStyle { it.withValues(newDashSpace = newDashSpace) }
             }
         }
     }
@@ -204,7 +204,7 @@ class SchematicModel(schematic: Schematic) {
     fun setDashType(newDashType: DashType) {
         if (SelectedValue.Single(newDashType) != queryDashType()) {
             applyProperty<LineItem> { item ->
-                item.applyLineStyle { it.withDashType(newDashType) }
+                item.applyLineStyle { it.withValues(newDashType = newDashType) }
             }
         }
     }
@@ -212,7 +212,7 @@ class SchematicModel(schematic: Schematic) {
     fun setFillAngle1(newFillAngle: Int) {
         if (SelectedValue.Single(newFillAngle) != queryFillAngle1()) {
             applyProperty<FillItem> { item ->
-                item.applyFillStyle { it.withFillAngle1(newFillAngle) }
+                item.applyFillStyle { it.withValues(newFillAngle1 = newFillAngle) }
             }
         }
     }
@@ -220,7 +220,7 @@ class SchematicModel(schematic: Schematic) {
     fun setFillAngle2(newFillAngle: Int) {
         if (SelectedValue.Single(newFillAngle) != queryFillAngle2()) {
             applyProperty<FillItem> { item ->
-                item.applyFillStyle { it.withFillAngle2(newFillAngle) }
+                item.applyFillStyle { it.withValues(newFillAngle2 = newFillAngle) }
             }
         }
     }
@@ -228,7 +228,7 @@ class SchematicModel(schematic: Schematic) {
     fun setFillPitch1(newFillPitch: Int) {
         if (SelectedValue.Single(newFillPitch) != queryFillPitch1()) {
             applyProperty<FillItem> { item ->
-                item.applyFillStyle { it.withFillPitch1(newFillPitch) }
+                item.applyFillStyle { it.withValues(newFillPitch1 = newFillPitch) }
             }
         }
     }
@@ -236,7 +236,7 @@ class SchematicModel(schematic: Schematic) {
     fun setFillPitch2(newFillPitch: Int) {
         if (SelectedValue.Single(newFillPitch) != queryFillPitch2()) {
             applyProperty<FillItem> { item ->
-                item.applyFillStyle { it.withFillPitch2(newFillPitch) }
+                item.applyFillStyle { it.withValues(newFillPitch2 = newFillPitch) }
             }
         }
     }
@@ -244,7 +244,7 @@ class SchematicModel(schematic: Schematic) {
     fun setFillType(newFillType: FillType) {
         if (SelectedValue.Single(newFillType) != queryFillType()) {
             applyProperty<FillItem> { item ->
-                item.applyFillStyle { it.withFillType(newFillType) }
+                item.applyFillStyle { it.withValues(newFillType) }
             }
         }
     }
@@ -252,7 +252,7 @@ class SchematicModel(schematic: Schematic) {
     fun setFillWidth(newFillWidth: Int) {
         if (SelectedValue.Single(newFillWidth) != queryFillWidth()) {
             applyProperty<FillItem> { item ->
-                item.applyFillStyle { it.withFillWidth(newFillWidth) }
+                item.applyFillStyle { it.withValues(newFillWidth = newFillWidth) }
             }
         }
     }
@@ -268,7 +268,7 @@ class SchematicModel(schematic: Schematic) {
     fun setLineWidth(newLineWidth: Int) {
         if (SelectedValue.Single(newLineWidth) != queryLineWidth()) {
             applyProperty<LineItem> { item ->
-                item.applyLineStyle { it.withLineWidth(newLineWidth) }
+                item.applyLineStyle { it.withValues(newLineWidth = newLineWidth) }
             }
         }
     }
