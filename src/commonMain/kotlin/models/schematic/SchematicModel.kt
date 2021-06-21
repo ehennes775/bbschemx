@@ -6,6 +6,7 @@ import models.schematic.listeners.PropertyListener
 import models.schematic.listeners.SelectionListener
 import models.schematic.shapes.pin.Pin
 import models.schematic.shapes.pin.PinType
+import models.schematic.shapes.text.Alignment
 import models.schematic.shapes.text.Text
 import models.schematic.types.*
 import types.Drawer
@@ -68,49 +69,102 @@ class SchematicModel(schematic: Schematic) {
     }
 
 
+    fun queryCapType() = items
+        .mapNotNull { it as? LineItem }
+        .map { it.lineStyle.capType }
+        .toQueryResult()
 
+    fun queryDashLength() = items
+        .mapNotNull { it as? LineItem }
+        .filter { it.lineStyle.dashType.usesLength }
+        .map { it.lineStyle.dashLength }
+        .toQueryResult()
 
-    private inline fun <reified T,U> queryProperty(query: (T) -> U) = items
-        .mapNotNull { it as? T }
-        .map { query(it) }
-        .toSet()
-        .let {
-            when (it.count()) {
-                0 -> SelectedValue.None()
-                1 -> SelectedValue.Single(it.single())
-                else -> SelectedValue.Multiple()
-            }
-        }
+    fun queryDashSpace() = items
+        .mapNotNull { it as? LineItem }
+        .filter { it.lineStyle.dashType.usesSpace }
+        .map { it.lineStyle.dashSpace }
+        .toQueryResult()
 
+    fun queryDashType() = items
+        .mapNotNull { it as? LineItem }
+        .map { it.lineStyle.dashType }
+        .toQueryResult()
 
-    fun getCapType() = queryProperty<LineItem, CapType> { it.lineStyle.capType }
+    fun queryFillAngle1() = items
+        .mapNotNull { it as? FillItem }
+        .filter { it.fillStyle.fillType.usesFirstSet }
+        .map { it.fillStyle.fillAngle1 }
+        .toQueryResult()
 
-    fun getDashLength() = queryProperty<LineItem, Int> { it.lineStyle.dashLength }
+    fun queryFillAngle2() = items
+        .mapNotNull { it as? FillItem }
+        .filter { it.fillStyle.fillType.usesSecondSet }
+        .map { it.fillStyle.fillAngle2 }
+        .toQueryResult()
 
-    fun getDashSpace() = queryProperty<LineItem, Int> { it.lineStyle.dashSpace }
+    fun queryFillPitch1() = items
+        .mapNotNull { it as? FillItem }
+        .filter { it.fillStyle.fillType.usesFirstSet }
+        .map { it.fillStyle.fillPitch1 }
+        .toQueryResult()
 
-    fun getDashType() = queryProperty<LineItem, DashType> { it.lineStyle.dashType }
+    fun queryFillPitch2() = items
+        .mapNotNull { it as? FillItem }
+        .filter { it.fillStyle.fillType.usesSecondSet }
+        .map { it.fillStyle.fillPitch2 }
+        .toQueryResult()
 
-    fun getFillAngle1() = queryProperty<FillItem, Int> { it.fillStyle.fillAngle1 }
+    fun queryFillType() = items
+        .mapNotNull { it as? FillItem }
+        .map { it.fillStyle.fillType }
+        .toQueryResult()
 
-    fun getFillAngle2() = queryProperty<FillItem, Int> { it.fillStyle.fillAngle2 }
+    fun queryFillWidth() = items
+        .mapNotNull { it as? FillItem }
+        .filter { it.fillStyle.fillType.usesFillWidth }
+        .map { it.fillStyle.fillWidth }
+        .toQueryResult()
 
-    fun getFillPitch1() = queryProperty<FillItem, Int> { it.fillStyle.fillPitch1 }
+    fun queryItemColor() = items
+        .mapNotNull { it as? ColorItem }
+        .map { it.color }
+        .toQueryResult()
 
-    fun getFillPitch2() = queryProperty<FillItem, Int> { it.fillStyle.fillPitch2 }
+    fun queryLineWidth() = items
+        .mapNotNull { it as? LineItem }
+        .map { it.lineStyle.lineWidth }
+        .toQueryResult()
 
-    fun getFillType() = queryProperty<FillItem, FillType> { it.fillStyle.fillType }
+    fun queryPinType() = items
+        .mapNotNull { it as? Pin }
+        .map { it.pinType }
+        .toQueryResult()
 
-    fun getFillWidth() = queryProperty<FillItem, Int> { it.fillStyle.fillWidth }
+    fun queryTextAlignment() = items
+        .mapNotNull { it as? Text }
+        .map { it.alignment }
+        .toQueryResult()
 
-    fun getItemColor() = queryProperty<ColorItem, ColorIndex> { it.color }
+    fun queryTextColor() = items
+        .mapNotNull { it as? Text }
+        .map { it.color }
+        .toQueryResult()
 
-    fun getLineWidth() = queryProperty<LineItem, Int> { it.lineStyle.lineWidth }
+    fun queryTextRotation() = items
+        .mapNotNull { it as? Text }
+        .map { it.rotation }
+        .toQueryResult()
 
-    fun getPinType() = queryProperty<Pin, PinType> { it.pinType }
+    fun queryTextSize() = items
+        .mapNotNull { it as? Text }
+        .map { it.size }
+        .toQueryResult()
 
-    fun getTextColor() = queryProperty<Text, ColorIndex> { it.color }
-
+    fun queryTextVisibility() = items
+        .mapNotNull { it as? Text }
+        .map { it.visibility }
+        .toQueryResult()
 
     private inline fun <reified T> applyProperty(crossinline apply: (T) -> Item) {
         currentState = State(
@@ -124,7 +178,7 @@ class SchematicModel(schematic: Schematic) {
 
 
     fun setCapType(newCapType: CapType) {
-        if (SelectedValue.Single(newCapType) != getCapType()) {
+        if (SelectedValue.Single(newCapType) != queryCapType()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withCapType(newCapType) }
             }
@@ -132,7 +186,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setDashLength(newDashLength: Int) {
-        if (SelectedValue.Single(newDashLength) != getDashLength()) {
+        if (SelectedValue.Single(newDashLength) != queryDashLength()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withDashLength(newDashLength) }
             }
@@ -140,7 +194,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setDashSpace(newDashSpace: Int) {
-        if (SelectedValue.Single(newDashSpace) != getDashSpace()) {
+        if (SelectedValue.Single(newDashSpace) != queryDashSpace()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withDashSpace(newDashSpace) }
             }
@@ -148,7 +202,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setDashType(newDashType: DashType) {
-        if (SelectedValue.Single(newDashType) != getDashType()) {
+        if (SelectedValue.Single(newDashType) != queryDashType()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withDashType(newDashType) }
             }
@@ -156,7 +210,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setFillAngle1(newFillAngle: Int) {
-        if (SelectedValue.Single(newFillAngle) != getFillAngle1()) {
+        if (SelectedValue.Single(newFillAngle) != queryFillAngle1()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withFillAngle1(newFillAngle) }
             }
@@ -164,7 +218,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setFillAngle2(newFillAngle: Int) {
-        if (SelectedValue.Single(newFillAngle) != getFillAngle2()) {
+        if (SelectedValue.Single(newFillAngle) != queryFillAngle2()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withFillAngle2(newFillAngle) }
             }
@@ -172,7 +226,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setFillPitch1(newFillPitch: Int) {
-        if (SelectedValue.Single(newFillPitch) != getFillPitch1()) {
+        if (SelectedValue.Single(newFillPitch) != queryFillPitch1()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withFillPitch1(newFillPitch) }
             }
@@ -180,7 +234,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setFillPitch2(newFillPitch: Int) {
-        if (SelectedValue.Single(newFillPitch) != getFillPitch2()) {
+        if (SelectedValue.Single(newFillPitch) != queryFillPitch2()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withFillPitch2(newFillPitch) }
             }
@@ -188,7 +242,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setFillType(newFillType: FillType) {
-        if (SelectedValue.Single(newFillType) != getFillType()) {
+        if (SelectedValue.Single(newFillType) != queryFillType()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withFillType(newFillType) }
             }
@@ -196,7 +250,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setFillWidth(newFillWidth: Int) {
-        if (SelectedValue.Single(newFillWidth) != getFillWidth()) {
+        if (SelectedValue.Single(newFillWidth) != queryFillWidth()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withFillWidth(newFillWidth) }
             }
@@ -204,7 +258,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setItemColor(newItemColor: ColorIndex) {
-        if (SelectedValue.Single(newItemColor) != getItemColor()) {
+        if (SelectedValue.Single(newItemColor) != queryItemColor()) {
             applyProperty<ColorItem> {
                 it.withItemColor(newItemColor)
             }
@@ -212,7 +266,7 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setLineWidth(newLineWidth: Int) {
-        if (SelectedValue.Single(newLineWidth) != getLineWidth()) {
+        if (SelectedValue.Single(newLineWidth) != queryLineWidth()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withLineWidth(newLineWidth) }
             }
@@ -220,17 +274,41 @@ class SchematicModel(schematic: Schematic) {
     }
 
     fun setPinType(newPinType: PinType) {
-        if (SelectedValue.Single(newPinType) != getPinType()) {
+        if (SelectedValue.Single(newPinType) != queryPinType()) {
             applyProperty<Pin> {
                 it.withValues(newPinType = newPinType)
             }
         }
     }
 
+    fun setTextAlignment(newAlignment: Alignment) {
+        if (SelectedValue.Single(newAlignment) != queryTextAlignment()) {
+            applyProperty<Text> {
+                it.withAlignment(newAlignment)
+            }
+        }
+    }
+
     fun setTextColor(newTextColor: ColorIndex) {
-        if (SelectedValue.Single(newTextColor) != getTextColor()) {
+        if (SelectedValue.Single(newTextColor) != queryTextColor()) {
             applyProperty<Text> {
                 it.withItemColor(newTextColor)
+            }
+        }
+    }
+
+    fun setTextRotation(newRotation: Int) {
+        if (SelectedValue.Single(newRotation) != queryTextSize()) {
+            applyProperty<Text> {
+                it.withRotation(newRotation)
+            }
+        }
+    }
+
+    fun setTextSize(newSize: Int) {
+        if (SelectedValue.Single(newSize) != queryTextSize()) {
+            applyProperty<Text> {
+                it.withSize(newSize)
             }
         }
     }
@@ -307,5 +385,15 @@ class SchematicModel(schematic: Schematic) {
     companion object {
 
         fun read(reader: Reader): SchematicModel = SchematicModel(Schematic.read(reader))
+
+        private fun <T> Iterable<T>.toQueryResult(): SelectedValue<T> = this
+            .toSet()
+            .let {
+                when (it.count()) {
+                    0 -> SelectedValue.None()
+                    1 -> SelectedValue.Single(it.single())
+                    else -> SelectedValue.Multiple()
+                }
+            }
     }
 }

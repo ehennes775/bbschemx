@@ -3,6 +3,8 @@ package editors
 import combos.color.createColorCombo
 import models.schematic.SchematicModel
 import models.schematic.listeners.SelectionListener
+import models.schematic.shapes.pin.PinType
+import models.schematic.shapes.text.Alignment
 import models.schematic.types.CapType
 import models.schematic.types.DashType
 import models.schematic.types.FillType
@@ -27,6 +29,7 @@ class ColorEditor(
 
     private val selectionListener = object: SelectionListener {
         override fun selectionChanged() {
+            update()
         }
     }
 
@@ -44,6 +47,10 @@ class ColorEditor(
         fillPitch2Editor.update()
         fillWidthEditor.update()
         textColorEditor.update()
+        textSizeEditor.update()
+        textRotationEditor.update()
+        textAlignmentEditor.update()
+        pinTypeEditor.update()
     }
 
     private val itemColorEditor = object: PropertyEditor(
@@ -57,7 +64,7 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxItem(selectedValue = schematicModel?.getItemColor()) { colorIndex ->
+            updateComboBoxItem(selectedValue = schematicModel?.queryItemColor()) { colorIndex ->
                 colorScheme.colorComboTable.single { it.colorIndex == colorIndex }
             }
         }
@@ -76,27 +83,28 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getLineWidth()) { lineWidth ->
+            updateComboBoxText(selectedValue = schematicModel?.queryLineWidth()) { lineWidth ->
                 lineWidth.toString()
             }
         }
     }
 
-    private val dashTypes = mapOf(
-        "Solid" to DashType.SOLID,
-        "Dotted" to DashType.DOTTED,
-        "Dashed" to DashType.DASHED,
-        "Center" to DashType.CENTER,
-        "Phantom" to DashType.PHANTOM
-    )
-
     private val dashTypeEditor = object: PropertyEditor(
         comboBox = JComboBox(dashTypes.keys.toTypedArray())
     ) {
         override fun apply() {
+            comboBox.selectedItem.let { item ->
+                require(item is String)
+                dashTypes[item]?.let {
+                    schematicModel?.setDashType(it)
+                }
+            }
         }
 
         override fun update() {
+            updateComboBoxItem(selectedValue = schematicModel?.queryDashType()) { dashType ->
+                dashTypes.entries.single { it.value == dashType }.key
+            }
         }
     }
 
@@ -113,7 +121,7 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getDashLength()) {
+            updateComboBoxText(selectedValue = schematicModel?.queryDashLength()) {
                 it.toString()
             }
         }
@@ -133,42 +141,47 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getDashSpace()) { dashSpace ->
+            updateComboBoxText(selectedValue = schematicModel?.queryDashSpace()) { dashSpace ->
                 dashSpace.toString()
             }
         }
     }
 
-    private val capTypes = mapOf(
-        "None" to CapType.NONE,
-        "Square" to CapType.SQUARE,
-        "Round" to CapType.ROUND
-    )
-
     private val capTypeEditor = object: PropertyEditor(
         comboBox = JComboBox(capTypes.keys.toTypedArray())
     ) {
         override fun apply() {
+            comboBox.selectedItem.let { item ->
+                require(item is String)
+                capTypes[item]?.let {
+                    schematicModel?.setCapType(it)
+                }
+            }
         }
 
         override fun update() {
+            updateComboBoxItem(selectedValue = schematicModel?.queryCapType()) { capType ->
+                capTypes.entries.single { it.value == capType }.key
+            }
         }
     }
-
-    private val fillTypes = mapOf(
-        "Hollow" to FillType.HOLLOW,
-        "Fill" to FillType.FILL,
-        "Mesh" to FillType.MESH,
-        "Hatch" to FillType.HATCH
-    )
 
     private val fillTypeEditor = object: PropertyEditor(
         comboBox = JComboBox(fillTypes.keys.toTypedArray())
     ) {
         override fun apply() {
+            comboBox.selectedItem.let { item ->
+                require(item is String)
+                fillTypes[item]?.let {
+                    schematicModel?.setFillType(it)
+                }
+            }
         }
 
         override fun update() {
+            updateComboBoxItem(selectedValue = schematicModel?.queryFillType()) { fillType ->
+                fillTypes.entries.single { it.value == fillType }.key
+            }
         }
     }
 
@@ -189,7 +202,7 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getFillWidth()) { fillWidth ->
+            updateComboBoxText(selectedValue = schematicModel?.queryFillWidth()) { fillWidth ->
                 fillWidth.toString()
             }
         }
@@ -212,7 +225,7 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getFillAngle1()) { fillAngle ->
+            updateComboBoxText(selectedValue = schematicModel?.queryFillAngle1()) { fillAngle ->
                 fillAngle.toString()
             }
         }
@@ -229,7 +242,7 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getFillAngle2()) { fillAngle ->
+            updateComboBoxText(selectedValue = schematicModel?.queryFillAngle2()) { fillAngle ->
                 fillAngle.toString()
             }
         }
@@ -252,7 +265,7 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getFillPitch1()) { fillPitch ->
+            updateComboBoxText(selectedValue = schematicModel?.queryFillPitch1()) { fillPitch ->
                 fillPitch.toString()
             }
         }
@@ -269,7 +282,7 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxText(selectedValue = schematicModel?.getFillPitch2()) { fillPitch ->
+            updateComboBoxText(selectedValue = schematicModel?.queryFillPitch2()) { fillPitch ->
                 fillPitch.toString()
             }
         }
@@ -286,8 +299,84 @@ class ColorEditor(
         }
 
         override fun update() {
-            updateComboBoxItem(selectedValue = schematicModel?.getTextColor()) { colorIndex ->
+            updateComboBoxItem(selectedValue = schematicModel?.queryTextColor()) { colorIndex ->
                 colorScheme.colorComboTable.single { it.colorIndex == colorIndex }
+            }
+        }
+    }
+
+    val textSizes = listOf(8, 10, 12, 14, 16)
+
+    private val textSizeEditor = object: PropertyEditor(
+        comboBox = JComboBox(textSizes.toTypedArray()).apply { isEditable = true }
+    ) {
+        override fun apply() {
+            comboBox.editor.editorComponent.let {
+                require(it is JTextField)
+                schematicModel?.setTextSize(it.text.toInt())
+            }
+        }
+
+        override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.queryTextSize()) { textSize ->
+                textSize.toString()
+            }
+        }
+    }
+
+    val textRotations = listOf(0, 90, 180, 270)
+
+    private val textRotationEditor = object: PropertyEditor(
+        comboBox = JComboBox(textRotations.toTypedArray()).apply { isEditable = true }
+    ) {
+        override fun apply() {
+            comboBox.editor.editorComponent.let {
+                require(it is JTextField)
+                schematicModel?.setTextRotation(it.text.toInt())
+            }
+        }
+
+        override fun update() {
+            updateComboBoxText(selectedValue = schematicModel?.queryTextRotation()) { textRotation ->
+                textRotation.toString()
+            }
+        }
+    }
+
+    private val textAlignmentEditor = object: PropertyEditor(
+        comboBox = JComboBox(textAlignments.keys.toTypedArray())
+    ) {
+        override fun apply() {
+            comboBox.selectedItem.let { item ->
+                require(item is String)
+                textAlignments[item]?.let {
+                    schematicModel?.setTextAlignment(it)
+                }
+            }
+        }
+
+        override fun update() {
+            updateComboBoxItem(selectedValue = schematicModel?.queryTextAlignment()) { textAlignment ->
+                textAlignments.entries.single { it.value == textAlignment }.key
+            }
+        }
+    }
+
+    private val pinTypeEditor = object: PropertyEditor(
+        comboBox = JComboBox(pinTypes.keys.toTypedArray())
+    ) {
+        override fun apply() {
+            comboBox.selectedItem.let { item ->
+                require(item is String)
+                pinTypes[item]?.let {
+                    schematicModel?.setPinType(it)
+                }
+            }
+        }
+
+        override fun update() {
+            updateComboBoxItem(selectedValue = schematicModel?.queryPinType()) { pinType ->
+                pinTypes.entries.single { it.value == pinType }.key
             }
         }
     }
@@ -306,8 +395,16 @@ class ColorEditor(
             fillPitch1Editor.comboBox labelledAs "Fill Pitch 1:",
             fillAngle2Editor.comboBox labelledAs "Fill Angle 2:",
             fillPitch2Editor.comboBox labelledAs "Fill Pitch 2:",
-            textColorEditor.comboBox labelledAs "Text Color:"
+            textColorEditor.comboBox labelledAs "Text Color:",
+            textSizeEditor.comboBox labelledAs "Text Size:",
+            textRotationEditor.comboBox labelledAs "Text Rotation:",
+            textAlignmentEditor.comboBox labelledAs "Text Alignment:",
+            pinTypeEditor.comboBox labelledAs "PinType:"
         )
+    }
+
+    init {
+        update()
     }
 
     private fun createFillWidthCombo() = JComboBox(fillWidths).apply {
@@ -320,5 +417,45 @@ class ColorEditor(
 
     private fun createFillPitchCombo() = JComboBox(fillPitches).apply {
         isEditable = true
+    }
+
+    companion object {
+        private val capTypes = mapOf(
+            "None" to CapType.NONE,
+            "Square" to CapType.SQUARE,
+            "Round" to CapType.ROUND
+        )
+
+        private val dashTypes = mapOf(
+            "Solid" to DashType.SOLID,
+            "Dotted" to DashType.DOTTED,
+            "Dashed" to DashType.DASHED,
+            "Center" to DashType.CENTER,
+            "Phantom" to DashType.PHANTOM
+        )
+
+        private val fillTypes = mapOf(
+            "Hollow" to FillType.HOLLOW,
+            "Fill" to FillType.FILL,
+            "Mesh" to FillType.MESH,
+            "Hatch" to FillType.HATCH
+        )
+
+        private val pinTypes = mapOf(
+            "Net" to PinType.NET,
+            "Bus" to PinType.BUS
+        )
+
+        private val textAlignments = mapOf(
+            "Upper Left" to Alignment.UPPER_LEFT,
+            "Center Left" to Alignment.CENTER_LEFT,
+            "Lower Left" to Alignment.LOWER_LEFT,
+            "Upper Center" to Alignment.UPPER_CENTER,
+            "Center Center" to Alignment.CENTER_CENTER,
+            "Lower Center" to Alignment.LOWER_CENTER,
+            "Upper Right" to Alignment.UPPER_RIGHT,
+            "Center Right" to Alignment.CENTER_RIGHT,
+            "Lower Right" to Alignment.LOWER_RIGHT,
+        )
     }
 }

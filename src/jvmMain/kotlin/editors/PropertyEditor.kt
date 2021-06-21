@@ -19,12 +19,6 @@ abstract class PropertyEditor(val comboBox: JComboBox<*>) {
 
     abstract fun apply()
 
-    fun quietly(action: () -> Unit) {
-        comboBox.removeActionListener(actionListener)
-        action()
-        comboBox.addActionListener(actionListener)
-    }
-
     abstract fun update()
 
     fun <T> updateComboBoxItem(selectedValue: SelectedValue<T>?, locateItem: (T) -> Any?) {
@@ -42,6 +36,12 @@ abstract class PropertyEditor(val comboBox: JComboBox<*>) {
                 text = selectedText(selectedValue, convertValue)
             }
         }
+    }
+
+    private fun quietly(action: () -> Unit) {
+        comboBox.removeActionListener(actionListener)
+        action()
+        comboBox.addActionListener(actionListener)
     }
 
     companion object {
