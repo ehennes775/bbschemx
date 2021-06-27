@@ -36,10 +36,10 @@ class AttributeModel(private val schematicModel: SchematicModel): TableModel {
 
         when (columnIndex) {
             0 -> if (newValue is String && name != newValue) {
-                schematicModel.changeAttributeName(name, newValue)
+                schematicModel.applyAttributeName(newValue) { it.attributeNameOrNull == name }
             }
             1 -> if (newValue is String) {
-                schematicModel.changeAttributeValue(name, newValue)
+                schematicModel.applyAttributeValue(arrayOf(newValue)) { it.attributeNameOrNull == name }
             }
             else -> Unit
         }

@@ -59,7 +59,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.selectedItem.let {
                 require(it is ColorComboEntry)
-                schematicModel?.setItemColor(it.colorIndex)
+                schematicModel?.applyItemColor(it.colorIndex)
             }
         }
 
@@ -78,7 +78,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setLineWidth(it.text.toInt())
+                schematicModel?.applyLineWidth(it.text.toInt())
             }
         }
 
@@ -96,7 +96,7 @@ class ColorEditor(
             comboBox.selectedItem.let { item ->
                 require(item is String)
                 dashTypes[item]?.let {
-                    schematicModel?.setDashType(it)
+                    schematicModel?.applyDashType(it)
                 }
             }
         }
@@ -116,7 +116,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setDashLength(it.text.toInt())
+                schematicModel?.applyDashLength(it.text.toInt())
             }
         }
 
@@ -136,7 +136,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setDashSpace(it.text.toInt())
+                schematicModel?.applyDashSpace(it.text.toInt())
             }
         }
 
@@ -154,7 +154,7 @@ class ColorEditor(
             comboBox.selectedItem.let { item ->
                 require(item is String)
                 capTypes[item]?.let {
-                    schematicModel?.setCapType(it)
+                    schematicModel?.applyCapType(it)
                 }
             }
         }
@@ -173,7 +173,7 @@ class ColorEditor(
             comboBox.selectedItem.let { item ->
                 require(item is String)
                 fillTypes[item]?.let {
-                    schematicModel?.setFillType(it)
+                    schematicModel?.applyFillType(it)
                 }
             }
         }
@@ -197,7 +197,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setFillWidth(it.text.toInt())
+                schematicModel?.applyFillWidth(it.text.toInt())
             }
         }
 
@@ -220,7 +220,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setFillAngle1(it.text.toInt())
+                schematicModel?.applyFillAngle1(it.text.toInt())
             }
         }
 
@@ -237,7 +237,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setFillAngle2(it.text.toInt())
+                schematicModel?.applyFillAngle2(it.text.toInt())
             }
         }
 
@@ -260,7 +260,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setFillPitch1(it.text.toInt())
+                schematicModel?.applyFillPitch1(it.text.toInt())
             }
         }
 
@@ -277,7 +277,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setFillPitch2(it.text.toInt())
+                schematicModel?.applyFillPitch2(it.text.toInt())
             }
         }
 
@@ -294,7 +294,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.selectedItem.let {
                 require(it is ColorComboEntry)
-                schematicModel?.setTextColor(it.colorIndex)
+                schematicModel?.applyTextColor(it.colorIndex)
             }
         }
 
@@ -313,7 +313,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setTextSize(it.text.toInt())
+                schematicModel?.applyTextSize(it.text.toInt())
             }
         }
 
@@ -332,7 +332,7 @@ class ColorEditor(
         override fun apply() {
             comboBox.editor.editorComponent.let {
                 require(it is JTextField)
-                schematicModel?.setTextRotation(it.text.toInt())
+                schematicModel?.applyTextRotation(it.text.toInt())
             }
         }
 
@@ -350,7 +350,7 @@ class ColorEditor(
             comboBox.selectedItem.let { item ->
                 require(item is String)
                 textAlignments[item]?.let {
-                    schematicModel?.setTextAlignment(it)
+                    schematicModel?.applyTextAlignment(it)
                 }
             }
         }
@@ -369,7 +369,7 @@ class ColorEditor(
             comboBox.selectedItem.let { item ->
                 require(item is String)
                 pinTypes[item]?.let {
-                    schematicModel?.setPinType(it)
+                    schematicModel?.applyPinType(it)
                 }
             }
         }

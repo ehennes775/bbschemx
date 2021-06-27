@@ -15,10 +15,10 @@ class TableRow(name: String, items: List<Attribute>) {
         private fun createValue1(items: List<Attribute>) = items
             .mapNotNull { it.attributeValueOrNull }
             .let { outerIt ->
-                if (outerIt.any { it.size > 1 }) {
+                if (outerIt.any { it.lines.size > 1 }) {
                     "Not Editable"
                 } else {
-                    createValue2(outerIt.map { it.first() } )
+                    createValue2(outerIt.map { it.lines.first() } )
                 }
             }
 

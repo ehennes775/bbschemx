@@ -68,6 +68,26 @@ class SchematicModel(schematic: Schematic) {
         selectionListeners.forEach { it.selectionChanged() }
     }
 
+    fun queryAttributeName(criteria: (Attribute) -> Boolean = { true }) = items
+        .mapNotNull { it as? Attribute }
+        .filter(criteria)
+        .mapNotNull { it.attributeNameOrNull }
+        .toQueryResult()
+
+    fun queryAttributeTable() = items
+        .mapNotNull { it as? Attribute }
+        .mapNotNull { it.attributeNameOrNull }
+        .associateWith { name ->
+            queryAttributeValue {
+                it.attributeNameOrNull == name
+            }
+        }
+
+    fun queryAttributeValue(criteria: (Attribute) -> Boolean = { true }) = items
+        .mapNotNull { it as? Attribute }
+        .filter(criteria)
+        .mapNotNull { it.attributeValueOrNull }
+        .toQueryResult()
 
     fun queryCapType() = items
         .mapNotNull { it as? LineItem }
@@ -176,8 +196,31 @@ class SchematicModel(schematic: Schematic) {
         fireInvalidateAll()
     }
 
+    fun applyAttributeName(newName: String, criteria: (Attribute) -> Boolean = { true }) {
+        if (SelectedValue.Single(newName) != queryAttributeName(criteria)) {
+            applyProperty<Attribute> { attribute ->
+                if (criteria(attribute)) {
+                    attribute.withName(newName)
+                } else {
+                    attribute
+                }
+            }
+        }
+    }
 
-    fun setCapType(newCapType: CapType) {
+    fun applyAttributeValue(newValue: Array<String>, criteria: (Attribute) -> Boolean = { true }) {
+        if (SelectedValue.Single(newValue) != queryAttributeValue(criteria)) {
+            applyProperty<Attribute> { attribute ->
+                if (criteria(attribute)) {
+                    attribute.withValue(newValue)
+                } else {
+                    attribute
+                }
+            }
+        }
+    }
+
+    fun applyCapType(newCapType: CapType) {
         if (SelectedValue.Single(newCapType) != queryCapType()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withValues(newCapType = newCapType) }
@@ -185,7 +228,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setDashLength(newDashLength: Int) {
+    fun applyDashLength(newDashLength: Int) {
         if (SelectedValue.Single(newDashLength) != queryDashLength()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withValues(newDashLength = newDashLength) }
@@ -193,7 +236,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setDashSpace(newDashSpace: Int) {
+    fun applyDashSpace(newDashSpace: Int) {
         if (SelectedValue.Single(newDashSpace) != queryDashSpace()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withValues(newDashSpace = newDashSpace) }
@@ -201,7 +244,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setDashType(newDashType: DashType) {
+    fun applyDashType(newDashType: DashType) {
         if (SelectedValue.Single(newDashType) != queryDashType()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withValues(newDashType = newDashType) }
@@ -209,7 +252,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setFillAngle1(newFillAngle: Int) {
+    fun applyFillAngle1(newFillAngle: Int) {
         if (SelectedValue.Single(newFillAngle) != queryFillAngle1()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withValues(newFillAngle1 = newFillAngle) }
@@ -217,7 +260,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setFillAngle2(newFillAngle: Int) {
+    fun applyFillAngle2(newFillAngle: Int) {
         if (SelectedValue.Single(newFillAngle) != queryFillAngle2()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withValues(newFillAngle2 = newFillAngle) }
@@ -225,7 +268,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setFillPitch1(newFillPitch: Int) {
+    fun applyFillPitch1(newFillPitch: Int) {
         if (SelectedValue.Single(newFillPitch) != queryFillPitch1()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withValues(newFillPitch1 = newFillPitch) }
@@ -233,7 +276,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setFillPitch2(newFillPitch: Int) {
+    fun applyFillPitch2(newFillPitch: Int) {
         if (SelectedValue.Single(newFillPitch) != queryFillPitch2()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withValues(newFillPitch2 = newFillPitch) }
@@ -241,7 +284,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setFillType(newFillType: FillType) {
+    fun applyFillType(newFillType: FillType) {
         if (SelectedValue.Single(newFillType) != queryFillType()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withValues(newFillType) }
@@ -249,7 +292,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setFillWidth(newFillWidth: Int) {
+    fun applyFillWidth(newFillWidth: Int) {
         if (SelectedValue.Single(newFillWidth) != queryFillWidth()) {
             applyProperty<FillItem> { item ->
                 item.applyFillStyle { it.withValues(newFillWidth = newFillWidth) }
@@ -257,7 +300,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setItemColor(newItemColor: ColorIndex) {
+    fun applyItemColor(newItemColor: ColorIndex) {
         if (SelectedValue.Single(newItemColor) != queryItemColor()) {
             applyProperty<ColorItem> {
                 it.withItemColor(newItemColor)
@@ -265,7 +308,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setLineWidth(newLineWidth: Int) {
+    fun applyLineWidth(newLineWidth: Int) {
         if (SelectedValue.Single(newLineWidth) != queryLineWidth()) {
             applyProperty<LineItem> { item ->
                 item.applyLineStyle { it.withValues(newLineWidth = newLineWidth) }
@@ -273,7 +316,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setPinType(newPinType: PinType) {
+    fun applyPinType(newPinType: PinType) {
         if (SelectedValue.Single(newPinType) != queryPinType()) {
             applyProperty<Pin> {
                 it.withValues(newPinType = newPinType)
@@ -281,7 +324,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setTextAlignment(newAlignment: Alignment) {
+    fun applyTextAlignment(newAlignment: Alignment) {
         if (SelectedValue.Single(newAlignment) != queryTextAlignment()) {
             applyProperty<Text> {
                 it.withAlignment(newAlignment)
@@ -289,7 +332,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setTextColor(newTextColor: ColorIndex) {
+    fun applyTextColor(newTextColor: ColorIndex) {
         if (SelectedValue.Single(newTextColor) != queryTextColor()) {
             applyProperty<Text> {
                 it.withItemColor(newTextColor)
@@ -297,7 +340,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setTextRotation(newRotation: Int) {
+    fun applyTextRotation(newRotation: Int) {
         if (SelectedValue.Single(newRotation) != queryTextSize()) {
             applyProperty<Text> {
                 it.withRotation(newRotation)
@@ -305,7 +348,7 @@ class SchematicModel(schematic: Schematic) {
         }
     }
 
-    fun setTextSize(newSize: Int) {
+    fun applyTextSize(newSize: Int) {
         if (SelectedValue.Single(newSize) != queryTextSize()) {
             applyProperty<Text> {
                 it.withSize(newSize)
@@ -374,13 +417,6 @@ class SchematicModel(schematic: Schematic) {
 
     fun selectItems(bounds: Bounds) = selectItems { it.inside(bounds) }
 
-    fun changeAttributeName(name: String, newValue: String) {
-        println("Update: name=$name newValue=$newValue")
-    }
-
-    fun changeAttributeValue(name: String, newValue: String) {
-        println("Update: name=$name newValue=$newValue")
-    }
 
     companion object {
 

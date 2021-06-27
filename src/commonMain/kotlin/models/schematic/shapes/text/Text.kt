@@ -16,31 +16,30 @@ class Text(
     val presentation: Presentation = Presentation.NAME_VALUE,
     val rotation: Int = 0,
     val alignment: Alignment = Alignment.LOWER_LEFT,
-    val lines: Array<String>
+    val lines: Lines
 ) : Item, ColorItem, Attribute {
 
-    override val attributeNameOrNull = lines.firstOrNull()?.let {
-        ATTRIBUTE_REGEX.find(it)?.groups?.get(NAME_GROUP)?.value
+    override val isAttribute: Boolean
+        get() = lines.isAttribute
+
+    override val attributeNameOrNull: String?
+        get() = lines.attributeNameOrNull
+
+    override val attributeValueOrNull: Lines?
+        get() = lines.attributeValueOrNull
+
+    override fun withName(newName: String): Item {
+        TODO("Not yet implemented")
     }
 
-    override val isAttribute = attributeNameOrNull != null
-
-    override val attributeValueOrNull = if (isAttribute) {
-        lines.mapIndexed { index, line ->
-            if (index == 0) {
-                ATTRIBUTE_REGEX.find(line)?.groups?.get(VALUE_GROUP)?.value ?: line
-            } else {
-                line
-            }
-        }.toTypedArray()
-    } else {
-        null
+    override fun withValue(newValue: Array<String>): Item {
+        TODO("Not yet implemented")
     }
 
-    val shownLines: Array<String> = when (presentation) {
+    val shownLines: Lines = when (presentation) {
         Presentation.NAME_VALUE -> lines
-        Presentation.VALUE -> attributeValueOrNull ?: lines
-        Presentation.NAME -> attributeNameOrNull?.let { arrayOf(it) } ?: lines
+        Presentation.VALUE -> lines.attributeValueOrNull ?: lines
+        Presentation.NAME -> lines.attributeNameOrNull?.let { Lines(arrayOf(it)) } ?: lines
     }
 
     fun withInsertX(newInsertX: Int) = Text(
@@ -139,7 +138,7 @@ class Text(
         lines
     )
 
-    fun withLines(newLines: Array<String>) = Text(
+    fun withLines(newLines: Lines) = Text(
         insertX,
         insertY,
         color,
@@ -164,11 +163,6 @@ class Text(
     companion object : Creator {
         const val TOKEN = "T"
 
-        private const val NAME_GROUP = 2
-        private const val VALUE_GROUP = 3
-
-        private val ATTRIBUTE_REGEX = Regex("""(?<both>(?<name>.+?)=(?<value>.*))|(?<text>.+)""")
-
         override fun read(params: Array<String>, reader: Reader) = Text(
             insertX = params[1].toInt(),
             insertY = params[2].toInt(),
@@ -178,7 +172,7 @@ class Text(
             presentation = Presentation.fromFileValue(params[6].toInt()),
             rotation = params[7].toInt(),
             alignment = Alignment.fromFileValue(params[8].toInt()),
-            lines = reader.readLines(params[9].toInt())
+            lines = Lines(reader.readLines(params[9].toInt()))
         )
     }
 
@@ -199,8 +193,8 @@ class Text(
             presentation.fileValue.toString(),
             rotation.toString(),
             alignment.fileValue.toString(),
-            lines.size.toString()
+            lines.lines.size.toString()
         )
-        lines.forEach { writer.writeLine(it) }
+        lines.lines.forEach { writer.writeLine(it) }
     }
 }

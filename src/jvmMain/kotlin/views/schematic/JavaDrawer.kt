@@ -172,7 +172,7 @@ class JavaDrawer(
             color = colorScheme.lookupItemColor(text.color, selected).let {
                 Color(it.red, it.green, it.blue, (255.0 * alpha).roundToInt())
             }
-            text.shownLines.forEach {
+            text.shownLines.lines.forEach {
                 drawString(it, lineX, lineY)
                 lineY += 100.0f
             }
@@ -205,7 +205,7 @@ class JavaDrawer(
     }
 
     private fun thing1(font: Font, text: Text): Double {
-        return text.alignment.horizontal * thing2(font, text.shownLines)
+        return text.alignment.horizontal * thing2(font, text.shownLines.lines)
     }
 
     private fun thing2(font: Font, lines: Array<String>): Int {

@@ -117,7 +117,7 @@ class PinTool(private val target: SchematicView) : Tool {
                 .flatMap { it.attributes.items }
                 .asSequence()
                 .filter { it.attributeNameOrNull == "pinnumber" }
-                .mapNotNull { it.attributeValueOrNull?.singleOrNull()?.toIntOrNull() }
+                .mapNotNull { it.attributeValueOrNull?.lines?.singleOrNull()?.toIntOrNull() }
                 .maxOrNull() ?: 0
 
         private val listeners = mutableListOf<PinTool>()

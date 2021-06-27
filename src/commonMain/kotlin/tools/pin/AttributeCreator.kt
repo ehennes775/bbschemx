@@ -1,9 +1,6 @@
 package tools.pin
 
-import models.schematic.shapes.text.Alignment
-import models.schematic.shapes.text.Presentation
-import models.schematic.shapes.text.Text
-import models.schematic.shapes.text.Visibility
+import models.schematic.shapes.text.*
 import models.schematic.types.ColorIndex
 import types.Angle
 import kotlin.math.atan2
@@ -57,7 +54,7 @@ class AttributeCreator(
             },
             size = initialSize,
             visibility = initialVisibility,
-            lines = arrayOf("$attributeName=$attributeValue")
+            lines = Lines(arrayOf("$attributeName=$attributeValue"))
         )
     }
 }
